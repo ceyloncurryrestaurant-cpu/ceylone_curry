@@ -27,6 +27,7 @@ export async function GET() {
 
     const collections = await conn.connection.db.listCollections().toArray();
     const tableCount = await conn.connection.db.collection("tables").countDocuments();
+    const tables = await conn.connection.db.collection("tables").find().toArray();
 
     await mongoose.disconnect();
 
@@ -36,6 +37,7 @@ export async function GET() {
       maskedUri,
       collections: collections.map(c => c.name),
       tableCount,
+      tables,
     });
   } catch (err: any) {
     return NextResponse.json({
