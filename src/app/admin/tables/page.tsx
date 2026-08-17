@@ -95,6 +95,28 @@ export default function AdminTablesPage() {
     }
   };
 
+  const handleImageUrlChange = async (tableId: string, newUrl: string) => {
+    setUpdatingId(tableId);
+    try {
+      const updateRes = await fetch(`/api/tables/${tableId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: { url: newUrl } }),
+      });
+      const updateData = await updateRes.json();
+      if (updateData.success) {
+        toast.success("Table seating photograph updated!");
+        fetchTables();
+      } else {
+        toast.error("Failed to save table image URL.");
+      }
+    } catch (err) {
+      toast.error("Error updating table image URL.");
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
   return (
     <div className="space-y-8 bg-ceylon-volcanic text-ceylon-ivory min-h-[85vh]">
       {/* Header */}
@@ -188,6 +210,24 @@ export default function AdminTablesPage() {
                       Table 0{table.tableNumber}
                     </h3>
                   </div>
+                </div>
+
+                {/* Direct Image URL input */}
+                <div className="space-y-1">
+                  <label className="block text-[10px] font-bold text-ceylon-copper uppercase">
+                    Seating Image URL (or upload above)
+                  </label>
+                  <input
+                    type="url"
+                    placeholder="Paste image URL here..."
+                    defaultValue={table.image?.url || ""}
+                    onBlur={(e) => {
+                      if (e.target.value !== (table.image?.url || "")) {
+                        handleImageUrlChange(table._id, e.target.value);
+                      }
+                    }}
+                    className="w-full px-3 py-1.5 rounded-xl border border-ceylon-copper/30 text-[11px] font-semibold bg-ceylon-volcanic text-ceylon-ivory focus:outline-none focus:border-ceylon-saffron placeholder-ceylon-sandstone/40"
+                  />
                 </div>
 
                 {/* Status Controls */}
