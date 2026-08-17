@@ -21,6 +21,10 @@ export async function GET() {
       connectTimeoutMS: 10000,
     });
     
+    if (!conn.connection.db) {
+      throw new Error("conn.connection.db is not initialized.");
+    }
+
     const collections = await conn.connection.db.listCollections().toArray();
     const tableCount = await conn.connection.db.collection("tables").countDocuments();
 
