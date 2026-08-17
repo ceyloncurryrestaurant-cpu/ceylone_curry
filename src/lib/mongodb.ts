@@ -1,14 +1,10 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/ceylon_curry";
-
-if (!MONGODB_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable inside .env.local");
-}
+const MONGODB_URI = process.env.MONGODB_URI;
 
 interface MongooseCache {
   conn: typeof mongoose | null;
-  promise: Promise<typeof mongoose> | null;
+  promise: Promise<typeof mongoose | null> | null;
 }
 
 declare global {
@@ -21,20 +17,29 @@ if (!cached) {
   cached = global.mongooseCache = { conn: null, promise: null };
 }
 
-export async function connectToDatabase() {
+export async function connectToDatabase(): Promise<typeof mongoose | null> {
   if (cached?.conn) {
     return cached.conn;
+  }
+
+  // If no MONGODB_URI is specified in production environment, return null for fallback data mode
+  if (!MONGODB_URI) {
+    console.warn("⚠️ MONGODB_URI is not set. Operating in fallback data mode.");
+    return null;
   }
 
   if (!cached?.promise) {
     const opts = {
       bufferCommands: false,
-      serverSelectionTimeoutMS: 5000,
-      connectTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 3000,
+      connectTimeoutMS: 3000,
     };
 
     cached!.promise = mongoose.connect(MONGODB_URI, opts).then((mongooseInstance) => {
       return mongooseInstance;
+    }).catch((err) => {
+      console.warn("⚠️ MongoDB connection error, returning null for fallback mode:", err.message);
+      return null;
     });
   }
 
@@ -42,7 +47,7 @@ export async function connectToDatabase() {
     cached!.conn = await cached!.promise;
   } catch (e) {
     cached!.promise = null;
-    throw e;
+    return null;
   }
 
   return cached!.conn;

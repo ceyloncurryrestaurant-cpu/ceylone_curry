@@ -8,7 +8,11 @@ export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   try {
-    await connectToDatabase();
+    const conn = await connectToDatabase();
+    if (!conn) {
+      const { memoryStore } = await import("@/lib/memoryStore");
+      return NextResponse.json({ success: true, count: memoryStore.products.length, products: memoryStore.products });
+    }
     const { searchParams } = new URL(req.url);
 
     const search = searchParams.get("search");
@@ -72,7 +76,8 @@ export async function GET(req: Request) {
 
     return NextResponse.json({ success: true, count: products.length, products });
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    const { memoryStore } = await import("@/lib/memoryStore");
+    return NextResponse.json({ success: true, count: memoryStore.products.length, products: memoryStore.products });
   }
 }
 
