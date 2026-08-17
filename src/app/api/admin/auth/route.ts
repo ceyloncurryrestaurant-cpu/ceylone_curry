@@ -47,23 +47,58 @@ export async function POST(req: Request) {
     const cleanEmail = (email || "").toLowerCase().trim();
 
     if (action === "reset-password") {
-      if (!email || !newPassword) {
-        return NextResponse.json({ success: false, error: "Email and new password are required" }, { status: 400 });
+      if (!newPassword) {
+        return NextResponse.json({ success: false, error: "New password is required" }, { status: 400 });
       }
       if (newPassword.length < 6) {
         return NextResponse.json({ success: false, error: "Password must be at least 6 characters" }, { status: 400 });
       }
 
       if (dbConnected) {
-        const admin = await Admin.findOne({ email: cleanEmail });
+        const session = await getAdminSession().catch(() => null);
+        let admin = null;
+
+        // 1. Try to find admin by session ID
+        if (session && session.id && session.id !== "default_admin_id") {
+          admin = await Admin.findById(session.id).catch(() => null);
+        }
+
+        // 2. Try to find admin by session email
+        if (!admin && session && session.email) {
+          admin = await Admin.findOne({ email: session.email.toLowerCase().trim() }).catch(() => null);
+        }
+
+        // 3. Try to find admin by cleanEmail
+        if (!admin && cleanEmail) {
+          admin = await Admin.findOne({ email: cleanEmail }).catch(() => null);
+        }
+
+        const newHash = await hashPassword(newPassword);
+
         if (admin) {
-          const newHash = await hashPassword(newPassword);
           admin.passwordHash = newHash;
           await admin.save();
           return NextResponse.json({
             success: true,
             message: "Admin password updated successfully! You can now log in with your new password.",
           });
+        }
+
+        // 4. Fallback: if the default admin document is missing, create it
+        const isDefaultAdmin = cleanEmail === "admin@ceyloncurry.co.uk" || (session && session.email === "admin@ceyloncurry.co.uk");
+        if (isDefaultAdmin) {
+          const newAdmin = await Admin.create({
+            email: "admin@ceyloncurry.co.uk",
+            passwordHash: newHash,
+            name: "Ceylon Curry Admin",
+            role: "admin",
+          });
+          if (newAdmin) {
+            return NextResponse.json({
+              success: true,
+              message: "Admin password updated successfully! You can now log in with your new password.",
+            });
+          }
         }
       }
       return NextResponse.json({ success: false, error: "Admin account with this email not found" }, { status: 404 });
