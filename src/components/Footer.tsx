@@ -44,17 +44,6 @@ export const Footer: React.FC = () => {
             <p className="text-xs text-ceylon-sandstone leading-relaxed font-light">
               Authentic Sri Lankan curries, kottu roti, and traditional island delicacies cooked with hand-roasted Ceylon spices in Plymouth.
             </p>
-            <div className="flex items-center gap-3 pt-2">
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="WhatsApp"
-                className="p-2.5 rounded-full bg-ceylon-cocoa hover:bg-emerald-500 hover:text-white transition-all text-emerald-400 border border-ceylon-copper/30 flex items-center justify-center shadow-sm"
-              >
-                <MessageCircle className="w-4 h-4" />
-              </a>
-            </div>
           </div>
 
           <div className="space-y-4">
