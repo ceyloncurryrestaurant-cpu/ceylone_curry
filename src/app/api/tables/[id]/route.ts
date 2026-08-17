@@ -23,10 +23,13 @@ export async function PUT(req: Request, { params }: { params: any }) {
 
     const body = await req.json();
 
+    // Use $set to ensure nested fields (like image.url) are properly updated in MongoDB
+    const updateQuery = { $set: body };
+
     const conn = await connectToDatabase();
     if (conn) {
       try {
-        const table = await Table.findByIdAndUpdate(id, body, { new: true });
+        const table = await Table.findByIdAndUpdate(id, updateQuery, { new: true, runValidators: false });
         if (table) {
           if (body.releaseReservations) {
             await Reservation.updateMany(
@@ -40,23 +43,36 @@ export async function PUT(req: Request, { params }: { params: any }) {
             table,
           });
         }
+        // Table not found by id — try by tableNumber
+        const tableByNumber = await Table.findOneAndUpdate(
+          { tableNumber: Number(id) },
+          updateQuery,
+          { new: true, runValidators: false }
+        );
+        if (tableByNumber) {
+          return NextResponse.json({
+            success: true,
+            message: `Table ${tableByNumber.tableNumber} updated successfully`,
+            table: tableByNumber,
+          });
+        }
       } catch (err) {
         console.error("DB update table error:", err);
       }
     }
 
-    // Fallback update in memoryStore
+    // Fallback: update in memoryStore
     const memTable = memoryStore.tables.find((t) => t._id === id || t.tableNumber === Number(id));
     if (memTable) {
       Object.assign(memTable, body);
       return NextResponse.json({
         success: true,
-        message: `Table ${memTable.tableNumber} updated successfully`,
+        message: `Table updated successfully`,
         table: memTable,
       });
     }
 
-    return NextResponse.json({ success: true, message: "Table status updated", table: { _id: id, ...body } });
+    return NextResponse.json({ success: true, message: "Table updated", table: { _id: id, ...body } });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }

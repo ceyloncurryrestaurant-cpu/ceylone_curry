@@ -77,6 +77,9 @@ export async function POST(req: Request) {
       success: true,
       message: "Image(s) uploaded successfully",
       images: uploadedImages,
+      // Convenience shorthand for single-image callers
+      url: uploadedImages[0]?.url || null,
+      publicId: uploadedImages[0]?.publicId || null,
     });
   } catch (error: any) {
     console.error("Upload error:", error);
