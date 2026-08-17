@@ -100,8 +100,8 @@ export default function ReservePage() {
   };
 
   const handleTableSelect = (table: any) => {
-    if (isTableOccupied(table._id)) {
-      toast.error(`Table ${table.tableNumber} is reserved during ${selectedTime}.`, {
+    if (isTableOccupied(table._id) || table.status !== "Available") {
+      toast.error(`Table ${table.tableNumber} is reserved or unavailable.`, {
         description: "Please pick another table or time slot.",
       });
       return;
@@ -388,7 +388,7 @@ export default function ReservePage() {
               {/* Table Seating Cards Grid with Prominent Photographs */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {tables.map((table) => {
-                  const occupied = isTableOccupied(table._id);
+                  const occupied = isTableOccupied(table._id) || table.status !== "Available";
                   const isSelected = selectedTable?._id === table._id;
                   const tableImg = table.image?.url || "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=800&q=80";
 
