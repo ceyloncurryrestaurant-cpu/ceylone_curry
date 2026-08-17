@@ -46,24 +46,6 @@ export const Footer: React.FC = () => {
             </p>
             <div className="flex items-center gap-3 pt-2">
               <a
-                href={fbUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Facebook"
-                className="p-2.5 rounded-full bg-ceylon-cocoa hover:bg-ceylon-copper hover:text-ceylon-volcanic transition-all text-ceylon-ivory border border-ceylon-copper/30 flex items-center justify-center shadow-sm"
-              >
-                <Globe className="w-4 h-4" />
-              </a>
-              <a
-                href={igUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="p-2.5 rounded-full bg-ceylon-cocoa hover:bg-ceylon-copper hover:text-ceylon-volcanic transition-all text-ceylon-ivory border border-ceylon-copper/30 flex items-center justify-center shadow-sm"
-              >
-                <Share2 className="w-4 h-4" />
-              </a>
-              <a
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
