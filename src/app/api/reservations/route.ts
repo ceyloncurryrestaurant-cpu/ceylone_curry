@@ -153,8 +153,8 @@ export async function POST(req: Request) {
       adminEmail: settingsDoc?.adminEmail || "admin@ceyloncurry.co.uk",
     };
 
-    // 8. Dispatch Confirmation Email via Nodemailer (Background / async)
-    sendReservationEmails({
+    // 8. Dispatch Confirmation Emails (awaited so Vercel doesn't kill the function before sending)
+    await sendReservationEmails({
       reservationNumber,
       customerName,
       email,

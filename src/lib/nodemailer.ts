@@ -1,4 +1,5 @@
 import tls from "tls";
+import net from "net";
 
 interface ReservationEmailData {
   reservationNumber: string;
@@ -18,93 +19,187 @@ interface ReservationEmailData {
   adminEmail?: string;
 }
 
-// Native Node.js Zero-Dependency TLS SMTP Email Sender with State Machine
-function sendNativeSmtpMail(smtpUser: string, smtpPass: string, toEmail: string, subject: string, htmlContent: string): Promise<boolean> {
+// Robust SMTP email sender using STARTTLS on port 587 (Gmail standard)
+function sendSmtpMail(
+  smtpUser: string,
+  smtpPass: string,
+  smtpHost: string,
+  smtpPort: number,
+  toEmail: string,
+  subject: string,
+  htmlContent: string
+): Promise<boolean> {
   return new Promise((resolve) => {
     let resolved = false;
-    const safeResolve = (val: boolean) => {
+    let buffer = "";
+    let tlsSocket: tls.TLSSocket | null = null;
+    let plainSocket: net.Socket | null = null;
+    let step = 0;
+
+    const TIMEOUT_MS = 25000; // 25 seconds for Vercel cold starts
+
+    const safeResolve = (val: boolean, reason?: string) => {
       if (!resolved) {
         resolved = true;
-        try { socket.destroy(); } catch (e) {}
+        if (reason) console.log(`📧 SMTP ${val ? "✅" : "❌"} [${toEmail}]: ${reason}`);
+        try { tlsSocket?.destroy(); } catch (_) {}
+        try { plainSocket?.destroy(); } catch (_) {}
         resolve(val);
       }
     };
 
-    // 3-second timeout guard
     const timer = setTimeout(() => {
-      console.warn(`⚠️ SMTP delivery timeout for: ${toEmail}`);
-      safeResolve(false);
-    }, 3000);
+      safeResolve(false, `Timeout after ${TIMEOUT_MS}ms at step ${step}`);
+    }, TIMEOUT_MS);
 
-    let socket: tls.TLSSocket;
+    // Send a line over the active socket
+    const send = (line: string) => {
+      const sock = tlsSocket || plainSocket;
+      if (sock && !sock.destroyed) {
+        sock.write(line + "\r\n");
+      }
+    };
+
+    // Process buffered SMTP response lines
+    const processLine = (line: string) => {
+      const code = line.substring(0, 3);
+      const isLast = line[3] === " "; // 250 ... vs 250-...
+
+      console.log(`SMTP [step=${step}] ← ${line}`);
+
+      if (step === 0 && code === "220") {
+        step = 1;
+        send(`EHLO localhost`);
+
+      } else if (step === 1 && code === "250" && isLast) {
+        // EHLO complete - all capability lines received
+        step = 2;
+        // Use STARTTLS if on port 587
+        if (smtpPort === 587) {
+          send("STARTTLS");
+        } else {
+          // Already on TLS (port 465), go straight to AUTH
+          step = 3;
+          send("AUTH LOGIN");
+        }
+
+      } else if (step === 2 && code === "220") {
+        // STARTTLS accepted - upgrade the plain socket to TLS
+        step = 3;
+        if (plainSocket) {
+          tlsSocket = tls.connect({
+            socket: plainSocket,
+            host: smtpHost,
+            servername: smtpHost,
+          });
+          tlsSocket.setEncoding("utf8");
+          tlsSocket.on("data", onData);
+          tlsSocket.on("error", (err) => safeResolve(false, `TLS error: ${err.message}`));
+          tlsSocket.on("secureConnect", () => {
+            send(`EHLO localhost`);
+            step = 3.5; // Re-EHLO after TLS upgrade
+          });
+        }
+
+      } else if (step === 3.5 && code === "250" && isLast) {
+        // Re-EHLO after TLS complete
+        step = 4;
+        send("AUTH LOGIN");
+
+      } else if (step === 3 && code === "334") {
+        // Username prompt (base64 "Username:")
+        step = 4;
+        send(Buffer.from(smtpUser).toString("base64"));
+
+      } else if (step === 4 && code === "334") {
+        // Password prompt (base64 "Password:")
+        step = 5;
+        send(Buffer.from(smtpPass).toString("base64"));
+
+      } else if ((step === 4 || step === 5) && code === "235") {
+        // AUTH successful
+        step = 6;
+        send(`MAIL FROM:<${smtpUser}>`);
+
+      } else if (step === 6 && code === "250") {
+        step = 7;
+        send(`RCPT TO:<${toEmail}>`);
+
+      } else if (step === 7 && code === "250") {
+        step = 8;
+        send("DATA");
+
+      } else if (step === 8 && code === "354") {
+        step = 9;
+        const safeSubject = subject.replace(/[\r\n]/g, " ");
+        const msg = [
+          `From: "Ceylon Curry" <${smtpUser}>`,
+          `To: <${toEmail}>`,
+          `Subject: ${safeSubject}`,
+          `MIME-Version: 1.0`,
+          `Content-Type: text/html; charset=UTF-8`,
+          ``,
+          htmlContent,
+          `.`,
+          ``
+        ].join("\r\n");
+        const sock = tlsSocket || plainSocket;
+        if (sock && !sock.destroyed) sock.write(msg);
+
+      } else if (step === 9 && code === "250") {
+        clearTimeout(timer);
+        send("QUIT");
+        safeResolve(true, `Delivered to ${toEmail}`);
+
+      } else if (["421", "450", "451", "452", "500", "501", "502", "503", "535", "550", "551", "552", "553", "554"].includes(code)) {
+        clearTimeout(timer);
+        safeResolve(false, `SMTP error ${code}: ${line}`);
+      }
+    };
+
+    const onData = (chunk: string) => {
+      buffer += chunk;
+      // Process complete lines (CR LF terminated)
+      let idx: number;
+      while ((idx = buffer.indexOf("\r\n")) !== -1) {
+        const line = buffer.slice(0, idx);
+        buffer = buffer.slice(idx + 2);
+        if (line.trim()) processLine(line);
+      }
+    };
 
     try {
-      socket = tls.connect({ host: "smtp.gmail.com", port: 465 }, () => {});
-      socket.setEncoding("utf8");
-      let step = 0;
-
-      socket.on("data", (chunk) => {
-        const text = chunk.toString();
-
-        if (step === 0 && text.startsWith("220")) {
-          step = 1;
-          socket.write("EHLO localhost\r\n");
-        } else if (step === 1 && (text.includes("250 AUTH") || text.includes("250-AUTH") || text.includes("250 SMTPUTF8"))) {
-          step = 2;
-          socket.write("AUTH LOGIN\r\n");
-        } else if (step === 2 && text.includes("334 VXNlcm5hbWU6")) {
-          step = 3;
-          socket.write(Buffer.from(smtpUser).toString("base64") + "\r\n");
-        } else if (step === 3 && text.includes("334 UGFzc3dvcmQ6")) {
-          step = 4;
-          socket.write(Buffer.from(smtpPass).toString("base64") + "\r\n");
-        } else if (step === 4 && text.startsWith("235")) {
-          step = 5;
-          socket.write(`MAIL FROM:<${smtpUser}>\r\n`);
-        } else if (step === 5 && text.startsWith("250")) {
-          step = 6;
-          socket.write(`RCPT TO:<${toEmail}>\r\n`);
-        } else if (step === 6 && text.startsWith("250")) {
-          step = 7;
-          socket.write("DATA\r\n");
-        } else if (step === 7 && text.startsWith("354")) {
-          step = 8;
-          const msg = [
-            `From: "Ceylon Curry Reservations" <${smtpUser}>`,
-            `To: <${toEmail}>`,
-            `Subject: ${subject}`,
-            `MIME-Version: 1.0`,
-            `Content-Type: text/html; charset=UTF-8`,
-            ``,
-            htmlContent,
-            `.`,
-            ``
-          ].join("\r\n");
-          socket.write(msg);
-        } else if (step === 8 && text.startsWith("250")) {
-          console.log(`✅ Live SMTP Email delivered to: ${toEmail}`);
-          clearTimeout(timer);
-          socket.write("QUIT\r\n");
-          safeResolve(true);
-        }
-      });
-
-      socket.on("error", (err) => {
-        console.warn("Native SMTP Error:", err.message);
-        clearTimeout(timer);
-        safeResolve(false);
-      });
-    } catch (e) {
+      if (smtpPort === 465) {
+        // Direct TLS connection
+        tlsSocket = tls.connect({ host: smtpHost, port: 465 }, () => {});
+        tlsSocket.setEncoding("utf8");
+        tlsSocket.on("data", onData);
+        tlsSocket.on("error", (err) => safeResolve(false, `TLS socket error: ${err.message}`));
+      } else {
+        // Plain connection + STARTTLS upgrade
+        plainSocket = net.connect({ host: smtpHost, port: smtpPort }, () => {});
+        plainSocket.setEncoding("utf8");
+        plainSocket.on("data", onData);
+        plainSocket.on("error", (err) => safeResolve(false, `Plain socket error: ${err.message}`));
+      }
+    } catch (e: any) {
       clearTimeout(timer);
-      safeResolve(false);
+      safeResolve(false, `Socket creation error: ${e.message}`);
     }
   });
 }
 
 export async function sendReservationEmails(data: ReservationEmailData) {
-  const user = process.env.SMTP_USER || "mahendranpradhikshalini@gmail.com";
-  const pass = process.env.SMTP_PASS || process.env.SMTP_PASSWORD || "rkezrecuoxeoljjy";
-  const adminEmail = data.adminEmail || process.env.ADMIN_EMAIL || "mahendranpradhikshalini@gmail.com";
+  const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
+  const smtpPort = parseInt(process.env.SMTP_PORT || "587", 10);
+  const smtpUser = process.env.SMTP_USER || "";
+  const smtpPass = process.env.SMTP_PASS || process.env.SMTP_PASSWORD || "";
+  const adminEmail = data.adminEmail || process.env.ADMIN_EMAIL || smtpUser;
+
+  if (!smtpUser || !smtpPass) {
+    console.warn("⚠️ SMTP credentials not configured. Skipping email.");
+    return false;
+  }
 
   // 1. Customer HTML Email Template
   const customerHtmlBody = `
@@ -142,11 +237,7 @@ export async function sendReservationEmails(data: ReservationEmailData) {
               <td style="padding: 8px 0; font-weight: bold;">Location:</td>
               <td style="padding: 8px 0;">${data.restaurantAddress || "44 Mayflower St, Plymouth PL1 1QX"}</td>
             </tr>
-            ${
-              data.specialRequest
-                ? `<tr><td style="padding: 8px 0; font-weight: bold;">Special Request:</td><td style="padding: 8px 0; font-style: italic;">${data.specialRequest}</td></tr>`
-                : ""
-            }
+            ${data.specialRequest ? `<tr><td style="padding: 8px 0; font-weight: bold;">Special Request:</td><td style="padding: 8px 0; font-style: italic;">${data.specialRequest}</td></tr>` : ""}
           </table>
         </div>
 
@@ -191,53 +282,40 @@ export async function sendReservationEmails(data: ReservationEmailData) {
               <td style="padding: 6px 0;">${data.mobile}</td>
             </tr>
             <tr>
-              <td style="padding: 6px 0; font-weight: bold;">Date & Time:</td>
+              <td style="padding: 6px 0; font-weight: bold;">Date &amp; Time:</td>
               <td style="padding: 6px 0;">${data.date} at ${data.startTime}</td>
             </tr>
             <tr>
               <td style="padding: 6px 0; font-weight: bold;">Table Assigned:</td>
               <td style="padding: 6px 0;">Table ${data.tableNumber} (${data.tableType}, ${data.guestCount} Guests)</td>
             </tr>
-            ${
-              data.specialRequest
-                ? `<tr><td style="padding: 6px 0; font-weight: bold;">Special Request:</td><td style="padding: 6px 0; font-style: italic;">${data.specialRequest}</td></tr>`
-                : ""
-            }
+            ${data.specialRequest ? `<tr><td style="padding: 6px 0; font-weight: bold;">Special Request:</td><td style="padding: 6px 0; font-style: italic;">${data.specialRequest}</td></tr>` : ""}
           </table>
         </div>
       </div>
     </div>
   `;
 
-  const tasks: Promise<boolean>[] = [];
+  const results = await Promise.allSettled([
+    // Customer confirmation email
+    data.email
+      ? sendSmtpMail(smtpUser, smtpPass, smtpHost, smtpPort, data.email,
+          `Reservation Confirmed - Ref: ${data.reservationNumber} | Ceylon Curry`,
+          customerHtmlBody)
+      : Promise.resolve(false),
 
-  // Dispatch Email to Customer
-  if (data.email) {
-    tasks.push(
-      sendNativeSmtpMail(
-        user,
-        pass,
-        data.email,
-        `Reservation Confirmed - Ref: ${data.reservationNumber} | Ceylon Curry`,
-        customerHtmlBody
-      )
-    );
-  }
+    // Admin notification email (skip if same as customer)
+    adminEmail && adminEmail !== data.email
+      ? sendSmtpMail(smtpUser, smtpPass, smtpHost, smtpPort, adminEmail,
+          `🔔 NEW RESERVATION: ${data.reservationNumber} - ${data.customerName} (${data.date})`,
+          adminHtmlBody)
+      : Promise.resolve(false),
+  ]);
 
-  // Dispatch Alert Email to Admin
-  if (adminEmail && adminEmail !== data.email) {
-    tasks.push(
-      sendNativeSmtpMail(
-        user,
-        pass,
-        adminEmail,
-        `🔔 NEW RESERVATION ALERT: ${data.reservationNumber} - ${data.customerName} (${data.date})`,
-        adminHtmlBody
-      )
-    );
-  }
+  const [customerResult, adminResult] = results;
+  console.log(`📧 Customer email: ${customerResult.status === "fulfilled" && customerResult.value ? "✅ sent" : "❌ failed"}`);
+  console.log(`📧 Admin email: ${adminResult.status === "fulfilled" && adminResult.value ? "✅ sent" : "❌ failed"}`);
 
-  await Promise.allSettled(tasks);
   return true;
 }
 
