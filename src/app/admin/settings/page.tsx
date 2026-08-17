@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSettings } from "@/context/SettingsContext";
 import { getWhatsAppLink } from "@/lib/whatsapp";
-import { Save, Phone, MessageCircle, Mail, MapPin, Clock, Globe, ExternalLink, CheckCircle } from "lucide-react";
+import { Save, Phone, MessageCircle, Mail, MapPin, Clock, Globe, ExternalLink, CheckCircle, Image as ImageIcon, Plus, Trash2, Upload } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
+import Image from "next/image";
 
 export default function AdminSettingsPage() {
   const { settings, refetchSettings } = useSettings();
@@ -37,6 +38,15 @@ export default function AdminSettingsPage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [updatingPassword, setUpdatingPassword] = useState(false);
+  const [heroImages, setHeroImages] = useState<string[]>([
+    "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=2000&q=85",
+    "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=2000&q=85",
+    "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=2000&q=85",
+    "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=2000&q=85",
+    "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=2000&q=85",
+  ]);
+  const [uploadingHero, setUploadingHero] = useState<number | null>(null);
+  const heroFileRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
     if (settings) {
@@ -49,6 +59,7 @@ export default function AdminSettingsPage() {
       setDeliveryFee(settings.deliveryFee !== undefined ? settings.deliveryFee : 2.99);
       if (settings.openingHours) setOpeningHours(settings.openingHours as any);
       if (settings.socialLinks) setSocialLinks(settings.socialLinks as any);
+      if (settings.heroImages && settings.heroImages.length > 0) setHeroImages(settings.heroImages);
     }
   }, [settings]);
 
@@ -70,6 +81,7 @@ export default function AdminSettingsPage() {
           deliveryFee: Number(deliveryFee),
           openingHours,
           socialLinks,
+          heroImages: heroImages.filter(Boolean),
         }),
       });
 
@@ -244,11 +256,124 @@ export default function AdminSettingsPage() {
           </div>
         </div>
 
-        {/* Section 3: Opening Hours */}
+        {/* Section 3.5: Hero Section Image Management */}
+        <div className="glass-cocoa rounded-[2.5rem] p-6 sm:p-8 shadow-volcanic border border-ceylon-copper/30 space-y-6 text-ceylon-ivory">
+          <h3 className="font-serif-display font-bold text-xl text-ceylon-copper flex items-center gap-2 border-b border-ceylon-bronze/30 pb-3">
+            <ImageIcon className="w-5 h-5 text-ceylon-copper" />
+            3. Hero Section Images (Homepage Slideshow)
+          </h3>
+          <p className="text-xs text-ceylon-sandstone font-light">
+            Upload or paste image URLs for the 5 full-screen hero slideshow images shown on the homepage. Click the upload icon to choose a file or edit the URL directly.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {heroImages.map((url, idx) => (
+              <div key={idx} className="relative rounded-2xl overflow-hidden border border-ceylon-copper/40 bg-ceylon-volcanic group">
+                {/* Preview */}
+                <div className="relative aspect-video w-full bg-ceylon-cocoa">
+                  {url ? (
+                    <Image
+                      src={url}
+                      alt={`Hero slide ${idx + 1}`}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-ceylon-sandstone/40">
+                      <ImageIcon className="w-8 h-8" />
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => heroFileRefs.current[idx]?.click()}
+                      className="p-2 rounded-full bg-ceylon-copper text-ceylon-volcanic hover:bg-ceylon-saffron transition cursor-pointer"
+                      title="Upload image"
+                    >
+                      {uploadingHero === idx ? (
+                        <span className="text-[10px] font-bold px-1">...</span>
+                      ) : (
+                        <Upload className="w-4 h-4" />
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = [...heroImages];
+                        updated[idx] = "";
+                        setHeroImages(updated);
+                      }}
+                      className="p-2 rounded-full bg-ceylon-chilli text-white hover:bg-red-700 transition cursor-pointer"
+                      title="Clear image"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <span className="absolute top-2 left-2 text-[10px] font-black uppercase tracking-widest bg-ceylon-volcanic/80 text-ceylon-copper px-2 py-0.5 rounded-full">
+                    Slide {idx + 1}
+                  </span>
+                </div>
+
+                {/* Hidden file input */}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  ref={(el) => { heroFileRefs.current[idx] = el; }}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setUploadingHero(idx);
+                    try {
+                      const formData = new FormData();
+                      formData.append("file", file);
+                      const uploadRes = await fetch("/api/upload", { method: "POST", body: formData });
+                      const uploadData = await uploadRes.json();
+                      if (uploadData.success && uploadData.url) {
+                        const updated = [...heroImages];
+                        updated[idx] = uploadData.url;
+                        setHeroImages(updated);
+                        toast.success(`Hero slide ${idx + 1} image uploaded!`);
+                      } else {
+                        toast.error("Upload failed. Try pasting a URL instead.");
+                      }
+                    } catch {
+                      toast.error("Upload error.");
+                    } finally {
+                      setUploadingHero(null);
+                    }
+                  }}
+                />
+
+                {/* URL input */}
+                <div className="p-2">
+                  <input
+                    type="url"
+                    placeholder="Paste image URL here..."
+                    value={url}
+                    onChange={(e) => {
+                      const updated = [...heroImages];
+                      updated[idx] = e.target.value;
+                      setHeroImages(updated);
+                    }}
+                    className="w-full px-3 py-2 rounded-xl border border-ceylon-copper/30 text-[11px] font-semibold bg-ceylon-volcanic text-ceylon-ivory focus:outline-none focus:border-ceylon-saffron placeholder-ceylon-sandstone/40"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-[10px] text-ceylon-sandstone/60 font-light">
+            💡 Tip: You can upload your own food photos or paste Unsplash/any public image URLs. Changes take effect after clicking "Save &amp; Propagate All Settings".
+          </p>
+        </div>
+
+        {/* Section 4: Opening Hours */}
         <div className="glass-cocoa rounded-[2.5rem] p-6 sm:p-8 shadow-volcanic border border-ceylon-copper/30 space-y-6 text-ceylon-ivory">
           <h3 className="font-serif-display font-bold text-xl text-ceylon-copper flex items-center gap-2 border-b border-ceylon-bronze/30 pb-3">
             <Clock className="w-5 h-5 text-ceylon-copper" />
-            3. Weekly Opening Hours
+            4. Weekly Opening Hours
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">

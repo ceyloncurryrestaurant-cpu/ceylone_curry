@@ -30,6 +30,7 @@ export interface ISettingsData {
     minNoticeHours: number;
     maxAdvanceDays: number;
   };
+  heroImages?: string[];
 }
 
 interface SettingsContextType {
@@ -66,6 +67,13 @@ const defaultSettings: ISettingsData = {
     minNoticeHours: 1,
     maxAdvanceDays: 30,
   },
+  heroImages: [
+    "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=2000&q=85",
+    "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=2000&q=85",
+    "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=2000&q=85",
+    "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=2000&q=85",
+    "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=2000&q=85",
+  ],
 };
 
 const SettingsContext = createContext<SettingsContextType>({

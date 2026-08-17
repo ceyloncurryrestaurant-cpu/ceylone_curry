@@ -41,39 +41,23 @@ export default function HomePage() {
   const [realReviews, setRealReviews] = useState<any[]>([]);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
-  // 5 Full-Screen Swappable Hero Slideshow Images (Auto-changes every 5 seconds)
-  const heroSlides = [
-    {
-      url: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=2000&q=85",
-      title: "Jaffna Black Roasted Lamb Curry",
-      tagline: "Slow-Braised in Dark Island Roasted Spice",
-      price: "£15.90",
-    },
-    {
-      url: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=2000&q=85",
-      title: "Sizzling Cheese Kottu Roti",
-      tagline: "Street-Food Icon Flash-Fried on Flat Iron Griddle",
-      price: "£13.50",
-    },
-    {
-      url: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=2000&q=85",
-      title: "Fiery Devilled King Prawns",
-      tagline: "Jumbo King Prawns Wok-Tossed with Chilli Glaze",
-      price: "£14.80",
-    },
-    {
-      url: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=2000&q=85",
-      title: "Traditional Ceylon Banquet",
-      tagline: "Hand-Crafted Coconut Gravies & Fragrant Rice",
-      price: "£18.50",
-    },
-    {
-      url: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=2000&q=85",
-      title: "Karapincha Tempered Claypot Curry",
-      tagline: "Slow-Simmered in Claypot with Fresh Curry Leaves",
-      price: "£14.20",
-    },
+  // 5 Full-Screen Swappable Hero Slideshow Images — managed from Admin Settings
+  const defaultHeroUrls = [
+    "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=2000&q=85",
+    "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=2000&q=85",
+    "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=2000&q=85",
+    "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=2000&q=85",
+    "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=2000&q=85",
   ];
+  const heroImageUrls = (settings?.heroImages && settings.heroImages.length > 0)
+    ? settings.heroImages
+    : defaultHeroUrls;
+  const heroSlides = heroImageUrls.map((url, i) => ({
+    url,
+    title: `Ceylon Curry Slide ${i + 1}`,
+    tagline: "Authentic Sri Lankan Cuisine",
+    price: "",
+  }));
   const [heroIndex, setHeroIndex] = useState(0);
 
   // Signature Dishes Showcase Data
