@@ -10,6 +10,7 @@ export default function AdminTablesPage() {
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [uploadingTableId, setUploadingTableId] = useState<string | null>(null);
+  const [imgCacheBust, setImgCacheBust] = useState<Record<string, number>>({});
 
   useEffect(() => {
     fetchTables();
@@ -84,6 +85,8 @@ export default function AdminTablesPage() {
       const updateData = await updateRes.json();
       if (updateData.success) {
         toast.success("Table seating photograph updated successfully!");
+        // Cache-bust this table's image so Next.js Image re-renders
+        setImgCacheBust((prev) => ({ ...prev, [tableId]: Date.now() }));
         fetchTables();
       } else {
         toast.error("Failed to save table image.");
@@ -106,6 +109,8 @@ export default function AdminTablesPage() {
       const updateData = await updateRes.json();
       if (updateData.success) {
         toast.success("Table seating photograph updated!");
+        // Cache-bust this table's image so Next.js Image re-renders
+        setImgCacheBust((prev) => ({ ...prev, [tableId]: Date.now() }));
         fetchTables();
       } else {
         toast.error("Failed to save table image URL.");
@@ -147,7 +152,12 @@ export default function AdminTablesPage() {
         {tables.map((table) => {
           const isOccupied = table.status === "Occupied";
           const isReserved = table.status === "Reserved";
-          const tableImg = table.image?.url || "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=800&q=80";
+          const bust = imgCacheBust[table._id];
+          const baseImg = table.image?.url || "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=800&q=80";
+          // Append cache-bust param so Next.js Image re-fetches after upload
+          const tableImg = bust && table.image?.url
+            ? `${table.image.url}${table.image.url.includes("?") ? "&" : "?"}t=${bust}`
+            : baseImg;
 
           return (
             <div
@@ -163,9 +173,11 @@ export default function AdminTablesPage() {
               {/* Seating Experience Image Container */}
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-ceylon-volcanic">
                 <Image
+                  key={tableImg}
                   src={tableImg}
                   alt={`Table ${table.tableNumber}`}
                   fill
+                  unoptimized
                   className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-ceylon-cocoa via-transparent to-transparent" />
@@ -218,12 +230,14 @@ export default function AdminTablesPage() {
                     Seating Image URL (or upload above)
                   </label>
                   <input
+                    key={table.image?.url || table._id}
                     type="url"
                     placeholder="Paste image URL here..."
                     defaultValue={table.image?.url || ""}
                     onBlur={(e) => {
-                      if (e.target.value !== (table.image?.url || "")) {
-                        handleImageUrlChange(table._id, e.target.value);
+                      const trimmed = e.target.value.trim();
+                      if (trimmed && trimmed !== (table.image?.url || "")) {
+                        handleImageUrlChange(table._id, trimmed);
                       }
                     }}
                     className="w-full px-3 py-1.5 rounded-xl border border-ceylon-copper/30 text-[11px] font-semibold bg-ceylon-volcanic text-ceylon-ivory focus:outline-none focus:border-ceylon-saffron placeholder-ceylon-sandstone/40"

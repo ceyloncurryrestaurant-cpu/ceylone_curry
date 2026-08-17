@@ -348,6 +348,7 @@ export default function ReservePage() {
                           src={tableImg}
                           alt={`Table ${table.tableNumber} Dining Experience`}
                           fill
+                          unoptimized
                           className="object-cover transition-transform duration-700 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-ceylon-volcanic via-transparent to-transparent" />
