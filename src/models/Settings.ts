@@ -1,5 +1,14 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
+export interface ISignatureDish {
+  name: string;
+  subtitle: string;
+  description: string;
+  price: string;
+  image: string;
+  badge: string;
+}
+
 export interface ISettings extends Document {
   restaurantName: string;
   address: string;
@@ -29,6 +38,7 @@ export interface ISettings extends Document {
     maxAdvanceDays: number;
   };
   heroImages?: string[];
+  signatureDishes?: ISignatureDish[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -63,6 +73,19 @@ const SettingsSchema = new Schema<ISettings>(
       maxAdvanceDays: { type: Number, default: 30 },
     },
     heroImages: { type: [String], default: [] },
+    signatureDishes: {
+      type: [
+        {
+          name: { type: String },
+          subtitle: { type: String },
+          description: { type: String },
+          price: { type: String },
+          image: { type: String },
+          badge: { type: String },
+        },
+      ],
+      default: [],
+    },
   },
   { timestamps: true }
 );

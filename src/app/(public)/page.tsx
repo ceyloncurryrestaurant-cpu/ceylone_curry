@@ -60,8 +60,8 @@ export default function HomePage() {
   }));
   const [heroIndex, setHeroIndex] = useState(0);
 
-  // Signature Dishes Showcase Data
-  const signatureDishes = [
+  // Signature Dishes Showcase Data — dynamically managed from Admin Settings
+  const defaultSignatureDishes = [
     {
       name: "CHEESE KOTTU ROTI",
       subtitle: "Street-Food Comfort with a Rich Ceylon Twist",
@@ -87,6 +87,9 @@ export default function HomePage() {
       badge: "HOT & SPICY",
     },
   ];
+  const signatureDishes = (settings?.signatureDishes && settings.signatureDishes.length > 0)
+    ? settings.signatureDishes
+    : defaultSignatureDishes;
   const [currentSignatureIndex, setCurrentSignatureIndex] = useState(0);
 
   // Auto-swap hero background image every 5 seconds (5000ms)

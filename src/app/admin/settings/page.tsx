@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSettings } from "@/context/SettingsContext";
 import { getWhatsAppLink } from "@/lib/whatsapp";
-import { Save, Phone, MessageCircle, Mail, MapPin, Clock, Globe, ExternalLink, CheckCircle, Image as ImageIcon, Plus, Trash2, Upload } from "lucide-react";
+import { Save, Phone, MessageCircle, Mail, MapPin, Clock, Globe, ExternalLink, CheckCircle, Image as ImageIcon, Plus, Trash2, Upload, Sparkles } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
 import Image from "next/image";
 
@@ -48,6 +48,35 @@ export default function AdminSettingsPage() {
   const [uploadingHero, setUploadingHero] = useState<number | null>(null);
   const heroFileRefs = useRef<(HTMLInputElement | null)[]>([]);
 
+  const [signatureDishes, setSignatureDishes] = useState([
+    {
+      name: "CHEESE KOTTU ROTI",
+      subtitle: "Street-Food Comfort with a Rich Ceylon Twist",
+      description: "Shredded godamba flatbread flash-fried on a flat iron griddle with roasted chicken, farm eggs, crunchy vegetables, and melted cheddar sauce.",
+      price: "£13.50",
+      image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=1000&q=80",
+      badge: "HOUSE FAVORITE",
+    },
+    {
+      name: "JAFFNA BLACK LAMB CURRY",
+      subtitle: "Slow-Braised Tender Lamb in Dark Roasted Spice",
+      description: "Tender lamb leg slow-cooked for 6 hours in dark-roasted cumin, coriander, black pepper, and toasted coconut paste.",
+      price: "£15.90",
+      image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=1000&q=80",
+      badge: "CHEF'S CROWN",
+    },
+    {
+      name: "DEVILLED KING PRAWNS",
+      subtitle: "Fiery Wok-Tossed Prawns with Capsicum & Tomato",
+      description: "Jumbo king prawns tossed with banana peppers, red onions, crushed chilli flakes, and sweet-spicy Ceylon glaze.",
+      price: "£14.80",
+      image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=1000&q=80",
+      badge: "HOT & SPICY",
+    },
+  ]);
+  const [uploadingSig, setUploadingSig] = useState<number | null>(null);
+  const sigFileRefs = useRef<(HTMLInputElement | null)[]>([]);
+
   useEffect(() => {
     if (settings) {
       setRestaurantName(settings.restaurantName || "Ceylon Curry");
@@ -60,6 +89,7 @@ export default function AdminSettingsPage() {
       if (settings.openingHours) setOpeningHours(settings.openingHours as any);
       if (settings.socialLinks) setSocialLinks(settings.socialLinks as any);
       if (settings.heroImages && settings.heroImages.length > 0) setHeroImages(settings.heroImages);
+      if (settings.signatureDishes && settings.signatureDishes.length > 0) setSignatureDishes(settings.signatureDishes as any);
     }
   }, [settings]);
 
@@ -82,6 +112,7 @@ export default function AdminSettingsPage() {
           openingHours,
           socialLinks,
           heroImages: heroImages.filter(Boolean),
+          signatureDishes,
         }),
       });
 
@@ -367,6 +398,209 @@ export default function AdminSettingsPage() {
           <p className="text-[10px] text-ceylon-sandstone/60 font-light">
             💡 Tip: You can upload your own food photos or paste Unsplash/any public image URLs. Changes take effect after clicking "Save &amp; Propagate All Settings".
           </p>
+        </div>
+
+        {/* Section 4: Signature Dishes of the House */}
+        <div className="glass-cocoa rounded-[2.5rem] p-6 sm:p-8 shadow-volcanic border border-ceylon-copper/30 space-y-6 text-ceylon-ivory">
+          <div className="flex justify-between items-center border-b border-ceylon-bronze/30 pb-3">
+            <h3 className="font-serif-display font-bold text-xl text-ceylon-copper flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-ceylon-copper" />
+              4. Signatures of the House Showcase
+            </h3>
+            <button
+              type="button"
+              onClick={() => {
+                setSignatureDishes([
+                  ...signatureDishes,
+                  {
+                    name: "NEW SIGNATURE DISH",
+                    subtitle: "Delicious Ceylon Culinary Special",
+                    description: "Describe the authentic flavors and ingredients of this special dish.",
+                    price: "£14.00",
+                    image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=1000&q=80",
+                    badge: "CHEF'S SPECIAL",
+                  },
+                ]);
+              }}
+              className="px-4 py-2 rounded-xl bg-ceylon-copper hover:bg-ceylon-saffron text-ceylon-volcanic font-black text-xs uppercase flex items-center gap-1 cursor-pointer transition-all shadow-copper"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add Signature Dish</span>
+            </button>
+          </div>
+          <p className="text-xs text-ceylon-sandstone font-light">
+            Customize the editorial Signature Dishes featured on the main landing page. Change photos, badges, prices and titles live.
+          </p>
+
+          <div className="space-y-6">
+            {signatureDishes.map((dish, idx) => (
+              <div key={idx} className="glass-volcanic p-6 rounded-3xl border border-ceylon-copper/40 space-y-4 relative">
+                <div className="flex justify-between items-center border-b border-ceylon-bronze/30 pb-3">
+                  <span className="text-xs font-black uppercase tracking-widest text-ceylon-copper">
+                    Signature #{idx + 1}: {dish.name || "Untitled"}
+                  </span>
+                  {signatureDishes.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = signatureDishes.filter((_, i) => i !== idx);
+                        setSignatureDishes(updated);
+                      }}
+                      className="text-rose-400 hover:text-rose-300 p-1 rounded-lg hover:bg-rose-950/40 transition cursor-pointer"
+                      title="Remove signature dish"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                  {/* Image Preview & Upload */}
+                  <div className="md:col-span-4 space-y-2">
+                    <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-ceylon-copper/40 bg-ceylon-cocoa group">
+                      {dish.image ? (
+                        <Image src={dish.image} alt={dish.name} fill className="object-cover" unoptimized />
+                      ) : (
+                        <div className="flex items-center justify-center h-full text-ceylon-sandstone/40">
+                          <ImageIcon className="w-8 h-8" />
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <button
+                          type="button"
+                          onClick={() => sigFileRefs.current[idx]?.click()}
+                          className="px-3 py-1.5 rounded-full bg-ceylon-copper text-ceylon-volcanic font-bold text-xs hover:bg-ceylon-saffron transition flex items-center gap-1 cursor-pointer"
+                        >
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>{uploadingSig === idx ? "Uploading..." : "Upload Photo"}</span>
+                        </button>
+                      </div>
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      ref={(el) => { sigFileRefs.current[idx] = el; }}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        setUploadingSig(idx);
+                        try {
+                          const formData = new FormData();
+                          formData.append("file", file);
+                          const uploadRes = await fetch("/api/upload", { method: "POST", body: formData });
+                          const uploadData = await uploadRes.json();
+                          if (uploadData.success && uploadData.url) {
+                            const updated = [...signatureDishes];
+                            updated[idx].image = uploadData.url;
+                            setSignatureDishes(updated);
+                            toast.success(`Signature dish #${idx + 1} photo updated!`);
+                          } else {
+                            toast.error("Upload failed.");
+                          }
+                        } catch {
+                          toast.error("Upload error.");
+                        } finally {
+                          setUploadingSig(null);
+                        }
+                      }}
+                    />
+                    <input
+                      type="url"
+                      placeholder="Or paste image URL..."
+                      value={dish.image}
+                      onChange={(e) => {
+                        const updated = [...signatureDishes];
+                        updated[idx].image = e.target.value;
+                        setSignatureDishes(updated);
+                      }}
+                      className="w-full px-3 py-2 rounded-xl border border-ceylon-copper/30 text-[11px] font-semibold bg-ceylon-volcanic text-ceylon-ivory focus:outline-none focus:border-ceylon-saffron placeholder-ceylon-sandstone/40"
+                    />
+                  </div>
+
+                  {/* Dish Details */}
+                  <div className="md:col-span-8 space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[10px] font-bold text-ceylon-copper uppercase mb-1">Dish Name *</label>
+                        <input
+                          type="text"
+                          required
+                          value={dish.name}
+                          onChange={(e) => {
+                            const updated = [...signatureDishes];
+                            updated[idx].name = e.target.value;
+                            setSignatureDishes(updated);
+                          }}
+                          className="w-full px-3 py-2 rounded-xl border border-ceylon-copper/40 text-xs font-bold bg-ceylon-volcanic text-ceylon-ivory focus:outline-none focus:border-ceylon-saffron"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-ceylon-copper uppercase mb-1">Badge (e.g. HOUSE FAVORITE) *</label>
+                        <input
+                          type="text"
+                          required
+                          value={dish.badge}
+                          onChange={(e) => {
+                            const updated = [...signatureDishes];
+                            updated[idx].badge = e.target.value;
+                            setSignatureDishes(updated);
+                          }}
+                          className="w-full px-3 py-2 rounded-xl border border-ceylon-copper/40 text-xs font-bold bg-ceylon-volcanic text-ceylon-ivory focus:outline-none focus:border-ceylon-saffron"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div className="sm:col-span-2">
+                        <label className="block text-[10px] font-bold text-ceylon-copper uppercase mb-1">Subtitle *</label>
+                        <input
+                          type="text"
+                          required
+                          value={dish.subtitle}
+                          onChange={(e) => {
+                            const updated = [...signatureDishes];
+                            updated[idx].subtitle = e.target.value;
+                            setSignatureDishes(updated);
+                          }}
+                          className="w-full px-3 py-2 rounded-xl border border-ceylon-copper/40 text-xs font-semibold bg-ceylon-volcanic text-ceylon-ivory focus:outline-none focus:border-ceylon-saffron"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-ceylon-copper uppercase mb-1">Price *</label>
+                        <input
+                          type="text"
+                          required
+                          value={dish.price}
+                          onChange={(e) => {
+                            const updated = [...signatureDishes];
+                            updated[idx].price = e.target.value;
+                            setSignatureDishes(updated);
+                          }}
+                          className="w-full px-3 py-2 rounded-xl border border-ceylon-copper/40 text-xs font-bold bg-ceylon-volcanic text-ceylon-saffron focus:outline-none focus:border-ceylon-saffron"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold text-ceylon-copper uppercase mb-1">Editorial Description *</label>
+                      <textarea
+                        rows={2}
+                        required
+                        value={dish.description}
+                        onChange={(e) => {
+                          const updated = [...signatureDishes];
+                          updated[idx].description = e.target.value;
+                          setSignatureDishes(updated);
+                        }}
+                        className="w-full px-3 py-2 rounded-xl border border-ceylon-copper/40 text-xs font-medium bg-ceylon-volcanic text-ceylon-ivory focus:outline-none focus:border-ceylon-saffron"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Section 4: Opening Hours */}
