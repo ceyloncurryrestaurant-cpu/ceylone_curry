@@ -57,7 +57,24 @@ export async function POST(req: Request) {
     }
 
     // 2. Validate Table Existence & Capacity
-    const table = await Table.findById(tableId);
+    // Resolve fake memoryStore IDs like "tbl_2" → real MongoDB table
+    let resolvedTableId = tableId;
+    if (typeof tableId === "string" && !/^[a-f\d]{24}$/i.test(tableId)) {
+      // Not a valid ObjectId – try to find the table by tableNumber
+      const numericPart = parseInt(tableId.replace(/[^0-9]/g, ""), 10);
+      if (!isNaN(numericPart)) {
+        const foundByNumber = await Table.findOne({ tableNumber: numericPart }).catch(() => null);
+        if (foundByNumber) {
+          resolvedTableId = foundByNumber._id.toString();
+        } else {
+          return NextResponse.json({ success: false, error: "Selected table not found." }, { status: 404 });
+        }
+      } else {
+        return NextResponse.json({ success: false, error: "Invalid table ID." }, { status: 400 });
+      }
+    }
+
+    const table = await Table.findById(resolvedTableId);
     if (!table) {
       return NextResponse.json({ success: false, error: "Selected table not found." }, { status: 404 });
     }
@@ -82,7 +99,7 @@ export async function POST(req: Request) {
 
     // 4. Concurrent Double-Booking Prevention (1-hour window overlap check)
     const existingReservations = await Reservation.find({
-      tableId,
+      tableId: resolvedTableId,
       date,
       status: { $in: ["Pending", "Accepted"] },
     });
@@ -117,7 +134,7 @@ export async function POST(req: Request) {
       customerName,
       email,
       mobile,
-      tableId,
+      tableId: resolvedTableId,
       date,
       startTime,
       endTime,
