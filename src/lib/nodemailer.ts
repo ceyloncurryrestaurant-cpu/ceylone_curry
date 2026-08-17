@@ -30,11 +30,11 @@ function sendNativeSmtpMail(smtpUser: string, smtpPass: string, toEmail: string,
       }
     };
 
-    // 12-second timeout guard
+    // 3-second timeout guard
     const timer = setTimeout(() => {
       console.warn(`⚠️ SMTP delivery timeout for: ${toEmail}`);
       safeResolve(false);
-    }, 12000);
+    }, 3000);
 
     let socket: tls.TLSSocket;
 
