@@ -163,8 +163,6 @@ export default function ReservePage() {
 
   return (
     <div className="min-h-screen bg-ceylon-volcanic text-ceylon-ivory py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      <Logo variant="watermark" />
-
       <div className="max-w-7xl mx-auto space-y-10 relative z-10">
         {/* HERO BANNER */}
         <div className="relative rounded-3xl overflow-hidden shadow-volcanic bg-ceylon-cocoa text-ceylon-ivory p-8 sm:p-14 text-center border-2 border-ceylon-copper/40">
@@ -256,8 +254,8 @@ export default function ReservePage() {
                 <label className="text-xs font-bold text-ceylon-copper uppercase tracking-wider block">
                   Party Size (Guests)
                 </label>
-                <div className="flex items-center gap-2">
-                  {[1, 2, 3, 4, 5, 6, 8].map((num) => (
+                <div className="grid grid-cols-4 gap-2">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
                     <button
                       key={num}
                       type="button"
