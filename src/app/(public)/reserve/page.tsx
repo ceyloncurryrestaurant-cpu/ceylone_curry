@@ -151,6 +151,47 @@ export default function ReservePage() {
       }
     }
 
+    // Validate opening hours
+    if (settings?.openingHours) {
+      const [year, month, day] = selectedDate.split("-").map(Number);
+      const bookingDate = new Date(year, month - 1, day);
+      const daysOfWeek = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+      const dayName = daysOfWeek[bookingDate.getDay()];
+      
+      const hoursForDay = (settings.openingHours as any)[dayName];
+      if (hoursForDay) {
+        if (hoursForDay.toLowerCase().includes("closed")) {
+          toast.error(`Sorry, the restaurant is closed on ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}.`);
+          return;
+        }
+
+        const parts = hoursForDay.split("-");
+        if (parts.length === 2) {
+          const parse12HourToMins = (timeStr: string): number => {
+            const match = timeStr.trim().toUpperCase().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/);
+            if (!match) return 0;
+            let h = parseInt(match[1], 10);
+            const m = parseInt(match[2], 10);
+            const ampm = match[3];
+            if (ampm === "PM" && h !== 12) h += 12;
+            else if (ampm === "AM" && h === 12) h = 0;
+            return h * 60 + m;
+          };
+
+          const startMins = parse12HourToMins(parts[0]);
+          const endMins = parse12HourToMins(parts[1]);
+
+          const [reqHours, reqMins] = selectedTime.split(":").map(Number);
+          const reqMinsTotal = reqHours * 60 + reqMins;
+
+          if (reqMinsTotal < startMins || reqMinsTotal > endMins) {
+            toast.error(`Ceylon Curry is open from ${hoursForDay} on ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}. Please choose a time within these hours.`);
+            return;
+          }
+        }
+      }
+    }
+
     setSubmitting(true);
     try {
       const res = await fetch("/api/reservations", {

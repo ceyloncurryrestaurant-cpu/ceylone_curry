@@ -82,6 +82,56 @@ export async function POST(req: Request) {
       }
     }
 
+    // 1.7. Validate that the time falls within the restaurant's opening hours
+    try {
+      const settingsDoc = await Settings.findOne().catch(() => null);
+      if (settingsDoc && settingsDoc.openingHours) {
+        const [year, month, day] = date.split("-").map(Number);
+        const bookingDate = new Date(year, month - 1, day);
+        const daysOfWeek = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+        const dayName = daysOfWeek[bookingDate.getDay()];
+        
+        const hoursForDay = (settingsDoc.openingHours as any)[dayName];
+        if (hoursForDay) {
+          if (hoursForDay.toLowerCase().includes("closed")) {
+            return NextResponse.json(
+              { success: false, error: `Sorry, the restaurant is closed on ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}.` },
+              { status: 400 }
+            );
+          }
+
+          const parts = hoursForDay.split("-");
+          if (parts.length === 2) {
+            const parse12HourToMins = (timeStr: string): number => {
+              const match = timeStr.trim().toUpperCase().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/);
+              if (!match) return 0;
+              let h = parseInt(match[1], 10);
+              const m = parseInt(match[2], 10);
+              const ampm = match[3];
+              if (ampm === "PM" && h !== 12) h += 12;
+              else if (ampm === "AM" && h === 12) h = 0;
+              return h * 60 + m;
+            };
+
+            const startMins = parse12HourToMins(parts[0]);
+            const endMins = parse12HourToMins(parts[1]);
+
+            const [reqHours, reqMins] = startTime.split(":").map(Number);
+            const reqMinsTotal = reqHours * 60 + reqMins;
+
+            if (reqMinsTotal < startMins || reqMinsTotal > endMins) {
+              return NextResponse.json(
+                { success: false, error: `Selected time is outside opening hours. Ceylon Curry is open from ${hoursForDay} on ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}.` },
+                { status: 400 }
+              );
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Opening hours validation error:", err);
+    }
+
     // 2. Validate Table Existence & Capacity
     // Resolve fake memoryStore IDs like "tbl_2" → real MongoDB table
     let resolvedTableId = tableId;
