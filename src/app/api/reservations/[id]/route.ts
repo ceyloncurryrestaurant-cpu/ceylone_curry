@@ -37,11 +37,35 @@ export async function PUT(req: Request, { params }: { params: any }) {
         if (reservation) {
           if (["Cancelled", "Completed", "No Show"].includes(body.status)) {
             if (reservation.tableId) {
-              await Table.findByIdAndUpdate(reservation.tableId, { status: "Available" }).catch(() => {});
+              const idStr = reservation.tableId.toString();
+              const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(idStr);
+              let updated = false;
+              if (isValidObjectId) {
+                const t = await Table.findByIdAndUpdate(reservation.tableId, { status: "Available" }).catch(() => null);
+                if (t) updated = true;
+              }
+              if (!updated) {
+                const numericPart = parseInt(idStr.replace(/[^0-9]/g, ""), 10);
+                if (!isNaN(numericPart)) {
+                  await Table.findOneAndUpdate({ tableNumber: numericPart }, { status: "Available" }).catch(() => null);
+                }
+              }
             }
           } else if (body.status === "Accepted") {
             if (reservation.tableId) {
-              await Table.findByIdAndUpdate(reservation.tableId, { status: "Reserved" }).catch(() => {});
+              const idStr = reservation.tableId.toString();
+              const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(idStr);
+              let updated = false;
+              if (isValidObjectId) {
+                const t = await Table.findByIdAndUpdate(reservation.tableId, { status: "Reserved" }).catch(() => null);
+                if (t) updated = true;
+              }
+              if (!updated) {
+                const numericPart = parseInt(idStr.replace(/[^0-9]/g, ""), 10);
+                if (!isNaN(numericPart)) {
+                  await Table.findOneAndUpdate({ tableNumber: numericPart }, { status: "Reserved" }).catch(() => null);
+                }
+              }
             }
           }
           return NextResponse.json({ success: true, message: `Reservation status updated to ${body.status}`, reservation });
