@@ -60,12 +60,15 @@ export async function PUT(req: Request, { params }: { params: any }) {
     if (body.isOffer && body.price && body.offerPrice) {
       body.originalPrice = body.price;
       body.discountPercentage = Math.round(((body.price - body.offerPrice) / body.price) * 100);
+    } else if (body.isOffer === false) {
+      body.offerPrice = null;
+      body.discountPercentage = 0;
     }
 
     const conn = await connectToDatabase();
     if (conn) {
       try {
-        const product = await Product.findByIdAndUpdate(id, body, { new: true, runValidators: true });
+        const product = await Product.findByIdAndUpdate(id, { $set: body }, { new: true, runValidators: true });
         if (product) {
           return NextResponse.json({ success: true, message: "Product updated successfully", product });
         }

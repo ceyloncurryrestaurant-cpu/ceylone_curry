@@ -11,7 +11,7 @@ export default function OffersPage() {
   useEffect(() => {
     async function fetchOffers() {
       try {
-        const res = await fetch("/api/products?isOffer=true");
+        const res = await fetch("/api/products?isOffer=true", { cache: "no-store" });
         const data = await res.json();
         if (data.success) {
           setOfferProducts(data.products);

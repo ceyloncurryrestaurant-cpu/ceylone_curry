@@ -20,8 +20,8 @@ export default function MenuPage() {
     async function fetchData() {
       try {
         const [pRes, cRes] = await Promise.all([
-          fetch("/api/products?isAvailable=true"),
-          fetch("/api/categories"),
+          fetch("/api/products?isAvailable=true", { cache: "no-store" }),
+          fetch("/api/categories", { cache: "no-store" }),
         ]);
         const pData = await pRes.json();
         const cData = await cRes.json();

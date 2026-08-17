@@ -116,12 +116,12 @@ export default function HomePage() {
     async function fetchData() {
       try {
         const [featRes, offerRes, catRes, allProdRes, tableRes, reviewRes] = await Promise.all([
-          fetch("/api/products?isFeatured=true"),
-          fetch("/api/products?isOffer=true"),
-          fetch("/api/categories"),
-          fetch("/api/products?isAvailable=true"),
-          fetch("/api/tables"),
-          fetch("/api/reviews"),
+          fetch("/api/products?isFeatured=true", { cache: "no-store" }),
+          fetch("/api/products?isOffer=true", { cache: "no-store" }),
+          fetch("/api/categories", { cache: "no-store" }),
+          fetch("/api/products?isAvailable=true", { cache: "no-store" }),
+          fetch("/api/tables", { cache: "no-store" }),
+          fetch("/api/reviews", { cache: "no-store" }),
         ]);
         const featData = await featRes.json();
         const offerData = await offerRes.json();
@@ -285,46 +285,12 @@ export default function HomePage() {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Fallback offer cards if DB has no offers flagged */}
-              <div className="glass-cocoa p-6 rounded-3xl border border-ceylon-copper/30 space-y-4">
-                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
-                  <Image src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80" alt="Jaffna Lamb Curry" fill className="object-cover" />
-                  <div className="absolute top-3 left-3 bg-ceylon-chilli text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">20% OFF</div>
-                </div>
-                <h3 className="font-serif-display text-2xl font-bold text-ceylon-ivory">Jaffna Black Roasted Lamb Curry</h3>
-                <p className="text-xs text-ceylon-sandstone font-light">Slow-braised lamb leg in dark roasted spices.</p>
-                <div className="flex justify-between items-center pt-2 border-t border-ceylon-bronze/30">
-                  <span className="font-serif-display text-2xl font-black text-ceylon-saffron">£14.90 <span className="text-xs line-through text-ceylon-sandstone/50 font-normal">£18.90</span></span>
-                  <Link href="/menu" className="px-4 py-2 rounded-full bg-ceylon-copper text-ceylon-volcanic text-xs font-black uppercase">Order</Link>
-                </div>
-              </div>
-
-              <div className="glass-cocoa p-6 rounded-3xl border border-ceylon-copper/30 space-y-4">
-                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
-                  <Image src="https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=800&q=80" alt="Cheese Kottu" fill className="object-cover" />
-                  <div className="absolute top-3 left-3 bg-ceylon-chilli text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">SPECIAL DEAL</div>
-                </div>
-                <h3 className="font-serif-display text-2xl font-bold text-ceylon-ivory">Cheese Kottu Roti Feast</h3>
-                <p className="text-xs text-ceylon-sandstone font-light">Iron-griddled flatbread with eggs, chicken & cheese sauce.</p>
-                <div className="flex justify-between items-center pt-2 border-t border-ceylon-bronze/30">
-                  <span className="font-serif-display text-2xl font-black text-ceylon-saffron">£12.50 <span className="text-xs line-through text-ceylon-sandstone/50 font-normal">£15.00</span></span>
-                  <Link href="/menu" className="px-4 py-2 rounded-full bg-ceylon-copper text-ceylon-volcanic text-xs font-black uppercase">Order</Link>
-                </div>
-              </div>
-
-              <div className="glass-cocoa p-6 rounded-3xl border border-ceylon-copper/30 space-y-4">
-                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
-                  <Image src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=800&q=80" alt="Devilled Prawns" fill className="object-cover" />
-                  <div className="absolute top-3 left-3 bg-ceylon-chilli text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">15% OFF</div>
-                </div>
-                <h3 className="font-serif-display text-2xl font-bold text-ceylon-ivory">Devilled King Prawns Wok Special</h3>
-                <p className="text-xs text-ceylon-sandstone font-light">Jumbo king prawns tossed with banana peppers & chilli glaze.</p>
-                <div className="flex justify-between items-center pt-2 border-t border-ceylon-bronze/30">
-                  <span className="font-serif-display text-2xl font-black text-ceylon-saffron">£13.90 <span className="text-xs line-through text-ceylon-sandstone/50 font-normal">£16.50</span></span>
-                  <Link href="/menu" className="px-4 py-2 rounded-full bg-ceylon-copper text-ceylon-volcanic text-xs font-black uppercase">Order</Link>
-                </div>
-              </div>
+            <div className="glass-cocoa rounded-3xl p-12 text-center border border-ceylon-copper/30 max-w-lg mx-auto space-y-3">
+              <p className="font-serif-display font-bold text-ceylon-ivory text-xl">Fresh Daily Deals Coming Soon</p>
+              <p className="text-xs text-ceylon-sandstone">Explore our full menu to order fresh, authentic Sri Lankan dishes prepared daily.</p>
+              <Link href="/menu" className="inline-block mt-2 px-6 py-2.5 rounded-full bg-ceylon-copper text-ceylon-volcanic text-xs font-black uppercase shadow-copper">
+                Explore Full Menu
+              </Link>
             </div>
           )}
         </div>
