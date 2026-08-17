@@ -12,18 +12,7 @@ interface LogoProps {
 
 export const Logo: React.FC<LogoProps> = ({ variant = "light", size = "md", showDivider = false }) => {
   if (variant === "watermark") {
-    return (
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.05] select-none overflow-hidden z-0">
-        <div className="relative w-[550px] h-[500px]">
-          <Image
-            src="/logo.jpg"
-            alt="Ceylon Curry Watermark"
-            fill
-            className="object-contain"
-          />
-        </div>
-      </div>
-    );
+    return null;
   }
 
   const heightClasses = {

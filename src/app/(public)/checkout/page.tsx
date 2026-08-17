@@ -82,8 +82,6 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-ceylon-volcanic text-ceylon-ivory py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      <Logo variant="watermark" />
-
       <div className="max-w-5xl mx-auto space-y-8 relative z-10">
         <div className="border-b border-ceylon-bronze/30 pb-4">
           <span className="text-xs uppercase font-extrabold tracking-[0.3em] text-ceylon-copper">FINAL STEP</span>

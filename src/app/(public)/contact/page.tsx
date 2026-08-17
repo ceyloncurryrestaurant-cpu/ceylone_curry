@@ -30,8 +30,6 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-ceylon-volcanic text-ceylon-ivory py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden space-y-16">
-      <Logo variant="watermark" />
-
       {/* HERO BANNER */}
       <div className="relative max-w-7xl mx-auto rounded-3xl overflow-hidden shadow-volcanic bg-ceylon-cocoa text-ceylon-ivory p-8 sm:p-16 text-center border-2 border-ceylon-copper/40">
         <div className="absolute inset-0 z-0">

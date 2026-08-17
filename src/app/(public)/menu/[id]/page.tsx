@@ -147,8 +147,6 @@ export default function ProductDetailPage({ params }: { params: any }) {
 
   return (
     <div className="min-h-screen bg-ceylon-volcanic text-ceylon-ivory py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      <Logo variant="watermark" />
-
       <div className="max-w-6xl mx-auto space-y-8 relative z-10">
         {/* Back Link */}
         <Link

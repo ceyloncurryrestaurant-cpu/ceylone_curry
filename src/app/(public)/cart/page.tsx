@@ -13,7 +13,6 @@ export default function CartPage() {
   if (cart.length === 0) {
     return (
       <div className="min-h-screen bg-ceylon-volcanic py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden flex flex-col justify-center items-center text-center text-ceylon-ivory">
-        <Logo variant="watermark" />
         <div className="glass-cocoa p-12 rounded-[3rem] border border-ceylon-copper/40 max-w-md w-full space-y-6 relative z-10 shadow-volcanic">
           <div className="w-20 h-20 mx-auto rounded-full bg-ceylon-volcanic text-ceylon-copper flex items-center justify-center shadow-copper border border-ceylon-copper/30">
             <ShoppingBag className="w-10 h-10" />
@@ -36,8 +35,6 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-ceylon-volcanic text-ceylon-ivory py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      <Logo variant="watermark" />
-
       <div className="max-w-4xl mx-auto space-y-8 relative z-10">
         <div className="flex justify-between items-center border-b border-ceylon-bronze/30 pb-4">
           <div>

@@ -174,8 +174,6 @@ export default function HomePage() {
       {/* 01B. PROMOTIONAL POPUP MODAL */}
       <SpecialOfferModal />
 
-      <Logo variant="watermark" />
-
       {/* 02. FULL-SCREEN SWAPPABLE HERO BACKGROUND SLIDESHOW (5 IMAGES AUTO-SWAPPING EVERY 5s) */}
       <section className="relative min-h-[92vh] sm:min-h-screen flex items-center justify-center bg-ceylon-volcanic overflow-hidden pt-20 pb-24">
         {/* Full-Screen 5 Swappable Background Images */}
