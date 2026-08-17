@@ -4,7 +4,8 @@ import Table from "@/models/Table";
 import Reservation from "@/models/Reservation";
 import { memoryStore } from "@/lib/memoryStore";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function GET(req: Request) {
   try {
