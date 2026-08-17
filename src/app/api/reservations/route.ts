@@ -6,6 +6,8 @@ import Settings from "@/models/Settings";
 import { sendReservationEmails } from "@/lib/nodemailer";
 import { getAdminSession } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: Request) {
   try {
     await connectToDatabase();

@@ -4,6 +4,8 @@ import Product from "@/models/Product";
 import Category from "@/models/Category";
 import { getAdminSession } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: Request) {
   try {
     await connectToDatabase();

@@ -6,6 +6,8 @@ import Settings from "@/models/Settings";
 import { generateWhatsAppOrderMessage, getWhatsAppLink } from "@/lib/whatsapp";
 import { getAdminSession } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const admin = await getAdminSession();

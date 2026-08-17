@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import Review from "@/models/Review";
 
+export const dynamic = "force-dynamic";
+
 const SEED_REVIEWS = [
   {
     name: "Sarah & Mark Jenkins",

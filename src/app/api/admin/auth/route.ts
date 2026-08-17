@@ -3,6 +3,8 @@ import { connectToDatabase } from "@/lib/mongodb";
 import Admin from "@/models/Admin";
 import { comparePassword, createAdminToken, getAdminSession, hashPassword } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 const COOKIE_NAME = "ceylon_admin_token";
 
 export async function GET() {

@@ -3,6 +3,8 @@ import { connectToDatabase } from "@/lib/mongodb";
 import Category from "@/models/Category";
 import { getAdminSession } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 export async function PUT(req: Request, { params }: { params: any }) {
   try {
     const admin = await getAdminSession();

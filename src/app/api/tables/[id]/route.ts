@@ -4,6 +4,8 @@ import Table from "@/models/Table";
 import Reservation from "@/models/Reservation";
 import { getAdminSession } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 export async function PUT(req: Request, { params }: { params: any }) {
   try {
     const admin = await getAdminSession();

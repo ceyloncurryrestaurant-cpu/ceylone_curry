@@ -3,6 +3,8 @@ import { connectToDatabase } from "@/lib/mongodb";
 import Settings from "@/models/Settings";
 import { getAdminSession } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     await connectToDatabase();
