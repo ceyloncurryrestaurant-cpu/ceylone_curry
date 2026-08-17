@@ -28,6 +28,7 @@ export interface ISettings extends Document {
     minNoticeHours: number;
     maxAdvanceDays: number;
   };
+  heroImages?: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -61,6 +62,7 @@ const SettingsSchema = new Schema<ISettings>(
       minNoticeHours: { type: Number, default: 1 },
       maxAdvanceDays: { type: Number, default: 30 },
     },
+    heroImages: { type: [String], default: [] },
   },
   { timestamps: true }
 );
