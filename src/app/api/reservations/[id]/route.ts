@@ -37,33 +37,63 @@ export async function PUT(req: Request, { params }: { params: any }) {
         if (reservation) {
           if (["Cancelled", "Completed", "No Show"].includes(body.status)) {
             if (reservation.tableId) {
-              const idStr = reservation.tableId.toString();
+              let idStr = "";
+              let tableNum: number | null = null;
+              if (typeof reservation.tableId === "object" && reservation.tableId !== null) {
+                const tObj = reservation.tableId as any;
+                idStr = (tObj._id || tObj.id || "").toString();
+                tableNum = typeof tObj.tableNumber === "number" ? tObj.tableNumber : null;
+              } else {
+                idStr = reservation.tableId.toString();
+              }
+
               const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(idStr);
               let updated = false;
               if (isValidObjectId) {
-                const t = await Table.findByIdAndUpdate(reservation.tableId, { status: "Available" }).catch(() => null);
+                const t = await Table.findByIdAndUpdate(idStr, { status: "Available" }).catch(() => null);
                 if (t) updated = true;
               }
               if (!updated) {
-                const numericPart = parseInt(idStr.replace(/[^0-9]/g, ""), 10);
-                if (!isNaN(numericPart)) {
-                  await Table.findOneAndUpdate({ tableNumber: numericPart }, { status: "Available" }).catch(() => null);
+                if (tableNum !== null) {
+                  const t = await Table.findOneAndUpdate({ tableNumber: tableNum }, { status: "Available" }).catch(() => null);
+                  if (t) updated = true;
+                }
+                if (!updated) {
+                  const numericPart = parseInt(idStr.replace(/[^0-9]/g, ""), 10);
+                  if (!isNaN(numericPart)) {
+                    await Table.findOneAndUpdate({ tableNumber: numericPart }, { status: "Available" }).catch(() => null);
+                  }
                 }
               }
             }
           } else if (body.status === "Accepted") {
             if (reservation.tableId) {
-              const idStr = reservation.tableId.toString();
+              let idStr = "";
+              let tableNum: number | null = null;
+              if (typeof reservation.tableId === "object" && reservation.tableId !== null) {
+                const tObj = reservation.tableId as any;
+                idStr = (tObj._id || tObj.id || "").toString();
+                tableNum = typeof tObj.tableNumber === "number" ? tObj.tableNumber : null;
+              } else {
+                idStr = reservation.tableId.toString();
+              }
+
               const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(idStr);
               let updated = false;
               if (isValidObjectId) {
-                const t = await Table.findByIdAndUpdate(reservation.tableId, { status: "Reserved" }).catch(() => null);
+                const t = await Table.findByIdAndUpdate(idStr, { status: "Reserved" }).catch(() => null);
                 if (t) updated = true;
               }
               if (!updated) {
-                const numericPart = parseInt(idStr.replace(/[^0-9]/g, ""), 10);
-                if (!isNaN(numericPart)) {
-                  await Table.findOneAndUpdate({ tableNumber: numericPart }, { status: "Reserved" }).catch(() => null);
+                if (tableNum !== null) {
+                  const t = await Table.findOneAndUpdate({ tableNumber: tableNum }, { status: "Reserved" }).catch(() => null);
+                  if (t) updated = true;
+                }
+                if (!updated) {
+                  const numericPart = parseInt(idStr.replace(/[^0-9]/g, ""), 10);
+                  if (!isNaN(numericPart)) {
+                    await Table.findOneAndUpdate({ tableNumber: numericPart }, { status: "Reserved" }).catch(() => null);
+                  }
                 }
               }
             }
