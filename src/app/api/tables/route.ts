@@ -18,12 +18,12 @@ export async function GET(req: Request) {
     const date = searchParams.get("date");
     const time = searchParams.get("time");
 
-    let tables = await Table.find({ isActive: true }).sort({ tableNumber: 1 }).catch(() => []);
+    let tables = await Table.find({ isActive: { $ne: false } }).sort({ tableNumber: 1 }).catch(() => []);
     if (!tables || tables.length === 0) {
       try {
         const { seedDatabase } = await import("@/lib/seed");
         await seedDatabase();
-        tables = await Table.find({ isActive: true }).sort({ tableNumber: 1 }).catch(() => []);
+        tables = await Table.find({ isActive: { $ne: false } }).sort({ tableNumber: 1 }).catch(() => []);
       } catch (seedErr) {
         console.error("Auto-seed error in GET tables:", seedErr);
       }
