@@ -254,8 +254,8 @@ export default function ReservePage() {
                 <label className="text-xs font-bold text-ceylon-copper uppercase tracking-wider block">
                   Party Size (Guests)
                 </label>
-                <div className="grid grid-cols-4 gap-2">
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                <div className="flex items-center gap-2">
+                  {[1, 2, 3, 4].map((num) => (
                     <button
                       key={num}
                       type="button"
@@ -269,7 +269,7 @@ export default function ReservePage() {
                           : "bg-ceylon-volcanic text-ceylon-ivory border-ceylon-copper/30 hover:border-ceylon-copper"
                       }`}
                     >
-                      {num}
+                      {num} {num === 1 ? "Guest" : "Guests"}
                     </button>
                   ))}
                 </div>
