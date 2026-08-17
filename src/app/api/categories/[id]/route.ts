@@ -3,7 +3,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import Category from "@/models/Category";
 import { getAdminSession } from "@/lib/auth";
 
-export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(req: Request, { params }: { params: any }) {
   try {
     const admin = await getAdminSession();
     if (!admin) {
@@ -11,7 +11,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     }
 
     await connectToDatabase();
-    const resolvedParams = await params;
+    const resolvedParams = await Promise.resolve(params);
     const id = resolvedParams?.id;
 
     if (!id) {
@@ -29,7 +29,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: Request, { params }: { params: any }) {
   try {
     const admin = await getAdminSession();
     if (!admin) {
@@ -37,7 +37,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     }
 
     await connectToDatabase();
-    const resolvedParams = await params;
+    const resolvedParams = await Promise.resolve(params);
     const id = resolvedParams?.id;
 
     if (!id) {

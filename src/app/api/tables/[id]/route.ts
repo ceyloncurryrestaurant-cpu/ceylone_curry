@@ -4,7 +4,7 @@ import Table from "@/models/Table";
 import Reservation from "@/models/Reservation";
 import { getAdminSession } from "@/lib/auth";
 
-export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(req: Request, { params }: { params: any }) {
   try {
     const admin = await getAdminSession();
     if (!admin) {
@@ -12,7 +12,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     }
 
     await connectToDatabase();
-    const resolvedParams = await params;
+    const resolvedParams = await Promise.resolve(params);
     const id = resolvedParams?.id;
 
     if (!id) {

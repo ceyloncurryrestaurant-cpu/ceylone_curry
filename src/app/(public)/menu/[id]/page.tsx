@@ -8,15 +8,20 @@ import { Logo } from "@/components/Logo";
 import { Plus, Minus, Tag, Flame, ShieldAlert, ArrowLeft, CheckCircle2, ShoppingBag, Check } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
 
-export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = React.use(params);
-  const productId = resolvedParams?.id;
+export default function ProductDetailPage({ params }: { params: any }) {
   const { addToCart } = useCart();
+  const [productId, setProductId] = useState<string>("");
   const [product, setProduct] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+
+  useEffect(() => {
+    Promise.resolve(params).then((res: any) => {
+      if (res?.id) setProductId(res.id);
+    });
+  }, [params]);
 
   useEffect(() => {
     async function fetchProduct() {
