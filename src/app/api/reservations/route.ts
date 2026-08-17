@@ -56,6 +56,32 @@ export async function POST(req: Request) {
       );
     }
 
+    // 1.5. Validate that the date and time are in the future
+    const now = new Date();
+    // Adjust for the user's local timezone (standard UK time is GMT/BST)
+    const tzOffset = now.getTimezoneOffset() * 60000;
+    const localDateStr = new Date(now.getTime() - tzOffset).toISOString().split("T")[0];
+
+    if (date < localDateStr) {
+      return NextResponse.json(
+        { success: false, error: "Reservations cannot be made for past dates." },
+        { status: 400 }
+      );
+    }
+
+    if (date === localDateStr) {
+      const currentHours = now.getHours();
+      const currentMinutes = now.getMinutes();
+      const [reqHours, reqMins] = startTime.split(":").map(Number);
+
+      if (reqHours < currentHours || (reqHours === currentHours && reqMins <= currentMinutes)) {
+        return NextResponse.json(
+          { success: false, error: "Reservations cannot be made for past times today." },
+          { status: 400 }
+        );
+      }
+    }
+
     // 2. Validate Table Existence & Capacity
     // Resolve fake memoryStore IDs like "tbl_2" → real MongoDB table
     let resolvedTableId = tableId;

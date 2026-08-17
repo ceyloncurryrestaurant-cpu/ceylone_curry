@@ -130,6 +130,27 @@ export default function ReservePage() {
       return;
     }
 
+    // Validate that reservation is in the future
+    const now = new Date();
+    const tzOffset = now.getTimezoneOffset() * 60000;
+    const localDateStr = new Date(now.getTime() - tzOffset).toISOString().split("T")[0];
+
+    if (selectedDate < localDateStr) {
+      toast.error("Reservations cannot be made for past dates.");
+      return;
+    }
+
+    if (selectedDate === localDateStr) {
+      const currentHours = now.getHours();
+      const currentMinutes = now.getMinutes();
+      const [reqHours, reqMins] = selectedTime.split(":").map(Number);
+
+      if (reqHours < currentHours || (reqHours === currentHours && reqMins <= currentMinutes)) {
+        toast.error("Reservations cannot be made for past times today.");
+        return;
+      }
+    }
+
     setSubmitting(true);
     try {
       const res = await fetch("/api/reservations", {
