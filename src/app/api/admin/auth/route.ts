@@ -22,6 +22,14 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     await connectToDatabase();
+    
+    // Auto seed database if no admin user exists in live DB cluster
+    const adminCount = await Admin.countDocuments();
+    if (adminCount === 0) {
+      const { seedDatabase } = await import("@/lib/seed");
+      await seedDatabase().catch((e) => console.error("Auto seed error:", e));
+    }
+
     const body = await req.json();
     const { action, email, password, newPassword } = body;
 
