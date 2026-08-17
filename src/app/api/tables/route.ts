@@ -20,6 +20,15 @@ export async function GET(req: Request) {
 
     let tables = await Table.find({ isActive: true }).sort({ tableNumber: 1 }).catch(() => []);
     if (!tables || tables.length === 0) {
+      try {
+        const { seedDatabase } = await import("@/lib/seed");
+        await seedDatabase();
+        tables = await Table.find({ isActive: true }).sort({ tableNumber: 1 }).catch(() => []);
+      } catch (seedErr) {
+        console.error("Auto-seed error in GET tables:", seedErr);
+      }
+    }
+    if (!tables || tables.length === 0) {
       tables = memoryStore.tables as any;
     }
 
