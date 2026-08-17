@@ -89,7 +89,7 @@ export default function ReservePage() {
 
     return reservations.some((res: any) => {
       if (res.tableId?._id !== tableId && res.tableId !== tableId) return false;
-      if (res.status === "Cancelled" || res.status === "No Show") return false;
+      if (res.status === "Cancelled" || res.status === "No Show" || res.status === "Completed") return false;
 
       const [resHours, resMins] = res.startTime ? res.startTime.split(":").map(Number) : [0, 0];
       const resStartTotal = resHours * 60 + resMins;
