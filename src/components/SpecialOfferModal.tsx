@@ -12,44 +12,23 @@ export const SpecialOfferModal: React.FC = () => {
   useEffect(() => {
     async function fetchOffers() {
       try {
-        const res = await fetch("/api/products?isOffer=true");
+        const res = await fetch("/api/products?isOffer=true", { cache: "no-store" });
         const data = await res.json();
         if (data.success && data.products && data.products.length > 0) {
           setOfferProduct(data.products[0]);
+          setIsOpen(true);
         } else {
-          // Fallback offer if DB has no offers flagged yet
-          setOfferProduct({
-            _id: "default-offer",
-            name: "Jaffna Roasted Lamb Curry & Kottu Combo",
-            shortDescription: "Chef's daily special: Slow-cooked black roasted lamb curry paired with fresh iron-griddled Kottu roti.",
-            price: 18.90,
-            offerPrice: 14.90,
-            discountPercentage: 20,
-            images: [
-              { url: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80" }
-            ],
-          });
+          // No active offers — do not show modal popup
+          setOfferProduct(null);
+          setIsOpen(false);
         }
-
-        // Always open modal on site entry
-        setIsOpen(true);
       } catch (err) {
-        setOfferProduct({
-          _id: "default-offer",
-          name: "Jaffna Roasted Lamb Curry & Kottu Combo",
-          shortDescription: "Chef's daily special: Slow-cooked black roasted lamb curry paired with fresh iron-griddled Kottu roti.",
-          price: 18.90,
-          offerPrice: 14.90,
-          discountPercentage: 20,
-          images: [
-            { url: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80" }
-          ],
-        });
-        setIsOpen(true);
+        setOfferProduct(null);
+        setIsOpen(false);
       }
     }
 
-    const timer = setTimeout(fetchOffers, 800);
+    const timer = setTimeout(fetchOffers, 500);
     return () => clearTimeout(timer);
   }, []);
 
