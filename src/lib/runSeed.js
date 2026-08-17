@@ -1,0 +1,310 @@
+const mongoose = require("mongoose");
+const crypto = require("crypto");
+
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/ceylon_curry";
+
+function hashPassword(password) {
+  const salt = crypto.randomBytes(16).toString("hex");
+  const hash = crypto.scryptSync(password, salt, 64).toString("hex");
+  return `${salt}:${hash}`;
+}
+
+async function seed() {
+  console.log("🌱 Connecting to Local MongoDB:", MONGODB_URI);
+  await mongoose.connect(MONGODB_URI);
+  console.log("✅ Connected to MongoDB!");
+
+  const db = mongoose.connection.db;
+
+  // 1. Settings Collection
+  const settingsColl = db.collection("settings");
+  const existingSettings = await settingsColl.findOne({});
+  if (!existingSettings) {
+    await settingsColl.insertOne({
+      restaurantName: "Ceylon Curry",
+      address: "44 Mayflower St, Plymouth PL1 1QX",
+      mobileNumber: "01752 941504",
+      whatsappNumber: "+441752941504",
+      restaurantEmail: "info@ceyloncurry.co.uk",
+      adminEmail: "admin@ceyloncurry.co.uk",
+      openingHours: {
+        monday: "10:00 AM - 10:00 PM",
+        tuesday: "10:00 AM - 10:00 PM",
+        wednesday: "10:00 AM - 10:00 PM",
+        thursday: "10:00 AM - 10:00 PM",
+        friday: "10:00 AM - 10:00 PM",
+        saturday: "10:00 AM - 10:00 PM",
+        sunday: "10:00 AM - 10:00 PM",
+      },
+      socialLinks: {
+        facebook: "https://facebook.com/ceyloncurry",
+        instagram: "https://instagram.com/ceyloncurry",
+        tiktok: "https://tiktok.com/@ceyloncurry",
+      },
+      currency: "£",
+      reservationSettings: {
+        reservationDurationMinutes: 60,
+        minNoticeHours: 1,
+        maxAdvanceDays: 30,
+      },
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+    console.log("✅ Settings collection initialized.");
+  } else {
+    // Update existing settings opening hours
+    await settingsColl.updateMany({}, {
+      $set: {
+        openingHours: {
+          monday: "10:00 AM - 10:00 PM",
+          tuesday: "10:00 AM - 10:00 PM",
+          wednesday: "10:00 AM - 10:00 PM",
+          thursday: "10:00 AM - 10:00 PM",
+          friday: "10:00 AM - 10:00 PM",
+          saturday: "10:00 AM - 10:00 PM",
+          sunday: "10:00 AM - 10:00 PM",
+        }
+      }
+    });
+    console.log("ℹ️ Settings updated with 10:00 AM - 10:00 PM opening hours.");
+  }
+
+  // 2. Admin Collection
+  const adminColl = db.collection("admins");
+  const adminEmail = "admin@ceyloncurry.co.uk";
+  const existingAdmin = await adminColl.findOne({ email: adminEmail });
+  if (!existingAdmin) {
+    const passwordHash = hashPassword("admin123");
+    await adminColl.insertOne({
+      email: adminEmail,
+      passwordHash,
+      name: "Ceylon Curry Admin",
+      role: "admin",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+    console.log("✅ Admin user created: admin@ceyloncurry.co.uk / admin123");
+  } else {
+    console.log("ℹ️ Admin user already exists.");
+  }
+
+  // 3. 7 Tables Collection with Individual High-Resolution Seating Photography
+  const tablesColl = db.collection("tables");
+  await tablesColl.deleteMany({}); // Re-seed tables with individual seating photography
+  const defaultTables = [
+    {
+      tableNumber: 1,
+      capacity: 2,
+      type: "Couple",
+      status: "Available",
+      image: {
+        url: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=800&q=80",
+        publicId: "table_1_cozy_window_booth",
+      },
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      tableNumber: 2,
+      capacity: 2,
+      type: "Couple",
+      status: "Available",
+      image: {
+        url: "https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=800&q=80",
+        publicId: "table_2_candlelight_corner",
+      },
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      tableNumber: 3,
+      capacity: 2,
+      type: "Couple",
+      status: "Available",
+      image: {
+        url: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80",
+        publicId: "table_3_garden_view",
+      },
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      tableNumber: 4,
+      capacity: 2,
+      type: "Couple",
+      status: "Available",
+      image: {
+        url: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
+        publicId: "table_4_heritage_ceylon_nook",
+      },
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      tableNumber: 5,
+      capacity: 4,
+      type: "Family",
+      status: "Available",
+      image: {
+        url: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
+        publicId: "table_5_royal_family_table",
+      },
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      tableNumber: 6,
+      capacity: 4,
+      type: "Family",
+      status: "Available",
+      image: {
+        url: "https://images.unsplash.com/photo-1537047902294-62a40c20a6ae?auto=format&fit=crop&w=800&q=80",
+        publicId: "table_6_center_dining_banquet",
+      },
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      tableNumber: 7,
+      capacity: 4,
+      type: "Family",
+      status: "Available",
+      image: {
+        url: "https://images.unsplash.com/photo-1578474846511-04ba529f0b88?auto=format&fit=crop&w=800&q=80",
+        publicId: "table_7_executive_family_alcove",
+      },
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ];
+  await tablesColl.insertMany(defaultTables);
+  console.log("✅ 7 Restaurant Tables seeded with individual seating photography.");
+
+  // 4. Categories Collection
+  const catColl = db.collection("categories");
+  const catCount = await catColl.countDocuments({});
+  let catMap = {};
+  if (catCount === 0) {
+    const categoriesData = [
+      { name: "Starters", slug: "starters", description: "Crispy rolls, cutlets and traditional Sri Lankan street bites", displayOrder: 1, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: "Kottu", slug: "kottu", description: "Iconic Sri Lankan chopped flatbread tossed with vegetables, spices & curry", displayOrder: 2, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: "Rice & Biryani", slug: "rice-biryani", description: "Aromatic basmati rice, lamprais & spiced biryani bowls", displayOrder: 3, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: "Curries", slug: "curries", description: "Authentic roasted Ceylon spice curries cooked slowly with coconut milk", displayOrder: 4, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: "Seafood", slug: "seafood", description: "Fresh Jaffna crab curry, devilled prawns and fried fish", displayOrder: 5, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: "Vegetarian", slug: "vegetarian", description: "Plant-based curries, parathas, hoppers & dhal dishes", displayOrder: 6, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: "Desserts", slug: "desserts", description: "Traditional Watalappan, coconut pudding and sweets", displayOrder: 7, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: "Drinks", slug: "drinks", description: "Ceylon spiced tea, fresh mango lassi and refreshments", displayOrder: 8, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+    ];
+    const inserted = await catColl.insertMany(categoriesData);
+    console.log("✅ Categories seeded.");
+    Object.values(inserted.insertedIds).forEach((id, idx) => {
+      catMap[categoriesData[idx].slug] = id;
+    });
+  } else {
+    const cats = await catColl.find({}).toArray();
+    cats.forEach((c) => {
+      catMap[c.slug] = c._id;
+    });
+  }
+
+  // 5. Products Collection
+  const prodColl = db.collection("products");
+  const prodCount = await prodColl.countDocuments({});
+  if (prodCount === 0) {
+    const productsData = [
+      {
+        name: "Chicken Kottu",
+        slug: "chicken-kottu",
+        categoryId: catMap["kottu"],
+        shortDescription: "Chopped roti stir-fried with tender chicken, egg, fresh vegetables and aromatic Ceylon curry spices.",
+        description: "Our signature dish! Fresh paratha roti shredded on a hot griddle and tossed with spiced chicken, farm eggs, leeks, onions, and curry sauce.",
+        price: 12.00,
+        originalPrice: 12.00,
+        isOffer: true,
+        offerPrice: 9.99,
+        discountPercentage: 17,
+        ingredients: ["Chopped Roti", "Tender Chicken", "Eggs", "Onions", "Leeks", "Ceylon Spices"],
+        allergens: ["Gluten", "Eggs"],
+        isAvailable: true,
+        isFeatured: true,
+        images: [{ url: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80" }],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        name: "Devilled Prawns",
+        slug: "devilled-prawns",
+        categoryId: catMap["seafood"],
+        shortDescription: "Juicy king prawns sauteed with capsicum, tomatoes, and spicy sweet chili Ceylon sauce.",
+        description: "Fresh tiger prawns fried and tossed in a fiery, sweet-and-sour Sri Lankan devilled glaze with crunchy peppers and onions.",
+        price: 14.50,
+        originalPrice: 16.50,
+        isOffer: true,
+        offerPrice: 12.99,
+        discountPercentage: 21,
+        ingredients: ["King Prawns", "Bell Peppers", "Onions", "Chili Glaze", "Garlic", "Ginger"],
+        allergens: ["Crustaceans", "Soy"],
+        isAvailable: true,
+        isFeatured: true,
+        images: [{ url: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=800&q=80" }],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        name: "Jaffna Lamb Curry",
+        slug: "jaffna-lamb-curry",
+        categoryId: catMap["curries"],
+        shortDescription: "Slow-cooked boneless lamb infused with dark roasted Jaffna curry powder and coconut milk.",
+        description: "Authentic Northern Sri Lankan style lamb curry simmered until melt-in-the-mouth tender with lemongrass, pandan leaves, and roasted spices.",
+        price: 13.99,
+        originalPrice: 13.99,
+        isOffer: false,
+        ingredients: ["Boneless Lamb", "Roasted Curry Powder", "Coconut Milk", "Lemongrass", "Pandan Leaf"],
+        allergens: [],
+        isAvailable: true,
+        isFeatured: true,
+        images: [{ url: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=800&q=80" }],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        name: "Ceylon Chicken Lamprais",
+        slug: "ceylon-chicken-lamprais",
+        categoryId: catMap["rice-biryani"],
+        shortDescription: "Dutch Burgher delicacy: Ghee rice, spiced chicken curry, aubergine moju, and fried egg wrapped in banana leaf.",
+        description: "Authentic Ceylon Lamprais baked inside a fragrant banana leaf parcel, sealing in rich aromas of ghee rice, frikkadels, chicken curry, and sweet aubergine.",
+        price: 15.00,
+        originalPrice: 18.00,
+        isOffer: true,
+        offerPrice: 13.50,
+        discountPercentage: 25,
+        ingredients: ["Basmati Rice", "Chicken Curry", "Aubergine Moju", "Seeni Sambol", "Boiled Egg"],
+        allergens: ["Eggs", "Mustard"],
+        isAvailable: true,
+        isFeatured: true,
+        images: [{ url: "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&w=800&q=80" }],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ];
+    await prodColl.insertMany(productsData);
+    console.log("✅ Dishes & Special Offers seeded.");
+  } else {
+    console.log(`ℹ️ ${prodCount} Products already exist.`);
+  }
+
+  console.log("✨ Seed completed successfully!");
+  process.exit(0);
+}
+
+seed().catch((e) => {
+  console.error("Seed error:", e);
+  process.exit(1);
+});
