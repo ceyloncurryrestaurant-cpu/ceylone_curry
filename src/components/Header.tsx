@@ -29,12 +29,12 @@ export const Header: React.FC = () => {
   }, []);
 
   const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "Menu", href: "/menu" },
-    { name: "Offers", href: "/offers", badge: "Deals" },
-    { name: "Reserve a Table", href: "/reserve" },
-    { name: "About Us", href: "/about" },
-    { name: "Contact Us", href: "/contact" },
+    { name: "HOME", href: "/" },
+    { name: "MENU", href: "/menu" },
+    { name: "OFFERS", href: "/offers", badge: "Deals" },
+    { name: "ABOUT", href: "/about" },
+    { name: "RESERVE", href: "/reserve" },
+    { name: "CONTACT", href: "/contact" },
   ];
 
   const phoneNum = settings?.mobileNumber || "01752 941504";
@@ -47,32 +47,32 @@ export const Header: React.FC = () => {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-500 border-b ${
+      className={`sticky top-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-ceylon-volcanic/95 backdrop-blur-md shadow-volcanic border-ceylon-copper/30 py-2.5"
-          : "bg-ceylon-volcanic/80 backdrop-blur-sm border-ceylon-bronze/30 py-3.5"
+          ? "bg-ceylon-navy/95 backdrop-blur-md shadow-navy border-b border-ceylon-gold/40 py-2.5"
+          : "bg-ceylon-navy border-b border-white/10 py-3.5"
       }`}
     >
-      {/* Top Notification Bar */}
+      {/* Top Announcement Bar */}
       <div
-        className={`bg-ceylon-charcoal text-ceylon-sandstone text-xs transition-all duration-300 border-b border-ceylon-bronze/20 ${
-          scrolled ? "max-h-0 py-0 opacity-0 overflow-hidden" : "py-2 px-4 hidden md:block opacity-100"
+        className={`bg-ceylon-navy-dark text-white/90 text-xs transition-all duration-300 border-b border-white/5 ${
+          scrolled ? "max-h-0 py-0 opacity-0 overflow-hidden" : "py-1.5 px-4 hidden md:block opacity-100"
         }`}
       >
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-6">
-            <span className="flex items-center gap-1.5 text-ceylon-copper font-semibold">
-              <MapPin className="w-3.5 h-3.5 text-ceylon-copper shrink-0" />
+            <span className="flex items-center gap-1.5 text-ceylon-gold font-bold">
+              <MapPin className="w-3.5 h-3.5 text-ceylon-gold shrink-0" />
               {addressStr}
             </span>
-            <span className="text-ceylon-sandstone font-medium">🕒 Mon - Sun: {hoursStr}</span>
+            <span className="text-white/80 font-medium">🕒 Monday - Sunday: {hoursStr}</span>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-5">
             <a
               href={formattedCallHref}
-              className="hover:text-ceylon-saffron transition-colors flex items-center gap-1.5 font-bold text-ceylon-ivory"
+              className="hover:text-ceylon-gold transition-colors flex items-center gap-1.5 font-bold"
             >
-              <Phone className="w-3.5 h-3.5 text-ceylon-copper" />
+              <Phone className="w-3.5 h-3.5 text-ceylon-gold" />
               {phoneNum}
             </a>
             <a
@@ -88,10 +88,12 @@ export const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Navigation Bar */}
+      {/* Main Navbar: Logo Left, Links Center, Call + Cart Right */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        {/* Left: Transparent Ceylon Curry Logo */}
         <Logo variant="light" size={scrolled ? "sm" : "md"} />
 
+        {/* Center: Navigation Links */}
         <nav className="hidden lg:flex items-center space-x-1">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
@@ -99,13 +101,13 @@ export const Header: React.FC = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`nav-link-hover relative px-4 py-2 text-xs uppercase font-extrabold tracking-widest transition-all duration-300 ${
-                  isActive ? "text-ceylon-saffron nav-link-active" : "text-ceylon-ivory/90 hover:text-ceylon-copper"
+                className={`nav-link-hover relative px-3.5 py-2 text-xs font-black tracking-widest transition-all duration-200 ${
+                  isActive ? "text-ceylon-gold nav-link-active" : "text-ceylon-cream hover:text-ceylon-gold"
                 }`}
               >
                 {link.name}
                 {link.badge && (
-                  <span className="ml-1.5 px-2 py-0.5 text-[9px] font-black uppercase bg-ceylon-chilli text-white rounded-full shadow-md animate-pulse">
+                  <span className="ml-1.5 px-2 py-0.5 text-[10px] font-black uppercase bg-ceylon-red text-white rounded-full animate-pulse shadow-md">
                     {link.badge}
                   </span>
                 )}
@@ -114,24 +116,24 @@ export const Header: React.FC = () => {
           })}
         </nav>
 
-        {/* Right Actions: Shopping Bag & Call */}
+        {/* Right Actions: Call Button & Cart */}
         <div className="flex items-center space-x-3">
           <a
             href={formattedCallHref}
-            className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider text-ceylon-ivory bg-ceylon-cocoa hover:bg-ceylon-copper hover:text-ceylon-volcanic transition-all duration-300 border border-ceylon-copper/40 shadow-sm"
+            className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider text-ceylon-dark bg-ceylon-gold hover:bg-ceylon-gold-saffron transition-all shadow-gold transform hover:-translate-y-0.5"
           >
-            <Phone className="w-3.5 h-3.5 text-ceylon-copper group-hover:text-ceylon-volcanic" />
-            <span>Call Us</span>
+            <Phone className="w-3.5 h-3.5 fill-current" />
+            <span>Call</span>
           </a>
 
           <Link
             href="/cart"
             aria-label="Shopping Cart"
-            className="relative p-2.5 rounded-full bg-ceylon-cocoa hover:bg-ceylon-copper text-ceylon-ivory hover:text-ceylon-volcanic transition-all duration-300 border border-ceylon-copper/40 shadow-sm"
+            className="relative p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all border border-ceylon-gold/40 shadow-sm"
           >
-            <ShoppingBag className="w-5 h-5 text-ceylon-copper hover:text-ceylon-volcanic" />
+            <ShoppingBag className="w-5 h-5 text-ceylon-gold" />
             {totalCount > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-ceylon-chilli text-[11px] font-black text-white shadow-md animate-bounce">
+              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-ceylon-red text-white text-[11px] font-black shadow-md animate-bounce">
                 {totalCount}
               </span>
             )}
@@ -139,66 +141,59 @@ export const Header: React.FC = () => {
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2.5 rounded-xl text-ceylon-ivory hover:bg-ceylon-cocoa focus:outline-none border border-ceylon-bronze/40"
+            className="lg:hidden p-2.5 rounded-xl text-white hover:bg-white/10 focus:outline-none"
             aria-label="Toggle menu"
           >
-            {mobileMenuOpen ? <X className="w-6 h-6 text-ceylon-copper" /> : <MenuIcon className="w-6 h-6" />}
+            {mobileMenuOpen ? <X className="w-6 h-6 text-ceylon-gold" /> : <MenuIcon className="w-6 h-6" />}
           </button>
         </div>
       </div>
 
-      {/* PRD #28: Mobile Drawer — Full-Screen Dark Overlay */}
+      {/* Mobile Full-Screen Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-ceylon-volcanic/98 backdrop-blur-2xl flex flex-col justify-between p-8 animate-fade-in">
-          <div className="flex justify-between items-center pb-6 border-b border-ceylon-bronze/30">
-            <Logo variant="light" size="sm" />
-            <button
-              onClick={() => setMobileMenuOpen(false)}
-              className="p-3 rounded-full bg-ceylon-cocoa text-ceylon-copper hover:text-ceylon-ivory border border-ceylon-copper/40"
-            >
-              <X className="w-6 h-6" />
-            </button>
-          </div>
-
-          <nav className="flex flex-col space-y-4 my-auto">
-            {navLinks.map((link, i) => {
+        <div className="lg:hidden bg-ceylon-navy-dark border-b-2 border-ceylon-gold/40 px-6 pt-6 pb-8 space-y-4 animate-fade-in shadow-2xl">
+          <div className="grid grid-cols-1 gap-2">
+            {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center justify-between py-3 font-serif-display text-2xl sm:text-3xl font-extrabold tracking-wide transition-all ${
+                  className={`flex items-center justify-between px-5 py-3.5 rounded-2xl text-sm font-extrabold uppercase tracking-wider transition-colors ${
                     isActive
-                      ? "text-ceylon-saffron border-b-2 border-ceylon-copper"
-                      : "text-ceylon-ivory/80 hover:text-ceylon-copper"
+                      ? "bg-ceylon-gold text-ceylon-dark shadow-gold"
+                      : "text-ceylon-cream hover:bg-white/10 hover:text-ceylon-gold"
                   }`}
-                  style={{ animationDelay: `${i * 80}ms` }}
                 >
                   <span>{link.name}</span>
                   {link.badge && (
-                    <span className="px-3 py-1 text-xs font-sans font-black uppercase bg-ceylon-chilli text-white rounded-full">
+                    <span className="px-2 py-0.5 text-[10px] bg-ceylon-red text-white rounded-full">
                       {link.badge}
                     </span>
                   )}
                 </Link>
               );
             })}
-          </nav>
+          </div>
 
-          <div className="pt-6 border-t border-ceylon-bronze/30 space-y-4">
+          <div className="pt-4 border-t border-white/10 space-y-3">
+            <a
+              href={formattedCallHref}
+              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-full font-black uppercase text-xs tracking-wider bg-ceylon-gold text-ceylon-dark shadow-gold"
+            >
+              <Phone className="w-4 h-4" />
+              <span>Call {phoneNum}</span>
+            </a>
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg"
+              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-full font-black uppercase text-xs tracking-wider bg-emerald-600 hover:bg-emerald-500 text-white shadow-md"
             >
-              <MessageCircle className="w-5 h-5" />
-              <span>WhatsApp Direct Order</span>
+              <MessageCircle className="w-4 h-4" />
+              <span>Order via WhatsApp</span>
             </a>
-            <p className="text-center text-xs text-ceylon-sandstone">
-              📍 {addressStr} • 📞 {phoneNum}
-            </p>
           </div>
         </div>
       )}

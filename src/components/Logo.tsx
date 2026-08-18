@@ -12,7 +12,17 @@ interface LogoProps {
 
 export const Logo: React.FC<LogoProps> = ({ variant = "light", size = "md", showDivider = false }) => {
   if (variant === "watermark") {
-    return null;
+    return (
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.04] z-0 overflow-hidden select-none">
+        <Image
+          src="/logo.png"
+          alt="Ceylon Curry Watermark"
+          width={600}
+          height={690}
+          className="object-contain"
+        />
+      </div>
+    );
   }
 
   const heightClasses = {
@@ -24,21 +34,17 @@ export const Logo: React.FC<LogoProps> = ({ variant = "light", size = "md", show
 
   return (
     <div className="flex flex-col items-center">
-      <Link href="/" className="inline-flex items-center group transition-all duration-300">
-        {/* Exact Official Logo Image (Cropped without Address & Phone Number) */}
-        <div className="relative rounded-2xl overflow-hidden shadow-gold border-2 border-ceylon-gold/50 group-hover:scale-105 group-hover:shadow-gold-lg transition-all duration-500 bg-[#020E66]">
-          <Image
-            src="/logo.jpg"
-            alt="Ceylon Curry Official Logo"
-            width={180}
-            height={165}
-            priority
-            className={`${heightClasses[size]} object-contain transition-transform duration-500 group-hover:scale-105`}
-          />
-        </div>
+      <Link href="/" className="inline-flex items-center group transition-transform duration-300 transform hover:scale-105">
+        <Image
+          src="/logo.png"
+          alt="Ceylon Curry Official Logo"
+          width={180}
+          height={207}
+          priority
+          className={`${heightClasses[size]} object-contain drop-shadow-md transition-transform duration-300`}
+        />
       </Link>
 
-      {/* Decorative Gold Accent Divider Line */}
       {showDivider && (
         <div className="flex items-center gap-3 mt-3 opacity-80">
           <div className="w-12 h-[1px] bg-gradient-to-r from-transparent to-ceylon-gold" />

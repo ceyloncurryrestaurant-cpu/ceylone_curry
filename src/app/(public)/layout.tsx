@@ -11,7 +11,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
     <SettingsProvider>
       <CartProvider>
         <LogoIntroOverlay />
-        <div className="flex flex-col min-h-screen bg-ceylon-ivory text-ceylon-espresso">
+        <div className="flex flex-col min-h-screen bg-ceylon-cream text-ceylon-dark">
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
