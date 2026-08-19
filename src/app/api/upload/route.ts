@@ -1,5 +1,12 @@
 import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/auth";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function POST(req: Request) {
   try {
@@ -27,25 +34,17 @@ export async function POST(req: Request) {
     for (const file of files) {
       const buffer = Buffer.from(await file.arrayBuffer());
 
-      if (process.env.CLOUDINARY_API_KEY) {
+      if (process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_CLOUD_NAME) {
         try {
-          const cloudinary = require("cloudinary").v2;
-          cloudinary.config({
-            cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-            api_key: process.env.CLOUDINARY_API_KEY,
-            api_secret: process.env.CLOUDINARY_API_SECRET,
-          });
-
           const uploadResult = await new Promise<any>((resolve, reject) => {
-            cloudinary.uploader
-              .upload_stream(
-                { folder: "ceylon_curry_products", resource_type: "image" },
-                (error: any, result: any) => {
-                  if (error) reject(error);
-                  else resolve(result);
-                }
-              )
-              .end(buffer);
+            const stream = cloudinary.uploader.upload_stream(
+              { folder: "ceylon_curry_products", resource_type: "image" },
+              (error, result) => {
+                if (error) reject(error);
+                else resolve(result);
+              }
+            );
+            stream.end(buffer);
           });
 
           uploadedImages.push({
@@ -56,12 +55,14 @@ export async function POST(req: Request) {
             format: uploadResult.format,
           });
           continue;
-        } catch (err) {
-          console.log("Cloudinary upload fallback to data URL:", err);
+        } catch (err: any) {
+          console.error("Cloudinary upload failed, falling back to base64 Data URL:", err?.message || err);
         }
+      } else {
+        console.warn("Cloudinary environment variables missing (CLOUDINARY_API_KEY / CLOUDINARY_CLOUD_NAME).");
       }
 
-      // Local Base64 preview fallback
+      // Local Base64 preview fallback if Cloudinary env vars are missing or upload fails
       const base64Data = buffer.toString("base64");
       const mimeType = file.type || "image/jpeg";
       const dataUrl = `data:${mimeType};base64,${base64Data}`;
@@ -75,9 +76,8 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Image(s) uploaded successfully",
+      message: "Image(s) processed successfully",
       images: uploadedImages,
-      // Convenience shorthand for single-image callers
       url: uploadedImages[0]?.url || null,
       publicId: uploadedImages[0]?.publicId || null,
     });
