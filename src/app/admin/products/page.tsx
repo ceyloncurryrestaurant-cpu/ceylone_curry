@@ -1,9 +1,21 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import { Plus, Edit, Trash2, Tag, Upload, X, Check, Flame } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
+
+function getImageUrl(item: any): string | null {
+  if (!item) return null;
+  if (typeof item === "string" && item.trim().length > 0) return item;
+  if (Array.isArray(item)) {
+    if (item.length === 0) return null;
+    return getImageUrl(item[0]);
+  }
+  if (item.url && typeof item.url === "string") return item.url;
+  if (item.image && typeof item.image === "string") return item.image;
+  if (item.images) return getImageUrl(item.images);
+  return null;
+}
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<any[]>([]);
@@ -247,13 +259,13 @@ export default function AdminProductsPage() {
               </thead>
               <tbody className="divide-y divide-gray-200 text-sm font-medium text-[#071B5C]">
                 {products.map((p) => {
-                  const firstImg = p.images && p.images[0]?.url ? p.images[0].url : null;
+                  const firstImg = getImageUrl(p);
                   return (
                     <tr key={p._id} className="hover:bg-gray-50 transition-colors">
                       <td className="p-4">
-                        <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
+                        <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center">
                           {firstImg ? (
-                            <Image src={firstImg} alt={p.name} fill className="object-cover" />
+                            <img src={firstImg} alt={p.name} className="w-full h-full object-cover" />
                           ) : (
                             <span className="text-[10px] text-gray-400 p-1 block text-center">No Img</span>
                           )}
@@ -447,18 +459,25 @@ export default function AdminProductsPage() {
                   Product Images (Maximum 4 Cloudinary Images)
                 </label>
                 <div className="grid grid-cols-4 gap-3">
-                  {images.map((img, i) => (
-                    <div key={i} className="relative aspect-square rounded-xl overflow-hidden border border-gray-300 group bg-gray-100">
-                      <Image src={img.url} alt={`Upload ${i + 1}`} fill className="object-cover" />
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveImage(i)}
-                        className="absolute top-1 right-1 p-1 bg-rose-600 text-white rounded-full text-xs shadow-md opacity-90 hover:opacity-100 cursor-pointer"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ))}
+                  {images.map((img, i) => {
+                    const imgUrl = getImageUrl(img);
+                    return (
+                      <div key={i} className="relative aspect-square rounded-xl overflow-hidden border border-gray-300 group bg-gray-100 flex items-center justify-center">
+                        {imgUrl ? (
+                          <img src={imgUrl} alt={`Upload ${i + 1}`} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-[9px] text-gray-400">No URL</span>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveImage(i)}
+                          className="absolute top-1 right-1 p-1 bg-rose-600 text-white rounded-full text-xs shadow-md opacity-90 hover:opacity-100 cursor-pointer"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    );
+                  })}
 
                   {images.length < 4 && (
                     <label className="aspect-square rounded-xl border-2 border-dashed border-gray-300 hover:border-[#071B5C] flex flex-col items-center justify-center cursor-pointer bg-gray-50 transition-colors">
