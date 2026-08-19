@@ -40,7 +40,6 @@ const ReservationSchema = new Schema<IReservation>(
 );
 
 // MongoDB Indexes for fast availability checking and reservation search
-ReservationSchema.index({ reservationNumber: 1 });
 ReservationSchema.index({ date: 1, tableId: 1 });
 ReservationSchema.index({ status: 1 });
 ReservationSchema.index({ email: 1 });
