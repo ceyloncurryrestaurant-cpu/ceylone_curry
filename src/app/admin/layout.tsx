@@ -15,26 +15,37 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const isLoginPage = pathname === "/admin/login";
 
   useEffect(() => {
+    let isMounted = true;
+
+    if (isLoginPage) {
+      setChecking(false);
+      return;
+    }
+
     async function checkAuth() {
-      if (isLoginPage) {
-        setChecking(false);
-        return;
-      }
       try {
         const res = await fetch("/api/admin/auth");
         const data = await res.json();
-        if (data.authenticated) {
-          setAuthenticated(true);
-        } else {
-          router.push("/admin/login");
+        if (isMounted) {
+          if (data.authenticated) {
+            setAuthenticated(true);
+            setChecking(false);
+          } else {
+            router.replace("/admin/login");
+          }
         }
       } catch (err) {
-        router.push("/admin/login");
-      } finally {
-        setChecking(false);
+        if (isMounted) {
+          router.replace("/admin/login");
+        }
       }
     }
+
     checkAuth();
+
+    return () => {
+      isMounted = false;
+    };
   }, [pathname, isLoginPage, router]);
 
   if (isLoginPage) {
@@ -46,7 +57,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  if (checking) {
+  if (checking || !authenticated) {
     return (
       <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center">
         <div className="animate-spin w-10 h-10 border-4 border-[#071B5C] border-t-transparent rounded-full shadow-md" />
@@ -58,7 +69,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <SettingsProvider>
       <div className="min-h-screen flex bg-[#FAF7F2] text-[#071B5C] relative">
         <AdminSidebar />
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto max-h-screen bg-[#FAF7F2] text-[#071B5C] relative z-10">{children}</main>
+        <main className="flex-1 p-6 md:p-8 overflow-y-auto max-h-screen bg-[#FAF7F2] text-[#071B5C] relative z-10">
+          {children}
+        </main>
         <Toaster position="top-right" richColors />
       </div>
     </SettingsProvider>
