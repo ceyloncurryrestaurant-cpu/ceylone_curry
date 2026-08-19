@@ -7,9 +7,67 @@ import { memoryStore } from "@/lib/memoryStore";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+// Helper to auto-release reserved tables that are older than 1 hour (60 minutes)
+async function autoReleaseExpiredTables() {
+  try {
+    const ONE_HOUR_MS = 60 * 60 * 1000;
+    const nowMs = Date.now();
+
+    // 1. Auto-release in MongoDB
+    const reservedTables = await Table.find({ status: "Reserved" }).catch(() => []);
+    for (const tbl of reservedTables) {
+      const tableIdStr = tbl._id.toString();
+
+      // Find active reservation for this table
+      const activeRes = await Reservation.findOne({
+        tableId: tbl._id,
+        status: { $in: ["Pending", "Accepted"] },
+      }).sort({ createdAt: -1 }).catch(() => null);
+
+      let shouldRelease = false;
+
+      if (activeRes) {
+        const resCreatedMs = new Date(activeRes.createdAt || activeRes.updatedAt).getTime();
+        if (nowMs - resCreatedMs > ONE_HOUR_MS) {
+          shouldRelease = true;
+        }
+      } else {
+        // If table is marked Reserved but has no active reservation, or updatedAt > 1 hr
+        const tableUpdatedMs = new Date(tbl.updatedAt || tbl.createdAt).getTime();
+        if (nowMs - tableUpdatedMs > ONE_HOUR_MS) {
+          shouldRelease = true;
+        }
+      }
+
+      if (shouldRelease) {
+        await Table.findByIdAndUpdate(tbl._id, { status: "Available" }).catch(() => null);
+        tbl.status = "Available";
+      }
+    }
+
+    // 2. Auto-release in memoryStore fallback
+    if (memoryStore.tables) {
+      memoryStore.tables.forEach((memT: any) => {
+        if (memT.status === "Reserved") {
+          const reservedAt = memT.reservedAt || memT.updatedAt || 0;
+          if (nowMs - reservedAt > ONE_HOUR_MS) {
+            memT.status = "Available";
+          }
+        }
+      });
+    }
+  } catch (err) {
+    console.error("Auto-release expired tables error:", err);
+  }
+}
+
 export async function GET(req: Request) {
   try {
     const conn = await connectToDatabase();
+    
+    // Run 1-Hour Automatic Table Expiration check before returning tables
+    await autoReleaseExpiredTables();
+
     if (!conn) {
       return NextResponse.json({ success: true, tables: memoryStore.tables });
     }

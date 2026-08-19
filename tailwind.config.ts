@@ -10,38 +10,41 @@ const config: Config = {
     extend: {
       colors: {
         ceylon: {
-          volcanic: "#10100D",        // Main Background — Volcanic Black
-          charcoal: "#191A14",        // Secondary Background — Charcoal Olive
-          cocoa: "#292018",           // Warm Surface — Roasted Cocoa
+          volcanic: "#071B5C",        // Royal Navy Blue Main Background
+          charcoal: "#0A2472",        // Rich Deep Blue Secondary Background
+          cocoa: "#0E3094",           // Vibrant Blue Surface Card
+          navy: "#071B5C",
+          "blue-deep": "#0A2472",
+          "blue-light": "#1E40AF",
           copper: {
-            DEFAULT: "#C8783D",       // Primary Accent — Burnished Copper
-            light: "#E08F50",
-            dark: "#A65F2B",
+            DEFAULT: "#F5B91A",       // Warm Luxury Ceylon Gold Primary Accent
+            light: "#FFC928",
+            dark: "#D49D0E",
           },
           saffron: {
-            DEFAULT: "#E7A83B",       // Highlight — Saffron Ember
-            light: "#F7C368",
-            dark: "#C6851F",
+            DEFAULT: "#F5B91A",       // Curry Gold Accent for Prices & Highlights
+            light: "#FFC928",
+            dark: "#D49D0E",
           },
           chilli: {
-            DEFAULT: "#B83A2E",       // Food Accent — Chilli Red
-            dark: "#8F271D",
+            DEFAULT: "#D92720",       // Food Accent — Chilli Red
+            dark: "#B01A14",
           },
           leaf: {
-            DEFAULT: "#526348",       // Botanical Accent — Ceylon Leaf
-            dark: "#3B4A33",
+            DEFAULT: "#10B981",       // Fresh Mint Green Accent
+            dark: "#059669",
           },
           ivory: {
-            DEFAULT: "#F5EBDD",       // Primary Text — Warm Ivory
-            light: "#FAF4EC",
-            dark: "#E3D5C3",
+            DEFAULT: "#FFFFFF",       // Crisp Pure White Primary Text
+            light: "#F8FAFC",
+            dark: "#E2E8F0",
           },
-          sandstone: "#B9A992",       // Secondary Text — Sandstone
-          bronze: "#6D5138",          // Subtle Borders — Bronze Mist
+          sandstone: "#CBD5E1",       // Soft Slate White Secondary Text
+          bronze: "#1E3A8A",          // Royal Blue Subtle Borders
           // Backwards compatibility tokens
-          midnight: "#10100D",
-          gold: "#E7A83B",
-          cream: "#292018",
+          midnight: "#071B5C",
+          gold: "#F5B91A",
+          cream: "#FFFFFF",
         },
       },
       fontFamily: {
@@ -50,13 +53,14 @@ const config: Config = {
         serifDisplay: ["Cormorant Garamond", "Playfair Display", "Georgia", "serif"],
       },
       boxShadow: {
-        copper: "0 8px 32px -4px rgba(200, 120, 61, 0.35)",
-        "copper-lg": "0 14px 44px -4px rgba(200, 120, 61, 0.5)",
-        saffron: "0 8px 32px -4px rgba(231, 168, 59, 0.35)",
-        gold: "0 8px 32px -4px rgba(231, 168, 59, 0.35)",
-        "gold-lg": "0 14px 44px -4px rgba(231, 168, 59, 0.5)",
-        volcanic: "0 12px 40px -4px rgba(16, 16, 13, 0.9)",
-        glass: "0 8px 32px 0 rgba(0, 0, 0, 0.6)",
+        copper: "0 8px 32px -4px rgba(245, 185, 26, 0.45)",
+        "copper-lg": "0 14px 44px -4px rgba(245, 185, 26, 0.65)",
+        saffron: "0 8px 32px -4px rgba(245, 185, 26, 0.45)",
+        gold: "0 8px 32px -4px rgba(245, 185, 26, 0.45)",
+        "gold-lg": "0 14px 44px -4px rgba(245, 185, 26, 0.65)",
+        volcanic: "0 12px 40px -4px rgba(7, 27, 92, 0.9)",
+        glass: "0 8px 32px 0 rgba(7, 27, 92, 0.7)",
+        navy: "0 14px 44px -4px rgba(7, 27, 92, 0.8)",
       },
       keyframes: {
         kenburns: {
@@ -65,8 +69,8 @@ const config: Config = {
           "100%": { transform: "scale(1)" },
         },
         pulseGlow: {
-          "0%, 100%": { boxShadow: "0 0 15px rgba(229, 169, 60, 0.3)" },
-          "50%": { boxShadow: "0 0 35px rgba(229, 169, 60, 0.7)" },
+          "0%, 100%": { boxShadow: "0 0 15px rgba(245, 185, 26, 0.4)" },
+          "50%": { boxShadow: "0 0 35px rgba(245, 185, 26, 0.8)" },
         },
         float: {
           "0%, 100%": { transform: "translateY(0px)" },

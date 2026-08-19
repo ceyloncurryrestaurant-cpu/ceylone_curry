@@ -51,8 +51,10 @@ export async function POST(req: Request) {
         return NextResponse.json({ success: false, error: "New password is required" }, { status: 400 });
       }
       if (newPassword.length < 6) {
-        return NextResponse.json({ success: false, error: "Password must be at least 6 characters" }, { status: 400 });
+        return NextResponse.json({ success: false, error: "Password must be at least 6 characters long." }, { status: 400 });
       }
+
+      const newHash = await hashPassword(newPassword);
 
       if (dbConnected) {
         const session = await getAdminSession().catch(() => null);
@@ -73,8 +75,6 @@ export async function POST(req: Request) {
           admin = await Admin.findOne({ email: cleanEmail }).catch(() => null);
         }
 
-        const newHash = await hashPassword(newPassword);
-
         if (admin) {
           admin.passwordHash = newHash;
           await admin.save();
@@ -85,23 +85,22 @@ export async function POST(req: Request) {
         }
 
         // 4. Fallback: if the default admin document is missing, create it
-        const isDefaultAdmin = cleanEmail === "admin@ceyloncurry.co.uk" || (session && session.email === "admin@ceyloncurry.co.uk");
-        if (isDefaultAdmin) {
-          const newAdmin = await Admin.create({
-            email: "admin@ceyloncurry.co.uk",
-            passwordHash: newHash,
-            name: "Ceylon Curry Admin",
-            role: "admin",
+        const targetEmail = cleanEmail || (session && session.email) || "admin@ceyloncurry.co.uk";
+        const newAdmin = await Admin.create({
+          email: targetEmail.toLowerCase().trim(),
+          passwordHash: newHash,
+          name: "Ceylon Curry Admin",
+          role: "admin",
+        });
+
+        if (newAdmin) {
+          return NextResponse.json({
+            success: true,
+            message: "Admin password updated successfully! You can now log in with your new password.",
           });
-          if (newAdmin) {
-            return NextResponse.json({
-              success: true,
-              message: "Admin password updated successfully! You can now log in with your new password.",
-            });
-          }
         }
       }
-      return NextResponse.json({ success: false, error: "Admin account with this email not found" }, { status: 404 });
+      return NextResponse.json({ success: false, error: "Unable to update admin password." }, { status: 500 });
     }
 
     if (!email || !password) {

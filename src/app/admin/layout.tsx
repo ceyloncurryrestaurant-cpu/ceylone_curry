@@ -48,18 +48,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (checking) {
     return (
-      <div className="min-h-screen bg-ceylon-volcanic flex items-center justify-center">
-        <div className="animate-spin w-10 h-10 border-4 border-ceylon-copper border-t-transparent rounded-full shadow-copper" />
+      <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center">
+        <div className="animate-spin w-10 h-10 border-4 border-[#071B5C] border-t-transparent rounded-full shadow-md" />
       </div>
     );
   }
 
   return (
     <SettingsProvider>
-      <div className="min-h-screen flex bg-ceylon-volcanic text-ceylon-ivory relative">
-        <div className="grain-overlay" />
+      <div className="min-h-screen flex bg-[#FAF7F2] text-[#071B5C] relative">
         <AdminSidebar />
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto max-h-screen bg-ceylon-volcanic text-ceylon-ivory relative z-10">{children}</main>
+        <main className="flex-1 p-6 md:p-8 overflow-y-auto max-h-screen bg-[#FAF7F2] text-[#071B5C] relative z-10">{children}</main>
         <Toaster position="top-right" richColors />
       </div>
     </SettingsProvider>

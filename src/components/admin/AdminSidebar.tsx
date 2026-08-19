@@ -42,11 +42,11 @@ export const AdminSidebar: React.FC = () => {
   };
 
   return (
-    <aside className="w-64 bg-ceylon-volcanic text-ceylon-ivory flex flex-col justify-between p-6 border-r border-ceylon-copper/30 min-h-screen relative overflow-hidden shadow-volcanic shrink-0">
+    <aside className="w-64 bg-[#071B5C] text-white flex flex-col justify-between p-6 border-r border-white/10 min-h-screen relative overflow-hidden shadow-2xl shrink-0">
       <div className="space-y-8 relative z-10">
-        <div className="pt-2 border-b border-ceylon-bronze/30 pb-6 text-center">
+        <div className="pt-2 border-b border-white/15 pb-6 text-center">
           <Logo variant="light" size="sm" showDivider />
-          <span className="text-[9px] uppercase font-extrabold tracking-[0.25em] text-ceylon-copper block mt-2">
+          <span className="text-[9px] uppercase font-extrabold tracking-[0.25em] text-ceylon-gold block mt-2">
             ADMINISTRATOR PORTAL
           </span>
         </div>
@@ -62,11 +62,11 @@ export const AdminSidebar: React.FC = () => {
                 href={item.href}
                 className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-300 ${
                   isActive
-                    ? "bg-ceylon-copper text-ceylon-volcanic shadow-copper scale-105"
-                    : "text-ceylon-sandstone hover:bg-ceylon-cocoa hover:text-ceylon-saffron"
+                    ? "bg-ceylon-gold text-[#071B5C] shadow-gold scale-105"
+                    : "text-blue-100 hover:bg-white/10 hover:text-white"
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? "text-ceylon-volcanic" : "text-ceylon-copper"}`} />
+                <Icon className={`w-4 h-4 ${isActive ? "text-[#071B5C]" : "text-ceylon-gold"}`} />
                 <span>{item.name}</span>
               </Link>
             );
@@ -74,10 +74,10 @@ export const AdminSidebar: React.FC = () => {
         </nav>
       </div>
 
-      <div className="pt-6 border-t border-ceylon-bronze/30 relative z-10">
+      <div className="pt-6 border-t border-white/15 relative z-10">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-xs font-black uppercase tracking-wider text-rose-400 bg-rose-950/40 hover:bg-rose-600 hover:text-white transition-all duration-300 border border-rose-500/40 shadow-md cursor-pointer"
+          className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-xs font-black uppercase tracking-wider text-rose-300 bg-rose-950/60 hover:bg-rose-600 hover:text-white transition-all duration-300 border border-rose-500/40 shadow-md cursor-pointer"
         >
           <LogOut className="w-4 h-4" />
           <span>Logout Portal</span>

@@ -41,6 +41,9 @@ export interface ISettingsData {
   };
   heroImages?: string[];
   signatureDishes?: ISignatureDishData[];
+  storyMainImage?: string;
+  storySecondaryImage?: string;
+  galleryImages?: string[];
 }
 
 interface SettingsContextType {
@@ -78,7 +81,7 @@ const defaultSettings: ISettingsData = {
     maxAdvanceDays: 30,
   },
   heroImages: [
-    "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=2000&q=85",
+    "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=2000&q=85",
     "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=2000&q=85",
     "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=2000&q=85",
     "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=2000&q=85",
@@ -98,7 +101,7 @@ const defaultSettings: ISettingsData = {
       subtitle: "Slow-Braised Tender Lamb in Dark Roasted Spice",
       description: "Tender lamb leg slow-cooked for 6 hours in dark-roasted cumin, coriander, black pepper, and toasted coconut paste.",
       price: "£15.90",
-      image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=1000&q=80",
+      image: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1000&q=80",
       badge: "CHEF'S CROWN",
     },
     {
@@ -109,6 +112,14 @@ const defaultSettings: ISettingsData = {
       image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=1000&q=80",
       badge: "HOT & SPICY",
     },
+  ],
+  storyMainImage: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1000&q=80",
+  storySecondaryImage: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80",
+  galleryImages: [
+    "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=900&q=80",
+    "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=600&q=80",
+    "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=800&q=80",
   ],
 };
 
@@ -146,6 +157,12 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             data.settings.signatureDishes && data.settings.signatureDishes.length > 0
               ? data.settings.signatureDishes
               : defaultSettings.signatureDishes,
+          storyMainImage: data.settings.storyMainImage || defaultSettings.storyMainImage,
+          storySecondaryImage: data.settings.storySecondaryImage || defaultSettings.storySecondaryImage,
+          galleryImages:
+            data.settings.galleryImages && data.settings.galleryImages.length > 0
+              ? data.settings.galleryImages
+              : defaultSettings.galleryImages,
         });
       }
     } catch (error) {

@@ -77,14 +77,14 @@ export default function AdminReservationsPage() {
   };
 
   return (
-    <div className="space-y-8 bg-ceylon-volcanic text-ceylon-ivory min-h-[85vh]">
+    <div className="space-y-8 bg-[#FAF7F2] text-[#071B5C] min-h-[85vh]">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-ceylon-bronze/30">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-gray-200">
         <div>
-          <h1 className="font-serif-display text-3xl sm:text-4xl font-extrabold text-ceylon-ivory">
+          <h1 className="font-serif-display text-3xl sm:text-4xl font-extrabold text-[#071B5C]">
             Reservations Dashboard
           </h1>
-          <p className="text-xs text-ceylon-sandstone mt-1 font-light">
+          <p className="text-xs text-gray-500 mt-1 font-light">
             Accept or cancel table bookings, update guest arrival status, or delete obsolete reservations.
           </p>
         </div>
@@ -94,39 +94,39 @@ export default function AdminReservationsPage() {
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
-            className="px-3.5 py-2 rounded-xl border border-ceylon-copper/40 text-xs font-bold bg-ceylon-cocoa text-ceylon-ivory focus:outline-none focus:border-ceylon-saffron"
+            className="px-3.5 py-2 rounded-xl border border-gray-300 text-xs font-bold bg-white text-[#071B5C] focus:outline-none focus:border-[#071B5C]"
           />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3.5 py-2 rounded-xl border border-ceylon-copper/40 text-xs font-bold bg-ceylon-cocoa text-ceylon-ivory focus:outline-none focus:border-ceylon-saffron"
+            className="px-3.5 py-2 rounded-xl border border-gray-300 text-xs font-bold bg-white text-[#071B5C] focus:outline-none focus:border-[#071B5C]"
           >
-            <option value="all" className="bg-ceylon-volcanic text-ceylon-ivory">All Statuses</option>
-            <option value="Pending" className="bg-ceylon-volcanic text-ceylon-ivory">Pending</option>
-            <option value="Accepted" className="bg-ceylon-volcanic text-ceylon-ivory">Accepted</option>
-            <option value="Completed" className="bg-ceylon-volcanic text-ceylon-ivory">Completed</option>
-            <option value="Cancelled" className="bg-ceylon-volcanic text-ceylon-ivory">Cancelled</option>
-            <option value="No Show" className="bg-ceylon-volcanic text-ceylon-ivory">No Show</option>
+            <option value="all" className="bg-white text-[#071B5C]">All Statuses</option>
+            <option value="Pending" className="bg-white text-[#071B5C]">Pending</option>
+            <option value="Accepted" className="bg-white text-[#071B5C]">Accepted</option>
+            <option value="Completed" className="bg-white text-[#071B5C]">Completed</option>
+            <option value="Cancelled" className="bg-white text-[#071B5C]">Cancelled</option>
+            <option value="No Show" className="bg-white text-[#071B5C]">No Show</option>
           </select>
         </div>
       </div>
 
       {/* Reservations Table */}
       {loading ? (
-        <div className="glass-cocoa rounded-3xl p-12 text-center border border-ceylon-copper/30">
-          <div className="animate-spin w-8 h-8 border-4 border-ceylon-copper border-t-transparent rounded-full mx-auto shadow-copper" />
+        <div className="bg-white rounded-3xl p-12 text-center border border-gray-200 shadow-md">
+          <div className="animate-spin w-8 h-8 border-4 border-[#071B5C] border-t-transparent rounded-full mx-auto" />
         </div>
       ) : reservations.length === 0 ? (
-        <div className="glass-cocoa rounded-3xl p-12 text-center max-w-md mx-auto space-y-2 border border-ceylon-copper/30 shadow-volcanic">
-          <p className="font-serif-display font-bold text-ceylon-ivory text-lg">No Reservations Found</p>
-          <p className="text-xs text-ceylon-sandstone font-light">Try adjusting your status or date filter.</p>
+        <div className="bg-white rounded-3xl p-12 text-center max-w-md mx-auto space-y-2 border border-gray-200 shadow-md text-[#071B5C]">
+          <p className="font-serif-display font-bold text-[#071B5C] text-lg">No Reservations Found</p>
+          <p className="text-xs text-gray-500 font-light">Try adjusting your status or date filter.</p>
         </div>
       ) : (
-        <div className="glass-cocoa rounded-[2.5rem] shadow-volcanic border border-ceylon-copper/30 overflow-hidden">
+        <div className="bg-white rounded-[2.5rem] shadow-md border border-gray-200 overflow-hidden text-[#071B5C]">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-ceylon-volcanic text-ceylon-copper text-xs uppercase font-black tracking-widest border-b border-ceylon-bronze/30">
+                <tr className="bg-[#071B5C] text-white text-xs uppercase font-black tracking-widest">
                   <th className="p-4">Ref Number</th>
                   <th className="p-4">Customer</th>
                   <th className="p-4">Table</th>
@@ -136,36 +136,36 @@ export default function AdminReservationsPage() {
                   <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-ceylon-bronze/20 text-sm font-medium text-ceylon-ivory">
+              <tbody className="divide-y divide-gray-200 text-sm font-medium text-[#071B5C]">
                 {reservations.map((r) => (
-                  <tr key={r._id} className="hover:bg-ceylon-volcanic/60 transition-colors">
-                    <td className="p-4 font-mono font-bold text-ceylon-saffron text-xs">
+                  <tr key={r._id} className="hover:bg-gray-50 transition-colors">
+                    <td className="p-4 font-mono font-bold text-[#071B5C] text-xs">
                       {r.reservationNumber}
                     </td>
                     <td className="p-4">
-                      <span className="font-bold text-ceylon-ivory block">{r.customerName}</span>
-                      <span className="text-xs text-ceylon-sandstone block">{r.mobile}</span>
+                      <span className="font-bold text-[#071B5C] block">{r.customerName}</span>
+                      <span className="text-xs text-gray-500 block">{r.mobile}</span>
                     </td>
                     <td className="p-4">
-                      <span className="font-extrabold text-ceylon-saffron text-xs block">
+                      <span className="font-extrabold text-[#071B5C] text-xs block">
                         Table 0{r.tableId?.tableNumber || "1"}
                       </span>
-                      <span className="text-[10px] text-ceylon-sandstone/70 block">({r.tableId?.type || "Couple"})</span>
+                      <span className="text-[10px] text-gray-500 block">({r.tableId?.type || "Couple"})</span>
                     </td>
-                    <td className="p-4 text-xs font-semibold text-ceylon-ivory">
+                    <td className="p-4 text-xs font-semibold text-[#071B5C]">
                       {r.date} at {r.startTime}
                     </td>
-                    <td className="p-4 font-bold text-xs text-ceylon-ivory">{r.guestCount} Guests</td>
+                    <td className="p-4 font-bold text-xs text-[#071B5C]">{r.guestCount} Guests</td>
                     <td className="p-4">
                       <span
                         className={`px-2.5 py-1 rounded-full text-xs font-bold ${
                           r.status === "Accepted"
-                            ? "bg-emerald-950/80 text-emerald-400 border border-emerald-500/40"
+                            ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
                             : r.status === "Pending"
-                            ? "bg-amber-950/80 text-ceylon-saffron border border-ceylon-copper/40"
+                            ? "bg-amber-100 text-amber-800 border border-amber-300"
                             : r.status === "No Show"
-                            ? "bg-rose-950/80 text-rose-300 border border-rose-500/40"
-                            : "bg-ceylon-volcanic text-ceylon-sandstone/70 border border-ceylon-bronze/30"
+                            ? "bg-rose-100 text-rose-700 border border-rose-300"
+                            : "bg-gray-100 text-gray-600 border border-gray-300"
                         }`}
                       >
                         {r.status}
@@ -174,14 +174,14 @@ export default function AdminReservationsPage() {
                     <td className="p-4 text-right space-x-1">
                       <button
                         onClick={() => setDetailRes(r)}
-                        className="p-1.5 text-ceylon-copper hover:bg-ceylon-volcanic rounded-lg transition-colors cursor-pointer"
+                        className="p-1.5 text-[#071B5C] hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
                         title="View Details & Update"
                       >
                         <Eye className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDeleteReservation(r._id)}
-                        className="p-1.5 text-rose-400 hover:bg-rose-950/40 rounded-lg transition-colors cursor-pointer"
+                        className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                         title="Delete Reservation"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -197,55 +197,55 @@ export default function AdminReservationsPage() {
 
       {/* Reservation Detail & Action Modal */}
       {detailRes && (
-        <div className="fixed inset-0 z-50 bg-ceylon-volcanic/90 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-ceylon-cocoa border-2 border-ceylon-copper/50 rounded-[2.5rem] p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-volcanic text-ceylon-ivory">
-            <div className="flex justify-between items-center pb-3 border-b border-ceylon-bronze/30">
+        <div className="fixed inset-0 z-50 bg-[#071B5C]/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white border-2 border-gray-200 rounded-[2.5rem] p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl text-[#071B5C]">
+            <div className="flex justify-between items-center pb-3 border-b border-gray-200">
               <div>
-                <span className="text-[10px] font-bold text-ceylon-copper uppercase tracking-widest block">Reservation Reference</span>
-                <h3 className="font-serif-display font-extrabold text-xl text-ceylon-ivory">
+                <span className="text-[10px] font-bold text-[#071B5C] uppercase tracking-widest block">Reservation Reference</span>
+                <h3 className="font-serif-display font-extrabold text-xl text-[#071B5C]">
                   {detailRes.reservationNumber}
                 </h3>
               </div>
-              <button onClick={() => setDetailRes(null)} className="text-ceylon-sandstone hover:text-ceylon-ivory font-bold text-lg cursor-pointer">
+              <button onClick={() => setDetailRes(null)} className="text-gray-400 hover:text-[#071B5C] font-bold text-lg cursor-pointer">
                 ✕
               </button>
             </div>
 
             <div className="space-y-3 text-xs">
-              <div className="grid grid-cols-2 gap-3 p-4 bg-ceylon-volcanic rounded-2xl border border-ceylon-copper/30">
+              <div className="grid grid-cols-2 gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-200">
                 <div>
-                  <span className="text-ceylon-sandstone block">Customer</span>
-                  <span className="font-bold text-ceylon-ivory text-sm">{detailRes.customerName}</span>
+                  <span className="text-gray-500 block">Customer</span>
+                  <span className="font-bold text-[#071B5C] text-sm">{detailRes.customerName}</span>
                 </div>
                 <div>
-                  <span className="text-ceylon-sandstone block">Phone</span>
-                  <span className="font-bold text-ceylon-ivory text-sm">{detailRes.mobile}</span>
+                  <span className="text-gray-500 block">Phone</span>
+                  <span className="font-bold text-[#071B5C] text-sm">{detailRes.mobile}</span>
                 </div>
                 <div>
-                  <span className="text-ceylon-sandstone block">Table Reserved</span>
-                  <span className="font-bold text-ceylon-saffron text-sm">
+                  <span className="text-gray-500 block">Table Reserved</span>
+                  <span className="font-bold text-[#071B5C] text-sm">
                     Table 0{detailRes.tableId?.tableNumber || "1"} ({detailRes.tableId?.type})
                   </span>
                 </div>
                 <div>
-                  <span className="text-ceylon-sandstone block">Date & Time</span>
-                  <span className="font-bold text-ceylon-ivory text-sm">
+                  <span className="text-gray-500 block">Date & Time</span>
+                  <span className="font-bold text-[#071B5C] text-sm">
                     {detailRes.date} at {detailRes.startTime}
                   </span>
                 </div>
               </div>
 
               {detailRes.specialRequest && (
-                <div className="p-3 bg-ceylon-volcanic rounded-xl border border-ceylon-copper/30">
-                  <span className="font-bold text-ceylon-copper block">Special Notes:</span>
-                  <p className="text-ceylon-sandstone mt-1">{detailRes.specialRequest}</p>
+                <div className="p-3 bg-gray-50 rounded-xl border border-gray-200">
+                  <span className="font-bold text-[#071B5C] block">Special Notes:</span>
+                  <p className="text-gray-600 mt-1">{detailRes.specialRequest}</p>
                 </div>
               )}
             </div>
 
             {/* Admin Status Actions */}
-            <div className="pt-3 border-t border-ceylon-bronze/30 space-y-2">
-              <span className="text-xs font-bold text-ceylon-copper uppercase block mb-1">Change Reservation Status:</span>
+            <div className="pt-3 border-t border-gray-200 space-y-2">
+              <span className="text-xs font-bold text-[#071B5C] uppercase block mb-1">Change Reservation Status:</span>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => handleUpdateStatus(detailRes._id, "Accepted")}
@@ -255,7 +255,7 @@ export default function AdminReservationsPage() {
                 </button>
                 <button
                   onClick={() => handleUpdateStatus(detailRes._id, "Completed")}
-                  className="py-2.5 rounded-xl font-extrabold text-xs text-ceylon-volcanic bg-ceylon-copper hover:bg-ceylon-saffron shadow-copper transition-all cursor-pointer"
+                  className="py-2.5 rounded-xl font-extrabold text-xs text-[#071B5C] bg-ceylon-gold hover:bg-[#071B5C] hover:text-white shadow-gold transition-all cursor-pointer"
                 >
                   Mark Completed
                 </button>
@@ -277,9 +277,9 @@ export default function AdminReservationsPage() {
               <div className="pt-2">
                 <button
                   onClick={() => handleDeleteReservation(detailRes._id)}
-                  className="w-full py-2.5 rounded-xl bg-rose-950/50 text-rose-300 hover:bg-rose-900/70 font-bold text-xs border border-rose-500/40 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="w-full py-2.5 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 font-bold text-xs border border-rose-200 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  <Trash2 className="w-4 h-4 text-rose-400" />
+                  <Trash2 className="w-4 h-4 text-rose-600" />
                   <span>Permanently Delete Reservation</span>
                 </button>
               </div>

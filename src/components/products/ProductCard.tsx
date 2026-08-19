@@ -18,7 +18,8 @@ interface ProductCardProps {
     isOffer?: boolean;
     offerPrice?: number;
     discountPercentage?: number;
-    images?: { url: string }[];
+    image?: any;
+    images?: any[];
     categoryId?: { name: string };
   };
 }
@@ -28,9 +29,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [added, setAdded] = useState(false);
 
   const displayPrice = product.isOffer && product.offerPrice ? product.offerPrice : product.price;
-  const imageUrl = product.images && product.images.length > 0
-    ? product.images[0].url
-    : "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80";
+
+  // Robust Image URL Extraction (supports strings, objects {url}, arrays, and single image props)
+  let imageUrl = "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=800&q=80";
+
+  if (product.images && product.images.length > 0) {
+    const first = product.images[0];
+    if (typeof first === "string" && first.trim().length > 0) {
+      imageUrl = first;
+    } else if (typeof first === "object" && first?.url) {
+      imageUrl = first.url;
+    }
+  } else if (product.image) {
+    if (typeof product.image === "string" && product.image.trim().length > 0) {
+      imageUrl = product.image;
+    } else if (typeof product.image === "object" && (product.image as any)?.url) {
+      imageUrl = (product.image as any).url;
+    }
+  }
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -54,73 +70,71 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   return (
-    <div className="group relative rounded-3xl overflow-hidden glass-cocoa border border-ceylon-copper/30 shadow-volcanic hover:shadow-copper-lg transition-all duration-500 transform hover:-translate-y-2 flex flex-col justify-between">
+    <div className="group relative rounded-2xl sm:rounded-3xl overflow-hidden bg-white text-[#071B5C] border border-gray-200 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between">
       {/* Product Image Container */}
-      <Link href={`/menu/${product._id}`} className="relative aspect-[4/3] w-full overflow-hidden block bg-ceylon-volcanic">
+      <Link href={`/menu/${product._id}`} className="relative aspect-[4/3] w-full overflow-hidden block bg-[#071B5C]">
         <Image
           src={imageUrl}
           alt={product.name}
           fill
           className="object-cover transition-transform duration-700 group-hover:scale-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-ceylon-cocoa via-transparent to-black/40 opacity-80 group-hover:opacity-90 transition-opacity" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#071B5C]/60 via-transparent to-black/20 opacity-80 group-hover:opacity-90 transition-opacity" />
 
         {/* Discount Badge */}
         {product.isOffer && (
-          <div className="absolute top-3 left-3 z-10 bg-ceylon-chilli text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-md animate-pulse">
-            {product.discountPercentage ? `${product.discountPercentage}% OFF` : "SPECIAL OFFER"}
+          <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 bg-ceylon-red text-white text-[9px] sm:text-[10px] font-black uppercase tracking-wider px-2 sm:px-3 py-0.5 sm:py-1 rounded-full shadow-md">
+            {product.discountPercentage ? `${product.discountPercentage}% OFF` : "OFFER"}
           </div>
         )}
 
         {/* Quick View Icon Overlay */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
-          <span className="p-3 rounded-full bg-ceylon-copper text-ceylon-volcanic shadow-copper transform translate-y-2 group-hover:translate-y-0 transition-transform">
-            <Eye className="w-5 h-5" />
+          <span className="p-2.5 sm:p-3 rounded-full bg-ceylon-gold text-[#071B5C] shadow-gold transform translate-y-2 group-hover:translate-y-0 transition-transform">
+            <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
           </span>
         </div>
       </Link>
 
       {/* Product Details Content */}
-      <div className="p-6 space-y-3 flex-1 flex flex-col justify-between bg-ceylon-cocoa">
-        <div className="space-y-1.5">
+      <div className="p-3.5 sm:p-6 space-y-2 flex-1 flex flex-col justify-between bg-white text-[#071B5C]">
+        <div className="space-y-1">
           {product.categoryId?.name && (
-            <span className="text-[10px] uppercase font-black tracking-widest text-ceylon-copper block">
+            <span className="text-[9px] sm:text-[10px] uppercase font-black tracking-widest text-[#071B5C]/70 block">
               {product.categoryId.name}
             </span>
           )}
           <Link href={`/menu/${product._id}`}>
-            <h3 className="font-serif-display text-2xl font-bold text-ceylon-ivory hover:text-ceylon-saffron transition-colors line-clamp-1">
+            <h3 className="font-serif-display text-base sm:text-2xl font-bold text-[#071B5C] hover:text-ceylon-gold transition-colors line-clamp-1">
               {product.name}
             </h3>
           </Link>
           {product.shortDescription && (
-            <p className="text-xs text-ceylon-sandstone line-clamp-2 leading-relaxed font-light">
+            <p className="text-[11px] sm:text-xs text-gray-600 line-clamp-1 sm:line-clamp-2 leading-relaxed font-light">
               {product.shortDescription}
             </p>
           )}
         </div>
 
         {/* Price & Action Row */}
-        <div className="flex items-center justify-between pt-4 border-t border-ceylon-bronze/30 mt-auto">
-          <div>
-            <div className="flex items-baseline gap-2">
-              <span className="font-serif-display text-2xl font-black text-ceylon-saffron">
-                £{displayPrice.toFixed(2)}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-2 sm:pt-4 border-t border-gray-200 mt-auto gap-2">
+          <div className="flex items-baseline gap-1.5">
+            <span className="font-serif-display text-lg sm:text-2xl font-black text-[#071B5C]">
+              £{displayPrice.toFixed(2)}
+            </span>
+            {product.isOffer && product.originalPrice && product.originalPrice > displayPrice && (
+              <span className="text-[10px] sm:text-xs text-gray-400 line-through font-medium">
+                £{product.originalPrice.toFixed(2)}
               </span>
-              {product.isOffer && product.originalPrice && product.originalPrice > displayPrice && (
-                <span className="text-xs text-ceylon-sandstone/50 line-through font-medium">
-                  £{product.originalPrice.toFixed(2)}
-                </span>
-              )}
-            </div>
+            )}
           </div>
 
           <button
             onClick={handleAddToCart}
-            className={`px-4 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all duration-300 shadow-md flex items-center gap-1.5 transform active:scale-95 cursor-pointer ${
+            className={`w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all duration-300 shadow-md flex items-center justify-center gap-1 transform active:scale-95 cursor-pointer ${
               added
                 ? "bg-emerald-600 text-white"
-                : "bg-ceylon-copper hover:bg-ceylon-saffron text-ceylon-volcanic shadow-copper"
+                : "bg-ceylon-gold hover:bg-[#071B5C] hover:text-white text-[#071B5C] shadow-gold"
             }`}
           >
             {added ? (

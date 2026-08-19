@@ -106,7 +106,6 @@ export default function AdminProductsPage() {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    // PRD Requirement #28: Max 4 images validation
     if (images.length + files.length > 4) {
       toast.error("Maximum 4 images allowed per product.");
       return;
@@ -205,21 +204,21 @@ export default function AdminProductsPage() {
   };
 
   return (
-    <div className="space-y-8 bg-ceylon-volcanic text-ceylon-ivory min-h-[85vh]">
+    <div className="space-y-8 bg-[#FAF7F2] text-[#071B5C] min-h-[85vh]">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-ceylon-bronze/30">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-gray-200">
         <div>
-          <h1 className="font-serif-display text-3xl sm:text-4xl font-extrabold text-ceylon-ivory">
+          <h1 className="font-serif-display text-3xl sm:text-4xl font-extrabold text-[#071B5C]">
             Product Management
           </h1>
-          <p className="text-xs text-ceylon-sandstone mt-1 font-light">
+          <p className="text-xs text-gray-500 mt-1 font-light">
             Add, update, manage Cloudinary images (max 4), and toggle daily offers.
           </p>
         </div>
 
         <button
           onClick={handleOpenAddModal}
-          className="px-5 py-2.5 rounded-full font-black text-xs uppercase tracking-widest text-ceylon-volcanic bg-ceylon-copper hover:bg-ceylon-saffron transition-all shadow-copper flex items-center gap-2 cursor-pointer"
+          className="px-5 py-2.5 rounded-full font-black text-xs uppercase tracking-widest text-[#071B5C] bg-ceylon-gold hover:bg-[#071B5C] hover:text-white transition-all shadow-gold flex items-center gap-2 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>Add New Product</span>
@@ -228,15 +227,15 @@ export default function AdminProductsPage() {
 
       {/* Product List Table */}
       {loading ? (
-        <div className="glass-cocoa rounded-3xl p-12 text-center border border-ceylon-copper/30">
-          <div className="animate-spin w-8 h-8 border-4 border-ceylon-copper border-t-transparent rounded-full mx-auto shadow-copper" />
+        <div className="bg-white rounded-3xl p-12 text-center border border-gray-200 shadow-md">
+          <div className="animate-spin w-8 h-8 border-4 border-[#071B5C] border-t-transparent rounded-full mx-auto" />
         </div>
       ) : (
-        <div className="glass-cocoa rounded-[2.5rem] shadow-volcanic border border-ceylon-copper/30 overflow-hidden">
+        <div className="bg-white rounded-[2.5rem] shadow-md border border-gray-200 overflow-hidden text-[#071B5C]">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-ceylon-volcanic text-ceylon-copper text-xs uppercase font-black tracking-widest border-b border-ceylon-bronze/30">
+                <tr className="bg-[#071B5C] text-white text-xs uppercase font-black tracking-widest">
                   <th className="p-4">Image</th>
                   <th className="p-4">Dish Name</th>
                   <th className="p-4">Category</th>
@@ -246,49 +245,49 @@ export default function AdminProductsPage() {
                   <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-ceylon-bronze/20 text-sm font-medium text-ceylon-ivory">
+              <tbody className="divide-y divide-gray-200 text-sm font-medium text-[#071B5C]">
                 {products.map((p) => {
                   const firstImg = p.images && p.images[0]?.url ? p.images[0].url : null;
                   return (
-                    <tr key={p._id} className="hover:bg-ceylon-volcanic/60 transition-colors">
+                    <tr key={p._id} className="hover:bg-gray-50 transition-colors">
                       <td className="p-4">
-                        <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-ceylon-volcanic border border-ceylon-copper/30">
+                        <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
                           {firstImg ? (
                             <Image src={firstImg} alt={p.name} fill className="object-cover" />
                           ) : (
-                            <span className="text-[10px] text-ceylon-sandstone/50 p-1 block text-center">No Img</span>
+                            <span className="text-[10px] text-gray-400 p-1 block text-center">No Img</span>
                           )}
                         </div>
                       </td>
                       <td className="p-4">
-                        <span className="font-bold text-ceylon-ivory block">{p.name}</span>
+                        <span className="font-bold text-[#071B5C] block">{p.name}</span>
                         {p.isFeatured && (
-                          <span className="text-[10px] text-ceylon-saffron font-bold uppercase inline-flex items-center gap-0.5">
-                            <Flame className="w-3 h-3 fill-current text-ceylon-saffron" /> Favourite
+                          <span className="text-[10px] text-ceylon-gold font-bold uppercase inline-flex items-center gap-0.5">
+                            <Flame className="w-3 h-3 fill-current text-ceylon-gold" /> Favourite
                           </span>
                         )}
                       </td>
-                      <td className="p-4 text-xs font-medium text-ceylon-sandstone">
+                      <td className="p-4 text-xs font-medium text-gray-600">
                         {p.categoryId?.name || "Uncategorized"}
                       </td>
-                      <td className="p-4 font-bold text-ceylon-saffron">
+                      <td className="p-4 font-bold text-[#071B5C]">
                         £{p.price.toFixed(2)}
                       </td>
                       <td className="p-4">
                         {p.isOffer && p.offerPrice ? (
-                          <span className="px-2.5 py-1 rounded-full bg-ceylon-chilli text-white text-xs font-extrabold shadow-sm">
+                          <span className="px-2.5 py-1 rounded-full bg-ceylon-red text-white text-xs font-extrabold shadow-sm">
                             £{p.offerPrice.toFixed(2)} ({p.discountPercentage}% OFF)
                           </span>
                         ) : (
-                          <span className="text-xs text-ceylon-sandstone/40">Regular</span>
+                          <span className="text-xs text-gray-400">Regular</span>
                         )}
                       </td>
                       <td className="p-4">
                         <span
                           className={`px-2.5 py-1 rounded-full text-xs font-bold ${
                             p.isAvailable !== false
-                              ? "bg-emerald-950/80 text-emerald-400 border border-emerald-500/40"
-                              : "bg-ceylon-volcanic text-ceylon-sandstone/50 border border-ceylon-bronze/30"
+                              ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
+                              : "bg-gray-100 text-gray-500 border border-gray-300"
                           }`}
                         >
                           {p.isAvailable !== false ? "Yes" : "No"}
@@ -297,14 +296,14 @@ export default function AdminProductsPage() {
                       <td className="p-4 text-right space-x-2">
                         <button
                           onClick={() => handleOpenEditModal(p)}
-                          className="p-2 text-ceylon-copper hover:bg-ceylon-volcanic rounded-lg transition-colors cursor-pointer"
+                          className="p-2 text-[#071B5C] hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
                           title="Edit Product"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => setDeleteId(p._id)}
-                          className="p-2 text-rose-400 hover:bg-rose-950/40 rounded-lg transition-colors cursor-pointer"
+                          className="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                           title="Delete Product"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -321,13 +320,13 @@ export default function AdminProductsPage() {
 
       {/* Add / Edit Product Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-ceylon-volcanic/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-ceylon-cocoa border-2 border-ceylon-copper/50 rounded-[2.5rem] w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 shadow-volcanic text-ceylon-ivory">
-            <div className="flex justify-between items-center pb-4 border-b border-ceylon-bronze/30">
-              <h3 className="font-serif-display font-extrabold text-2xl text-ceylon-ivory">
+        <div className="fixed inset-0 z-50 bg-[#071B5C]/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white border-2 border-gray-200 rounded-[2.5rem] w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 shadow-2xl text-[#071B5C]">
+            <div className="flex justify-between items-center pb-4 border-b border-gray-200">
+              <h3 className="font-serif-display font-extrabold text-2xl text-[#071B5C]">
                 {editingId ? "Edit Product" : "Add New Dish"}
               </h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-ceylon-sandstone hover:text-ceylon-ivory transition-colors cursor-pointer">
+              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-[#071B5C] transition-colors cursor-pointer">
                 <X className="w-6 h-6" />
               </button>
             </div>
@@ -335,24 +334,24 @@ export default function AdminProductsPage() {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-ceylon-copper uppercase mb-1">Product Name *</label>
+                  <label className="block text-xs font-bold text-[#071B5C] uppercase mb-1">Product Name *</label>
                   <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-ceylon-copper/40 text-sm font-semibold bg-ceylon-volcanic text-ceylon-ivory focus:outline-none focus:border-ceylon-saffron"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm font-semibold bg-gray-50 text-[#071B5C] focus:outline-none focus:border-[#071B5C]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-ceylon-copper uppercase mb-1">Category *</label>
+                  <label className="block text-xs font-bold text-[#071B5C] uppercase mb-1">Category *</label>
                   <select
                     value={categoryId}
                     onChange={(e) => setCategoryId(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-ceylon-copper/40 text-sm font-semibold bg-ceylon-volcanic text-ceylon-ivory focus:outline-none focus:border-ceylon-saffron"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm font-semibold bg-gray-50 text-[#071B5C] focus:outline-none focus:border-[#071B5C]"
                   >
                     {categories.map((c) => (
-                      <option key={c._id} value={c._id} className="bg-ceylon-volcanic text-ceylon-ivory">
+                      <option key={c._id} value={c._id} className="bg-white text-[#071B5C]">
                         {c.name}
                       </option>
                     ))}
@@ -362,33 +361,33 @@ export default function AdminProductsPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-ceylon-copper uppercase mb-1">Regular Price (£) *</label>
+                  <label className="block text-xs font-bold text-[#071B5C] uppercase mb-1">Regular Price (£) *</label>
                   <input
                     type="number"
                     step="0.01"
                     required
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-ceylon-copper/40 text-sm font-semibold bg-ceylon-volcanic text-ceylon-ivory focus:outline-none focus:border-ceylon-saffron"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm font-semibold bg-gray-50 text-[#071B5C] focus:outline-none focus:border-[#071B5C]"
                   />
                 </div>
 
                 <div className="flex items-center gap-6 pt-5">
-                  <label className="flex items-center gap-2 text-xs font-bold text-ceylon-ivory cursor-pointer">
+                  <label className="flex items-center gap-2 text-xs font-bold text-[#071B5C] cursor-pointer">
                     <input
                       type="checkbox"
                       checked={isAvailable}
                       onChange={(e) => setIsAvailable(e.target.checked)}
-                      className="rounded accent-ceylon-copper"
+                      className="rounded accent-[#071B5C]"
                     />
                     Available
                   </label>
-                  <label className="flex items-center gap-2 text-xs font-bold text-ceylon-saffron cursor-pointer">
+                  <label className="flex items-center gap-2 text-xs font-bold text-ceylon-gold cursor-pointer">
                     <input
                       type="checkbox"
                       checked={isFeatured}
                       onChange={(e) => setIsFeatured(e.target.checked)}
-                      className="rounded accent-ceylon-copper"
+                      className="rounded accent-[#071B5C]"
                     />
                     Featured Favourite
                   </label>
@@ -396,60 +395,60 @@ export default function AdminProductsPage() {
               </div>
 
               {/* Offer Toggle */}
-              <div className="p-4 rounded-2xl bg-ceylon-volcanic border border-ceylon-copper/40 space-y-3">
-                <label className="flex items-center gap-2 font-bold text-ceylon-saffron text-sm cursor-pointer">
+              <div className="p-4 rounded-2xl bg-gray-50 border border-gray-200 space-y-3">
+                <label className="flex items-center gap-2 font-bold text-ceylon-red text-sm cursor-pointer">
                   <input
                     type="checkbox"
                     checked={isOffer}
                     onChange={(e) => setIsOffer(e.target.checked)}
-                    className="rounded accent-ceylon-chilli"
+                    className="rounded accent-ceylon-red"
                   />
                   <span>Available on Daily Special Offer?</span>
                 </label>
 
                 {isOffer && (
                   <div>
-                    <label className="block text-xs font-bold text-ceylon-chilli uppercase mb-1">Offer Price (£)</label>
+                    <label className="block text-xs font-bold text-ceylon-red uppercase mb-1">Offer Price (£)</label>
                     <input
                       type="number"
                       step="0.01"
                       placeholder="e.g. 9.99"
                       value={offerPrice}
                       onChange={(e) => setOfferPrice(e.target.value)}
-                      className="w-full px-4 py-2 rounded-xl border border-ceylon-chilli/50 text-sm font-bold bg-ceylon-cocoa text-ceylon-ivory focus:outline-none focus:border-ceylon-saffron"
+                      className="w-full px-4 py-2 rounded-xl border border-ceylon-red/50 text-sm font-bold bg-white text-[#071B5C] focus:outline-none focus:border-[#071B5C]"
                     />
                   </div>
                 )}
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-ceylon-copper uppercase mb-1">Short Description</label>
+                <label className="block text-xs font-bold text-[#071B5C] uppercase mb-1">Short Description</label>
                 <input
                   type="text"
                   value={shortDescription}
                   onChange={(e) => setShortDescription(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-ceylon-copper/40 text-sm font-medium bg-ceylon-volcanic text-ceylon-ivory focus:outline-none focus:border-ceylon-saffron"
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm font-medium bg-gray-50 text-[#071B5C] focus:outline-none focus:border-[#071B5C]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-ceylon-copper uppercase mb-1">Full Description</label>
+                <label className="block text-xs font-bold text-[#071B5C] uppercase mb-1">Full Description</label>
                 <textarea
                   rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-ceylon-copper/40 text-sm font-medium bg-ceylon-volcanic text-ceylon-ivory focus:outline-none focus:border-ceylon-saffron"
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm font-medium bg-gray-50 text-[#071B5C] focus:outline-none focus:border-[#071B5C]"
                 />
               </div>
 
               {/* Cloudinary Image Uploader (Max 4 Images) */}
               <div>
-                <label className="block text-xs font-bold text-ceylon-copper uppercase mb-1">
+                <label className="block text-xs font-bold text-[#071B5C] uppercase mb-1">
                   Product Images (Maximum 4 Cloudinary Images)
                 </label>
                 <div className="grid grid-cols-4 gap-3">
                   {images.map((img, i) => (
-                    <div key={i} className="relative aspect-square rounded-xl overflow-hidden border border-ceylon-copper/40 group bg-ceylon-volcanic">
+                    <div key={i} className="relative aspect-square rounded-xl overflow-hidden border border-gray-300 group bg-gray-100">
                       <Image src={img.url} alt={`Upload ${i + 1}`} fill className="object-cover" />
                       <button
                         type="button"
@@ -462,9 +461,9 @@ export default function AdminProductsPage() {
                   ))}
 
                   {images.length < 4 && (
-                    <label className="aspect-square rounded-xl border-2 border-dashed border-ceylon-copper/40 hover:border-ceylon-copper flex flex-col items-center justify-center cursor-pointer bg-ceylon-volcanic transition-colors">
-                      <Upload className="w-5 h-5 text-ceylon-copper mb-1" />
-                      <span className="text-[10px] font-bold text-ceylon-copper">
+                    <label className="aspect-square rounded-xl border-2 border-dashed border-gray-300 hover:border-[#071B5C] flex flex-col items-center justify-center cursor-pointer bg-gray-50 transition-colors">
+                      <Upload className="w-5 h-5 text-[#071B5C] mb-1" />
+                      <span className="text-[10px] font-bold text-[#071B5C]">
                         {uploadingImage ? "Uploading..." : `Upload (${4 - images.length} left)`}
                       </span>
                       <input
@@ -482,7 +481,7 @@ export default function AdminProductsPage() {
 
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-full font-black text-sm uppercase tracking-widest text-ceylon-volcanic bg-ceylon-copper hover:bg-ceylon-saffron shadow-copper cursor-pointer transition-all"
+                className="w-full py-3.5 rounded-full font-black text-sm uppercase tracking-widest text-[#071B5C] bg-ceylon-gold hover:bg-[#071B5C] hover:text-white shadow-gold cursor-pointer transition-all"
               >
                 Save Product
               </button>
@@ -493,16 +492,16 @@ export default function AdminProductsPage() {
 
       {/* Delete Confirmation Modal */}
       {deleteId && (
-        <div className="fixed inset-0 z-50 bg-ceylon-volcanic/90 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-ceylon-cocoa border-2 border-ceylon-copper/50 rounded-[2rem] p-6 max-w-sm w-full space-y-4 text-center text-ceylon-ivory shadow-volcanic">
-            <h3 className="font-serif-display font-extrabold text-2xl text-ceylon-ivory">Delete Product?</h3>
-            <p className="text-xs text-ceylon-sandstone">
+        <div className="fixed inset-0 z-50 bg-[#071B5C]/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white border-2 border-gray-200 rounded-[2rem] p-6 max-w-sm w-full space-y-4 text-center text-[#071B5C] shadow-2xl">
+            <h3 className="font-serif-display font-extrabold text-2xl text-[#071B5C]">Delete Product?</h3>
+            <p className="text-xs text-gray-500">
               This will permanently remove the product and associated Cloudinary images.
             </p>
             <div className="flex gap-3 pt-2">
               <button
                 onClick={() => setDeleteId(null)}
-                className="flex-1 py-2.5 rounded-xl border border-ceylon-copper/40 font-bold text-xs text-ceylon-ivory hover:bg-ceylon-volcanic cursor-pointer"
+                className="flex-1 py-2.5 rounded-xl border border-gray-300 font-bold text-xs text-[#071B5C] hover:bg-gray-100 cursor-pointer"
               >
                 Cancel
               </button>

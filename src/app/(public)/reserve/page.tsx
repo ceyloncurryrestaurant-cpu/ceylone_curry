@@ -28,35 +28,6 @@ export default function ReservePage() {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  // Generate 30-day date options (1 full month ahead)
-  const dateOptions = Array.from({ length: 30 }, (_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() + i);
-    return {
-      iso: d.toISOString().split("T")[0],
-      dayName: d.toLocaleDateString("en-US", { weekday: "short" }),
-      dayNum: d.getDate(),
-      month: d.toLocaleDateString("en-US", { month: "short" }),
-    };
-  });
-
-  // Expanded 15-minute & 30-minute time slots from 10:00 AM to 11:00 PM
-  const timeSlots = [
-    "10:00", "10:15", "10:30", "10:45",
-    "11:00", "11:15", "11:30", "11:45",
-    "12:00", "12:15", "12:30", "12:45",
-    "13:00", "13:15", "13:30", "13:45",
-    "14:00", "14:15", "14:30", "14:45",
-    "15:00", "15:15", "15:30", "15:45",
-    "16:00", "16:15", "16:30", "16:45",
-    "17:00", "17:15", "17:30", "17:45",
-    "18:00", "18:15", "18:30", "18:45",
-    "19:00", "19:15", "19:30", "19:45",
-    "20:00", "20:15", "20:30", "20:45",
-    "21:00", "21:15", "21:30", "21:45",
-    "22:00", "22:15", "22:30", "22:45", "23:00"
-  ];
-
   useEffect(() => {
     fetchAvailability();
   }, [selectedDate, selectedTime]);
@@ -151,47 +122,6 @@ export default function ReservePage() {
       }
     }
 
-    // Validate opening hours
-    if (settings?.openingHours) {
-      const [year, month, day] = selectedDate.split("-").map(Number);
-      const bookingDate = new Date(year, month - 1, day);
-      const daysOfWeek = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
-      const dayName = daysOfWeek[bookingDate.getDay()];
-      
-      const hoursForDay = (settings.openingHours as any)[dayName];
-      if (hoursForDay) {
-        if (hoursForDay.toLowerCase().includes("closed")) {
-          toast.error(`Sorry, the restaurant is closed on ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}.`);
-          return;
-        }
-
-        const parts = hoursForDay.split("-");
-        if (parts.length === 2) {
-          const parse12HourToMins = (timeStr: string): number => {
-            const match = timeStr.trim().toUpperCase().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/);
-            if (!match) return 0;
-            let h = parseInt(match[1], 10);
-            const m = parseInt(match[2], 10);
-            const ampm = match[3];
-            if (ampm === "PM" && h !== 12) h += 12;
-            else if (ampm === "AM" && h === 12) h = 0;
-            return h * 60 + m;
-          };
-
-          const startMins = parse12HourToMins(parts[0]);
-          const endMins = parse12HourToMins(parts[1]);
-
-          const [reqHours, reqMins] = selectedTime.split(":").map(Number);
-          const reqMinsTotal = reqHours * 60 + reqMins;
-
-          if (reqMinsTotal < startMins || reqMinsTotal > endMins) {
-            toast.error(`Ceylon Curry is open from ${hoursForDay} on ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}. Please choose a time within these hours.`);
-            return;
-          }
-        }
-      }
-    }
-
     setSubmitting(true);
     try {
       const res = await fetch("/api/reservations", {
@@ -224,49 +154,49 @@ export default function ReservePage() {
   };
 
   return (
-    <div className="min-h-screen bg-ceylon-volcanic text-ceylon-ivory py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-[#FAF7F2] text-[#071B5C] py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       <div className="max-w-7xl mx-auto space-y-10 relative z-10">
-        {/* HERO BANNER */}
-        <div className="relative rounded-3xl overflow-hidden shadow-volcanic bg-ceylon-cocoa text-ceylon-ivory p-8 sm:p-14 text-center border-2 border-ceylon-copper/40">
+        {/* HERO BANNER — ROYAL NAVY */}
+        <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-[#071B5C] text-white p-8 sm:p-14 text-center border-2 border-white/20">
           <div className="absolute inset-0 z-0">
             <Image
               src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=80"
               alt="Dining Room Atmosphere"
               fill
-              className="object-cover opacity-20"
+              className="object-cover opacity-25"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-ceylon-cocoa via-ceylon-cocoa/80 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#071B5C] via-[#071B5C]/80 to-transparent" />
           </div>
 
           <div className="relative z-10 space-y-4 max-w-3xl mx-auto">
-            <span className="text-xs uppercase font-extrabold tracking-[0.3em] text-ceylon-copper inline-flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-ceylon-saffron" />
+            <span className="text-xs uppercase font-extrabold tracking-[0.3em] text-ceylon-gold inline-flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-ceylon-gold" />
               TABLE SEATING & RESERVATIONS
             </span>
-            <h1 className="font-serif-display text-4xl sm:text-6xl font-black text-ceylon-ivory leading-tight">
+            <h1 className="font-serif-display text-4xl sm:text-6xl font-black text-white leading-tight">
               Reserve Your Dining Table
             </h1>
-            <p className="text-ceylon-sandstone text-xs sm:text-sm font-light leading-relaxed">
+            <p className="text-blue-100 text-xs sm:text-sm font-light leading-relaxed">
               Explore our 7 visual table seating options. Select your date, time, and table seating photo for an unforgettable dining experience.
             </p>
           </div>
         </div>
 
         {/* 5-STEP JOURNEY STEPPER */}
-        <div className="glass-cocoa p-4 rounded-2xl border border-ceylon-copper/40 flex justify-between items-center text-xs font-black uppercase tracking-widest overflow-x-auto shadow-volcanic">
-          <div className={`flex items-center gap-2 px-4 py-2 rounded-xl ${step >= 1 ? "bg-ceylon-copper text-ceylon-volcanic" : "text-ceylon-sandstone/40"}`}>
+        <div className="bg-white p-4 rounded-2xl border border-gray-300 flex justify-between items-center text-xs font-black uppercase tracking-widest overflow-x-auto shadow-md text-[#071B5C]">
+          <div className={`flex items-center gap-2 px-4 py-2 rounded-xl ${step >= 1 ? "bg-[#071B5C] text-white" : "text-gray-400"}`}>
             <span>01 DATE</span>
           </div>
-          <span className="text-ceylon-bronze">›</span>
-          <div className={`flex items-center gap-2 px-4 py-2 rounded-xl ${step >= 2 ? "bg-ceylon-copper text-ceylon-volcanic" : "text-ceylon-sandstone/40"}`}>
+          <span className="text-gray-300">›</span>
+          <div className={`flex items-center gap-2 px-4 py-2 rounded-xl ${step >= 2 ? "bg-[#071B5C] text-white" : "text-gray-400"}`}>
             <span>02 TIME & PARTY</span>
           </div>
-          <span className="text-ceylon-bronze">›</span>
-          <div className={`flex items-center gap-2 px-4 py-2 rounded-xl ${step >= 3 ? "bg-ceylon-copper text-ceylon-volcanic" : "text-ceylon-sandstone/40"}`}>
+          <span className="text-gray-300">›</span>
+          <div className={`flex items-center gap-2 px-4 py-2 rounded-xl ${step >= 3 ? "bg-[#071B5C] text-white" : "text-gray-400"}`}>
             <span>03 SELECT TABLE IMAGE</span>
           </div>
-          <span className="text-ceylon-bronze">›</span>
-          <div className={`flex items-center gap-2 px-4 py-2 rounded-xl ${step >= 4 ? "bg-ceylon-copper text-ceylon-volcanic" : "text-ceylon-sandstone/40"}`}>
+          <span className="text-gray-300">›</span>
+          <div className={`flex items-center gap-2 px-4 py-2 rounded-xl ${step >= 4 ? "bg-[#071B5C] text-white" : "text-gray-400"}`}>
             <span>04 DETAILS</span>
           </div>
         </div>
@@ -276,21 +206,20 @@ export default function ReservePage() {
           {/* Left Column: Date, Time & Guest Selectors */}
           <div className="space-y-6 lg:col-span-1">
             {/* Step 1: Clean Date Selector */}
-            <div className="glass-cocoa p-6 rounded-3xl border border-ceylon-copper/40 space-y-4 shadow-volcanic">
-              <h3 className="font-serif-display text-xl font-bold text-ceylon-ivory flex items-center gap-2">
-                <CalendarIcon className="w-5 h-5 text-ceylon-copper" />
+            <div className="bg-white p-6 rounded-3xl border border-gray-200 space-y-4 shadow-md text-[#071B5C]">
+              <h3 className="font-serif-display text-xl font-bold text-[#071B5C] flex items-center gap-2">
+                <CalendarIcon className="w-5 h-5 text-[#071B5C]" />
                 1. Select Reservation Date
               </h3>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-ceylon-copper uppercase tracking-wider block">
+                <label className="text-xs font-bold text-[#071B5C] uppercase tracking-wider block">
                   Reservation Date *
                 </label>
                 <div className="relative flex items-center">
                   <input
                     type="date"
                     required
-                    style={{ colorScheme: "dark" }}
                     value={selectedDate}
                     min={new Date().toISOString().split("T")[0]}
                     onChange={(e) => {
@@ -299,21 +228,21 @@ export default function ReservePage() {
                         setSelectedTable(null);
                       }
                     }}
-                    className="w-full px-4 py-3 rounded-2xl border border-ceylon-copper/50 bg-ceylon-volcanic text-ceylon-ivory text-sm font-bold focus:outline-none focus:border-ceylon-saffron cursor-pointer"
+                    className="w-full px-4 py-3 rounded-2xl border border-gray-300 bg-gray-50 text-[#071B5C] text-sm font-bold focus:outline-none focus:border-[#071B5C] cursor-pointer"
                   />
                 </div>
               </div>
             </div>
 
             {/* Step 2: Time & Party Size Selector */}
-            <div className="glass-cocoa p-6 rounded-3xl border border-ceylon-copper/40 space-y-4 shadow-volcanic">
-              <h3 className="font-serif-display text-xl font-bold text-ceylon-ivory flex items-center gap-2">
-                <Clock className="w-5 h-5 text-ceylon-copper" />
+            <div className="bg-white p-6 rounded-3xl border border-gray-200 space-y-4 shadow-md text-[#071B5C]">
+              <h3 className="font-serif-display text-xl font-bold text-[#071B5C] flex items-center gap-2">
+                <Clock className="w-5 h-5 text-[#071B5C]" />
                 2. Select Time & Guests
               </h3>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-ceylon-copper uppercase tracking-wider block">
+                <label className="text-xs font-bold text-[#071B5C] uppercase tracking-wider block">
                   Party Size (Guests)
                 </label>
                 <div className="flex items-center gap-2">
@@ -327,8 +256,8 @@ export default function ReservePage() {
                       }}
                       className={`flex-1 py-2.5 rounded-xl border text-xs font-black transition-all cursor-pointer ${
                         guestCount === num
-                          ? "bg-ceylon-copper text-ceylon-volcanic border-ceylon-copper shadow-copper"
-                          : "bg-ceylon-volcanic text-ceylon-ivory border-ceylon-copper/30 hover:border-ceylon-copper"
+                          ? "bg-[#071B5C] text-white border-[#071B5C] shadow-md"
+                          : "bg-gray-50 text-[#071B5C] border-gray-300 hover:border-[#071B5C]"
                       }`}
                     >
                       {num} {num === 1 ? "Guest" : "Guests"}
@@ -337,15 +266,14 @@ export default function ReservePage() {
                 </div>
               </div>
 
-              {/* Clean Direct Time Input */}
+              {/* Time Input */}
               <div className="space-y-2 pt-2">
-                <label className="text-xs font-bold text-ceylon-copper uppercase tracking-wider block">
+                <label className="text-xs font-bold text-[#071B5C] uppercase tracking-wider block">
                   Reservation Arrival Time *
                 </label>
                 <input
                   type="time"
                   required
-                  style={{ colorScheme: "dark" }}
                   value={selectedTime}
                   onChange={(e) => {
                     if (e.target.value) {
@@ -353,40 +281,40 @@ export default function ReservePage() {
                       setSelectedTable(null);
                     }
                   }}
-                  className="w-full px-4 py-3 rounded-2xl border border-ceylon-copper/50 bg-ceylon-volcanic text-ceylon-ivory text-sm font-bold focus:outline-none focus:border-ceylon-saffron cursor-pointer"
+                  className="w-full px-4 py-3 rounded-2xl border border-gray-300 bg-gray-50 text-[#071B5C] text-sm font-bold focus:outline-none focus:border-[#071B5C] cursor-pointer"
                 />
               </div>
             </div>
           </div>
 
-          {/* Right Column: Visual Tables Showcase with Individual Photos */}
+          {/* Right Column: Visual Tables Showcase */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="glass-cocoa p-6 sm:p-8 rounded-[3rem] border border-ceylon-copper/40 shadow-volcanic space-y-6">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-ceylon-bronze/30 pb-4">
+            <div className="bg-white p-3 sm:p-8 rounded-2xl sm:rounded-[3rem] border border-gray-200 shadow-md text-[#071B5C] space-y-4 sm:space-y-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-gray-200 pb-3 sm:pb-4">
                 <div>
-                  <h3 className="font-serif-display text-2xl font-bold text-ceylon-ivory">
+                  <h3 className="font-serif-display text-xl sm:text-2xl font-bold text-[#071B5C]">
                     3. Select Restaurant Table Experience
                   </h3>
-                  <p className="text-xs text-ceylon-sandstone font-light mt-0.5">
+                  <p className="text-xs text-gray-600 font-light mt-0.5">
                     Click any table card below to view its photograph and select it for your booking.
                   </p>
                 </div>
 
-                <div className="flex items-center gap-3 text-[11px] font-bold">
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block shadow-sm" /> Available
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-[11px] font-bold">
+                  <span className="flex items-center gap-1">
+                    <span className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 rounded-full bg-emerald-500 inline-block shadow-sm" /> Available
                   </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-3.5 h-3.5 rounded-full bg-ceylon-chilli inline-block shadow-sm" /> Reserved
+                  <span className="flex items-center gap-1">
+                    <span className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 rounded-full bg-ceylon-red inline-block shadow-sm" /> Reserved
                   </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-3.5 h-3.5 rounded-full bg-ceylon-copper inline-block shadow-sm" /> Selected
+                  <span className="flex items-center gap-1">
+                    <span className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 rounded-full bg-[#071B5C] inline-block shadow-sm" /> Selected
                   </span>
                 </div>
               </div>
 
-              {/* Table Seating Cards Grid with Prominent Photographs */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Table Seating Cards Grid — STRICT 2 CARDS PER ROW ON MOBILE */}
+              <div className="grid grid-cols-2 gap-2 sm:gap-6 lg:grid-cols-3">
                 {tables.map((table) => {
                   const occupied = isTableOccupied(table._id) || table.status !== "Available";
                   const isSelected = selectedTable?._id === table._id;
@@ -396,16 +324,16 @@ export default function ReservePage() {
                     <div
                       key={table._id}
                       onClick={() => !occupied && handleTableSelect(table)}
-                      className={`group relative rounded-3xl overflow-hidden border-2 transition-all duration-500 cursor-pointer transform ${
+                      className={`group relative rounded-xl sm:rounded-3xl overflow-hidden border border-gray-300 sm:border-2 transition-all duration-300 cursor-pointer transform min-w-0 w-full ${
                         occupied
-                          ? "opacity-40 border-ceylon-bronze/20 cursor-not-allowed"
+                          ? "opacity-40 border-gray-200 cursor-not-allowed"
                           : isSelected
-                          ? "border-ceylon-copper shadow-copper-lg scale-105 ring-4 ring-ceylon-copper/40"
-                          : "border-ceylon-copper/30 hover:border-ceylon-copper hover:-translate-y-1.5 shadow-volcanic"
+                          ? "border-[#071B5C] shadow-2xl scale-[1.02] sm:scale-105 ring-2 sm:ring-4 ring-[#071B5C]/30"
+                          : "border-gray-200 hover:border-[#071B5C] hover:-translate-y-1 shadow-md"
                       }`}
                     >
                       {/* Seating Photography */}
-                      <div className="relative aspect-[4/3] w-full overflow-hidden bg-ceylon-volcanic">
+                      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#071B5C]">
                         <Image
                           src={tableImg}
                           alt={`Table ${table.tableNumber} Dining Experience`}
@@ -413,16 +341,16 @@ export default function ReservePage() {
                           unoptimized
                           className="object-cover transition-transform duration-700 group-hover:scale-110"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-ceylon-volcanic via-transparent to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#071B5C] via-[#071B5C]/20 to-transparent" />
 
                         {/* Top Badges */}
-                        <div className="absolute top-3 left-3 z-10 flex gap-2">
+                        <div className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 z-10 flex gap-1 sm:gap-2">
                           <span
-                            className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                            className={`px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[7px] sm:text-[10px] font-black uppercase tracking-wider ${
                               occupied
-                                ? "bg-ceylon-chilli text-white"
+                                ? "bg-ceylon-red text-white"
                                 : isSelected
-                                ? "bg-ceylon-copper text-ceylon-volcanic shadow-copper"
+                                ? "bg-[#071B5C] text-white shadow-md"
                                 : "bg-emerald-600 text-white shadow-md"
                             }`}
                           >
@@ -430,17 +358,18 @@ export default function ReservePage() {
                           </span>
                         </div>
 
-                        <div className="absolute bottom-3 left-3 right-3 z-10 text-ceylon-ivory">
-                          <div className="flex justify-between items-end">
-                            <div>
-                              <span className="text-[10px] font-extrabold uppercase tracking-widest text-ceylon-copper block">
+                        {/* Bottom Info Overlay */}
+                        <div className="absolute bottom-1.5 left-1.5 right-1.5 sm:bottom-3 sm:left-3 sm:right-3 z-10 text-white">
+                          <div className="flex justify-between items-end gap-1">
+                            <div className="min-w-0">
+                              <span className="text-[7px] sm:text-[10px] font-extrabold uppercase tracking-widest text-ceylon-gold block truncate">
                                 Table 0{table.tableNumber}
                               </span>
-                              <h4 className="font-serif-display text-lg font-bold text-ceylon-ivory">
+                              <h4 className="font-serif-display text-[10px] sm:text-lg font-bold text-white leading-tight truncate">
                                 {table.type} Table
                               </h4>
                             </div>
-                            <span className="px-2.5 py-1 rounded-lg bg-ceylon-volcanic/80 backdrop-blur-md text-[10px] font-black text-ceylon-saffron border border-ceylon-copper/30">
+                            <span className="px-1 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-[#071B5C]/90 backdrop-blur-md text-[7px] sm:text-[10px] font-black text-ceylon-gold border border-white/20 shrink-0">
                               {table.capacity} Seats
                             </span>
                           </div>
@@ -453,9 +382,9 @@ export default function ReservePage() {
 
               {/* Selected Table Experience Preview Card */}
               {selectedTable && (
-                <div className="bg-ceylon-volcanic text-ceylon-ivory p-6 sm:p-8 rounded-[3rem] border-2 border-ceylon-copper/50 shadow-volcanic space-y-6 animate-fade-in">
+                <div className="bg-[#071B5C] text-white p-6 sm:p-8 rounded-[3rem] border-2 border-white/20 shadow-2xl space-y-6 animate-fade-in">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                    <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border-2 border-ceylon-copper/40 shadow-xl">
+                    <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border-2 border-white/20 shadow-xl">
                       <Image
                         src={selectedTable.image?.url || "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=800&q=80"}
                         alt={`Table ${selectedTable.tableNumber}`}
@@ -465,68 +394,68 @@ export default function ReservePage() {
                     </div>
 
                     <div className="space-y-3">
-                      <span className="text-xs font-bold text-ceylon-copper uppercase tracking-widest block">
+                      <span className="text-xs font-bold text-ceylon-gold uppercase tracking-widest block">
                         Selected Table Experience
                       </span>
-                      <h3 className="font-serif-display text-2xl sm:text-3xl font-extrabold text-ceylon-ivory">
+                      <h3 className="font-serif-display text-2xl sm:text-3xl font-extrabold text-white">
                         Table 0{selectedTable.tableNumber} ({selectedTable.type})
                       </h3>
-                      <p className="text-xs text-ceylon-sandstone leading-relaxed font-light">
+                      <p className="text-xs text-blue-100 leading-relaxed font-light">
                         Enjoy your Ceylon dining experience at Table {selectedTable.tableNumber} for {guestCount} guests on {selectedDate} at {selectedTime}.
                       </p>
                     </div>
                   </div>
 
                   {/* Customer Details Form */}
-                  <form onSubmit={handleSubmit} className="space-y-4 pt-4 border-t border-ceylon-bronze/30">
-                    <h4 className="font-serif-display text-xl font-bold text-ceylon-copper">
+                  <form onSubmit={handleSubmit} className="space-y-4 pt-4 border-t border-white/20">
+                    <h4 className="font-serif-display text-xl font-bold text-ceylon-gold">
                       4. Guest Contact Details
                     </h4>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
-                        <label className="text-xs font-bold text-ceylon-sandstone uppercase block mb-1">Full Name *</label>
+                        <label className="text-xs font-bold text-blue-100 uppercase block mb-1">Full Name *</label>
                         <input
                           type="text"
                           required
                           value={customerName}
                           onChange={(e) => setCustomerName(e.target.value)}
                           placeholder="John Smith"
-                          className="w-full px-4 py-2.5 rounded-xl border border-ceylon-copper/40 bg-ceylon-cocoa text-ceylon-ivory text-xs font-semibold focus:outline-none focus:border-ceylon-saffron"
+                          className="w-full px-4 py-2.5 rounded-xl border border-white/20 bg-[#0E3094] text-white text-xs font-semibold focus:outline-none focus:border-ceylon-gold"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-ceylon-sandstone uppercase block mb-1">Email Address *</label>
+                        <label className="text-xs font-bold text-blue-100 uppercase block mb-1">Email Address *</label>
                         <input
                           type="email"
                           required
                           value={customerEmail}
                           onChange={(e) => setCustomerEmail(e.target.value)}
                           placeholder="john@example.com"
-                          className="w-full px-4 py-2.5 rounded-xl border border-ceylon-copper/40 bg-ceylon-cocoa text-ceylon-ivory text-xs font-semibold focus:outline-none focus:border-ceylon-saffron"
+                          className="w-full px-4 py-2.5 rounded-xl border border-white/20 bg-[#0E3094] text-white text-xs font-semibold focus:outline-none focus:border-ceylon-gold"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-ceylon-sandstone uppercase block mb-1">Mobile Phone *</label>
+                        <label className="text-xs font-bold text-blue-100 uppercase block mb-1">Mobile Phone *</label>
                         <input
                           type="tel"
                           required
                           value={customerPhone}
                           onChange={(e) => setCustomerPhone(e.target.value)}
                           placeholder="07123 456789"
-                          className="w-full px-4 py-2.5 rounded-xl border border-ceylon-copper/40 bg-ceylon-cocoa text-ceylon-ivory text-xs font-semibold focus:outline-none focus:border-ceylon-saffron"
+                          className="w-full px-4 py-2.5 rounded-xl border border-white/20 bg-[#0E3094] text-white text-xs font-semibold focus:outline-none focus:border-ceylon-gold"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-xs font-bold text-ceylon-sandstone uppercase block mb-1">Special Requests (Optional)</label>
+                      <label className="text-xs font-bold text-blue-100 uppercase block mb-1">Special Requests (Optional)</label>
                       <textarea
                         rows={2}
                         value={specialRequests}
                         onChange={(e) => setSpecialRequests(e.target.value)}
                         placeholder="Window seat, anniversary, high chair needed..."
-                        className="w-full px-4 py-2.5 rounded-xl border border-ceylon-copper/40 bg-ceylon-cocoa text-ceylon-ivory text-xs focus:outline-none focus:border-ceylon-saffron"
+                        className="w-full px-4 py-2.5 rounded-xl border border-white/20 bg-[#0E3094] text-white text-xs focus:outline-none focus:border-ceylon-gold"
                       />
                     </div>
 
@@ -534,7 +463,7 @@ export default function ReservePage() {
                       <button
                         type="submit"
                         disabled={submitting}
-                        className="w-full sm:w-auto px-10 py-4 rounded-full bg-ceylon-copper hover:bg-ceylon-saffron text-ceylon-volcanic font-black uppercase tracking-widest shadow-copper transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer"
+                        className="w-full sm:w-auto px-10 py-4 rounded-full bg-ceylon-gold hover:bg-white text-[#071B5C] font-black uppercase tracking-widest shadow-gold transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer"
                       >
                         {submitting ? "Confirming..." : "Confirm Table Reservation"}
                       </button>

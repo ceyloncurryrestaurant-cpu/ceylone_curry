@@ -1,35 +1,40 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { ProductCard } from "@/components/products/ProductCard";
-import { Logo } from "@/components/Logo";
-import { Search, Flame, Tag, SlidersHorizontal, Utensils, Sparkles, Filter } from "lucide-react";
+import { Search, Filter, Utensils, ArrowRight } from "lucide-react";
 
 export default function MenuPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("featured");
   const [loading, setLoading] = useState(true);
 
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [onlyOffers, setOnlyOffers] = useState<boolean>(false);
-  const [sortBy, setSortBy] = useState<string>("featured");
-
   useEffect(() => {
+    // Check URL params for category filter
+    const searchParams = new URLSearchParams(window.location.search);
+    const catParam = searchParams.get("category");
+    if (catParam) {
+      setSelectedCategory(catParam);
+    }
+
     async function fetchData() {
       try {
-        const [pRes, cRes] = await Promise.all([
-          fetch("/api/products?isAvailable=true", { cache: "no-store" }),
-          fetch("/api/categories", { cache: "no-store" }),
+        const [prodRes, catRes] = await Promise.all([
+          fetch("/api/products"),
+          fetch("/api/categories"),
         ]);
-        const pData = await pRes.json();
-        const cData = await cRes.json();
+        const prodData = await prodRes.json();
+        const catData = await catRes.json();
 
-        if (pData.success) setProducts(pData.products);
-        if (cData.success) setCategories(cData.categories);
+        if (prodData.success) setProducts(prodData.products || []);
+        if (catData.success) setCategories(catData.categories || []);
       } catch (err) {
-        console.error("Error fetching menu catalog:", err);
+        console.error("Error fetching menu data:", err);
       } finally {
         setLoading(false);
       }
@@ -37,157 +42,127 @@ export default function MenuPage() {
     fetchData();
   }, []);
 
-  // Filter & Sort Logic
-  const filteredProducts = products.filter((item) => {
-    if (selectedCategory !== "all" && item.categoryId?._id !== selectedCategory && item.categoryId !== selectedCategory) {
-      return false;
-    }
-    if (onlyOffers && !item.isOffer) {
-      return false;
-    }
-    if (searchQuery.trim() !== "") {
-      const q = searchQuery.toLowerCase();
-      const matchName = item.name?.toLowerCase().includes(q);
-      const matchDesc = item.shortDescription?.toLowerCase().includes(q);
-      const matchIng = item.ingredients?.some((ing: string) => ing.toLowerCase().includes(q));
-      if (!matchName && !matchDesc && !matchIng) return false;
-    }
-    return true;
-  }).sort((a, b) => {
-    if (sortBy === "price-low") return (a.offerPrice || a.price) - (b.offerPrice || b.price);
-    if (sortBy === "price-high") return (b.offerPrice || b.price) - (a.offerPrice || a.price);
-    if (sortBy === "name") return a.name.localeCompare(b.name);
-    return 0;
+  // Filter products by category and search
+  let filteredProducts = products.filter((product) => {
+    const matchesCategory =
+      selectedCategory === "all" ||
+      product.categoryId?._id === selectedCategory ||
+      product.categoryId === selectedCategory;
+
+    const matchesSearch =
+      !searchQuery ||
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.shortDescription?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesCategory && matchesSearch;
   });
 
-  return (
-    <div className="min-h-screen bg-ceylon-volcanic text-ceylon-ivory py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden space-y-12">
-      {/* MENU HERO BANNER */}
-      <div className="relative max-w-7xl mx-auto rounded-3xl overflow-hidden shadow-volcanic bg-ceylon-cocoa text-ceylon-ivory p-8 sm:p-14 text-center border-2 border-ceylon-copper/40">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=1600&q=80"
-            alt="Ceylon Menu Culinary Photography"
-            fill
-            className="object-cover opacity-20"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-ceylon-cocoa via-ceylon-cocoa/80 to-transparent" />
-        </div>
+  // Sort products
+  if (sortBy === "price-low") {
+    filteredProducts.sort((a, b) => (a.offerPrice || a.price) - (b.offerPrice || b.price));
+  } else if (sortBy === "price-high") {
+    filteredProducts.sort((a, b) => (b.offerPrice || b.price) - (a.offerPrice || a.price));
+  } else if (sortBy === "name") {
+    filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+  }
 
-        <div className="relative z-10 space-y-4 max-w-3xl mx-auto">
-          <span className="text-xs uppercase font-extrabold tracking-[0.3em] text-ceylon-copper inline-flex items-center gap-1.5">
-            <Sparkles className="w-4 h-4 text-ceylon-saffron" />
-            OUR CULINARY CATALOG
+  return (
+    <div className="min-h-screen bg-[#FAF7F2] text-[#071B5C] py-12 px-4 sm:px-6 lg:px-8 space-y-12">
+      {/* Header & Controls Section */}
+      <div className="max-w-7xl mx-auto space-y-8">
+        <div className="text-center max-w-3xl mx-auto space-y-3 pt-6">
+          <span className="text-xs uppercase font-extrabold tracking-[0.3em] text-[#071B5C] block">
+            CEYLON CULINARY CATALOG
           </span>
-          <h1 className="font-serif-display text-4xl sm:text-6xl font-black text-ceylon-ivory leading-tight">
-            The Flavours of Ceylon
+          <h1 className="font-serif-display text-4xl sm:text-6xl font-extrabold text-[#071B5C]">
+            Explore Our Authentic Menu
           </h1>
-          <p className="text-ceylon-sandstone text-xs sm:text-sm font-light leading-relaxed">
-            Explore authentic Sri Lankan street delicacies, slow-cooked roasted spice curries, sizzling Kottu roti, and traditional island desserts.
+          <p className="text-gray-600 text-sm font-light">
+            Traditional Sri Lankan curries, kottu roti, biryanis, and street food cooked daily with fresh island spices.
           </p>
         </div>
-      </div>
 
-      {/* SEARCH, CATEGORIES & FILTERS BAR */}
-      <div className="max-w-7xl mx-auto space-y-6 relative z-10">
-        {/* Top Controls: Expanding Search & Sorting */}
-        <div className="glass-cocoa p-4 sm:p-6 rounded-3xl border border-ceylon-copper/30 shadow-volcanic flex flex-col md:flex-row justify-between items-center gap-4">
-          {/* Search Bar */}
+        {/* Search & Sort Bar */}
+        <div className="bg-white p-4 sm:p-6 rounded-3xl border border-gray-200 shadow-md flex flex-col md:flex-row gap-4 items-center justify-between">
+          {/* Search Input */}
           <div className="relative w-full md:w-96">
-            <Search className="w-4 h-4 text-ceylon-copper absolute left-4 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search dishes, ingredients (e.g. Kottu, Prawns)..."
+              placeholder="Search dishes or ingredients..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 rounded-2xl bg-ceylon-volcanic border border-ceylon-copper/40 focus:outline-none focus:border-ceylon-saffron text-xs font-semibold text-ceylon-ivory placeholder-ceylon-sandstone/60 transition-all shadow-sm"
+              className="w-full pl-11 pr-4 py-3 rounded-2xl bg-gray-50 border border-gray-300 text-xs font-semibold text-[#071B5C] focus:outline-none focus:border-[#071B5C]"
             />
           </div>
 
-          {/* Controls: Offer Filter & Sorting */}
-          <div className="flex flex-wrap items-center gap-4 w-full md:w-auto justify-between md:justify-end">
-            <button
-              onClick={() => setOnlyOffers(!onlyOffers)}
-              className={`px-4 py-2.5 rounded-2xl border text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer ${
-                onlyOffers
-                  ? "bg-ceylon-chilli text-white border-ceylon-chilli shadow-md"
-                  : "bg-ceylon-volcanic text-ceylon-sandstone border-ceylon-copper/40 hover:border-ceylon-copper"
-              }`}
+          {/* Sort Dropdown */}
+          <div className="flex items-center gap-3 w-full md:w-auto justify-end">
+            <Filter className="w-4 h-4 text-[#071B5C]" />
+            <span className="text-xs font-bold uppercase tracking-wider text-[#071B5C]">Sort By:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-4 py-3 rounded-2xl bg-gray-50 border border-gray-300 text-xs font-bold text-[#071B5C] focus:outline-none focus:border-[#071B5C] cursor-pointer"
             >
-              <Flame className="w-4 h-4 text-ceylon-saffron fill-current" />
-              <span>Chef's Offers Only</span>
-            </button>
-
-            <div className="flex items-center gap-2">
-              <SlidersHorizontal className="w-4 h-4 text-ceylon-copper" />
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-2.5 rounded-2xl bg-ceylon-volcanic border border-ceylon-copper/40 text-xs font-bold text-ceylon-ivory focus:outline-none focus:border-ceylon-saffron shadow-sm"
-              >
-                <option value="featured" className="bg-ceylon-volcanic text-ceylon-ivory">Featured Dishes</option>
-                <option value="price-low" className="bg-ceylon-volcanic text-ceylon-ivory">Price: Low to High</option>
-                <option value="price-high" className="bg-ceylon-volcanic text-ceylon-ivory">Price: High to Low</option>
-                <option value="name" className="bg-ceylon-volcanic text-ceylon-ivory">Name: A to Z</option>
-              </select>
-            </div>
+              <option value="featured">Featured Dishes</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="name">Name (A-Z)</option>
+            </select>
           </div>
         </div>
 
-        {/* Category Pill Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+        {/* Category Pills Bar — Single Line Horizontal Scroll Carousel */}
+        <div
+          className="flex flex-nowrap items-center justify-start gap-2.5 overflow-x-auto pb-3 px-2 sm:px-4 w-full scrollbar-none snap-x snap-mandatory scroll-smooth"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        >
           <button
             onClick={() => setSelectedCategory("all")}
-            className={`px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap cursor-pointer ${
+            className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wider transition-all cursor-pointer shrink-0 whitespace-nowrap snap-center ${
               selectedCategory === "all"
-                ? "bg-ceylon-copper text-ceylon-volcanic shadow-copper scale-105"
-                : "bg-ceylon-cocoa text-ceylon-sandstone border border-ceylon-copper/30 hover:border-ceylon-copper"
+                ? "bg-[#071B5C] text-white shadow-md ring-2 ring-ceylon-gold"
+                : "bg-white text-[#071B5C] border-2 border-gray-200 hover:border-[#071B5C] hover:bg-gray-50"
             }`}
           >
-            All Dishes ({products.length})
+            All Categories ({products.length})
           </button>
-          {categories.map((cat) => (
-            <button
-              key={cat._id}
-              onClick={() => setSelectedCategory(cat._id)}
-              className={`px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap cursor-pointer ${
-                selectedCategory === cat._id
-                  ? "bg-ceylon-copper text-ceylon-volcanic shadow-copper scale-105"
-                  : "bg-ceylon-cocoa text-ceylon-sandstone border border-ceylon-copper/30 hover:border-ceylon-copper"
-              }`}
-            >
-              {cat.name}
-            </button>
-          ))}
+          {categories.map((cat) => {
+            const count = products.filter((p) => p.categoryId?._id === cat._id || p.categoryId === cat._id).length;
+            return (
+              <button
+                key={cat._id}
+                onClick={() => setSelectedCategory(cat._id)}
+                className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wider transition-all cursor-pointer shrink-0 whitespace-nowrap snap-center ${
+                  selectedCategory === cat._id
+                    ? "bg-[#071B5C] text-white shadow-md ring-2 ring-ceylon-gold"
+                    : "bg-white text-[#071B5C] border-2 border-gray-200 hover:border-[#071B5C] hover:bg-gray-50"
+                }`}
+              >
+                {cat.name} ({count})
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* DISHES CATALOG GRID */}
+      {/* DISHES CATALOG GRID — PURE CRISP WHITE */}
       <div className="max-w-7xl mx-auto relative z-10">
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3, 4, 5, 6].map((n) => (
-              <div key={n} className="h-96 rounded-3xl bg-ceylon-cocoa/40 animate-pulse border border-ceylon-copper/20" />
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-8">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="h-64 sm:h-80 bg-gray-100 rounded-3xl animate-pulse" />
             ))}
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="glass-cocoa p-16 rounded-3xl text-center border border-ceylon-copper/30 max-w-md mx-auto space-y-4">
-            <Utensils className="w-12 h-12 text-ceylon-copper mx-auto" />
-            <h3 className="font-serif-display text-2xl font-bold text-ceylon-ivory">No Dishes Found</h3>
-            <p className="text-xs text-ceylon-sandstone">Try adjusting your search terms or clearing selected category filters.</p>
-            <button
-              onClick={() => {
-                setSelectedCategory("all");
-                setSearchQuery("");
-                setOnlyOffers(false);
-              }}
-              className="px-6 py-2.5 rounded-full bg-ceylon-copper text-ceylon-volcanic font-black uppercase text-xs shadow-copper cursor-pointer"
-            >
-              Reset Filters
-            </button>
+          <div className="bg-[#FAF7F2] rounded-3xl p-16 text-center border-2 border-gray-200 max-w-md mx-auto space-y-3 shadow-md text-[#071B5C]">
+            <Utensils className="w-12 h-12 text-[#071B5C] mx-auto opacity-40" />
+            <p className="font-serif-display font-bold text-2xl">No Dishes Found</p>
+            <p className="text-xs text-gray-600">Try adjusting your category selection or search query.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-8">
             {filteredProducts.map((product) => (
               <ProductCard key={product._id} product={product} />
             ))}

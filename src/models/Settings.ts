@@ -39,6 +39,9 @@ export interface ISettings extends Document {
   };
   heroImages?: string[];
   signatureDishes?: ISignatureDish[];
+  storyMainImage?: string;
+  storySecondaryImage?: string;
+  galleryImages?: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -85,6 +88,23 @@ const SettingsSchema = new Schema<ISettings>(
         },
       ],
       default: [],
+    },
+    storyMainImage: {
+      type: String,
+      default: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1000&q=80",
+    },
+    storySecondaryImage: {
+      type: String,
+      default: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80",
+    },
+    galleryImages: {
+      type: [String],
+      default: [
+        "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=700&q=80",
+        "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=600&q=80",
+        "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=800&q=80",
+      ],
     },
   },
   { timestamps: true }

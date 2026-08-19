@@ -133,10 +133,8 @@ export async function POST(req: Request) {
     }
 
     // 2. Validate Table Existence & Capacity
-    // Resolve fake memoryStore IDs like "tbl_2" → real MongoDB table
     let resolvedTableId = tableId;
     if (typeof tableId === "string" && !/^[a-f\d]{24}$/i.test(tableId)) {
-      // Not a valid ObjectId – try to find the table by tableNumber
       const numericPart = parseInt(tableId.replace(/[^0-9]/g, ""), 10);
       if (!isNaN(numericPart)) {
         const foundByNumber = await Table.findOne({ tableNumber: numericPart }).catch(() => null);
@@ -198,7 +196,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // 5. Generate Unique Reservation Reference ID (e.g. CC-20260817-001)
+    // 5. Generate Unique Reservation Reference ID
     const dateFormatted = date.replace(/-/g, "");
     const countForDate = await Reservation.countDocuments({ date });
     const sequence = (countForDate + 1).toString().padStart(3, "0");
@@ -219,6 +217,20 @@ export async function POST(req: Request) {
       status: "Pending",
     });
 
+    // 6.5. Update Table status to "Reserved" with timestamp for 1-hour automatic expiration
+    await Table.findByIdAndUpdate(resolvedTableId, { status: "Reserved", updatedAt: new Date() }).catch(() => null);
+
+    try {
+      const { memoryStore } = await import("@/lib/memoryStore");
+      if (memoryStore.tables) {
+        const memT = memoryStore.tables.find((t: any) => t._id === resolvedTableId || t.tableNumber === table.tableNumber);
+        if (memT) {
+          (memT as any).status = "Reserved";
+          (memT as any).reservedAt = Date.now();
+        }
+      }
+    } catch (memErr) {}
+
     // 7. Retrieve Live Restaurant Settings for Emails
     const settingsDoc = await Settings.findOne();
     const settingsObj = {
@@ -229,7 +241,7 @@ export async function POST(req: Request) {
       adminEmail: settingsDoc?.adminEmail || "admin@ceyloncurry.co.uk",
     };
 
-    // 8. Dispatch Confirmation Emails (awaited so Vercel doesn't kill the function before sending)
+    // 8. Dispatch Confirmation Emails
     await sendReservationEmails({
       reservationNumber,
       customerName,
