@@ -2,18 +2,34 @@ import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/auth";
 import { v2 as cloudinary } from "cloudinary";
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
 export async function POST(req: Request) {
   try {
     const admin = await getAdminSession();
     if (!admin) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
+
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+    if (!cloudName || !apiKey || !apiSecret) {
+      console.error("❌ Cloudinary env vars missing:", { cloudName: !!cloudName, apiKey: !!apiKey, apiSecret: !!apiSecret });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Cloudinary credentials missing in server environment. Please set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in Vercel settings.",
+        },
+        { status: 500 }
+      );
+    }
+
+    cloudinary.config({
+      cloud_name: cloudName,
+      api_key: apiKey,
+      api_secret: apiSecret,
+      secure: true,
+    });
 
     const formData = await req.formData();
     const files = formData.getAll("file") as File[];
@@ -33,56 +49,39 @@ export async function POST(req: Request) {
 
     for (const file of files) {
       const buffer = Buffer.from(await file.arrayBuffer());
-
-      if (process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_CLOUD_NAME) {
-        try {
-          const uploadResult = await new Promise<any>((resolve, reject) => {
-            const stream = cloudinary.uploader.upload_stream(
-              { folder: "ceylon_curry_products", resource_type: "image" },
-              (error, result) => {
-                if (error) reject(error);
-                else resolve(result);
-              }
-            );
-            stream.end(buffer);
-          });
-
-          uploadedImages.push({
-            url: uploadResult.secure_url,
-            publicId: uploadResult.public_id,
-            width: uploadResult.width,
-            height: uploadResult.height,
-            format: uploadResult.format,
-          });
-          continue;
-        } catch (err: any) {
-          console.error("Cloudinary upload failed, falling back to base64 Data URL:", err?.message || err);
-        }
-      } else {
-        console.warn("Cloudinary environment variables missing (CLOUDINARY_API_KEY / CLOUDINARY_CLOUD_NAME).");
-      }
-
-      // Local Base64 preview fallback if Cloudinary env vars are missing or upload fails
-      const base64Data = buffer.toString("base64");
       const mimeType = file.type || "image/jpeg";
-      const dataUrl = `data:${mimeType};base64,${base64Data}`;
+      const base64Data = buffer.toString("base64");
+      const fileUri = `data:${mimeType};base64,${base64Data}`;
+
+      const uploadResult = await cloudinary.uploader.upload(fileUri, {
+        folder: "ceylon_curry_uploads",
+        resource_type: "auto",
+      });
 
       uploadedImages.push({
-        url: dataUrl,
-        publicId: `dev_${Date.now()}_${Math.random().toString(36).substring(7)}`,
-        format: file.type.split("/")[1] || "jpeg",
+        url: uploadResult.secure_url,
+        publicId: uploadResult.public_id,
+        width: uploadResult.width,
+        height: uploadResult.height,
+        format: uploadResult.format,
       });
     }
 
     return NextResponse.json({
       success: true,
-      message: "Image(s) processed successfully",
+      message: "Image(s) uploaded to Cloudinary successfully",
       images: uploadedImages,
       url: uploadedImages[0]?.url || null,
       publicId: uploadedImages[0]?.publicId || null,
     });
   } catch (error: any) {
-    console.error("Upload error:", error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error("❌ Cloudinary upload error:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || "Failed to upload image to Cloudinary.",
+      },
+      { status: 500 }
+    );
   }
 }
