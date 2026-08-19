@@ -11,12 +11,25 @@ export const revalidate = 0;
 async function autoReleaseExpiredTables() {
   try {
     const now = new Date();
-    const tzOffset = now.getTimezoneOffset() * 60000;
-    const localDateStr = new Date(now.getTime() - tzOffset).toISOString().split("T")[0];
+    const ukParts = new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Europe/London",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    }).formatToParts(now);
 
-    const currentHours = now.getHours();
-    const currentMinutes = now.getMinutes();
-    const currentTotalMins = currentHours * 60 + currentMinutes;
+    const m: Record<string, string> = {};
+    ukParts.forEach((p) => {
+      m[p.type] = p.value;
+    });
+
+    const localDateStr = `${m.year}-${m.month}-${m.day}`;
+    const ukHours = parseInt(m.hour, 10);
+    const ukMinutes = parseInt(m.minute, 10);
+    const currentTotalMins = ukHours * 60 + ukMinutes;
     const nowMs = now.getTime();
     const ONE_HOUR_MS = 60 * 60 * 1000;
 

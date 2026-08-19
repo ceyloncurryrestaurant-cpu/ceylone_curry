@@ -56,11 +56,26 @@ export async function POST(req: Request) {
       );
     }
 
-    // 1.5. Validate that the date and time are in the future
+    // 1.5. Validate that the date and time are in the future (using UK/Europe/London timezone)
     const now = new Date();
-    // Adjust for the user's local timezone (standard UK time is GMT/BST)
-    const tzOffset = now.getTimezoneOffset() * 60000;
-    const localDateStr = new Date(now.getTime() - tzOffset).toISOString().split("T")[0];
+    const ukParts = new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Europe/London",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    }).formatToParts(now);
+
+    const m: Record<string, string> = {};
+    ukParts.forEach((p) => {
+      m[p.type] = p.value;
+    });
+
+    const localDateStr = `${m.year}-${m.month}-${m.day}`;
+    const currentHours = parseInt(m.hour, 10);
+    const currentMinutes = parseInt(m.minute, 10);
 
     if (date < localDateStr) {
       return NextResponse.json(
@@ -70,8 +85,6 @@ export async function POST(req: Request) {
     }
 
     if (date === localDateStr) {
-      const currentHours = now.getHours();
-      const currentMinutes = now.getMinutes();
       const [reqHours, reqMins] = startTime.split(":").map(Number);
 
       if (reqHours < currentHours || (reqHours === currentHours && reqMins <= currentMinutes)) {
