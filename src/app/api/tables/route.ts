@@ -7,52 +7,91 @@ import { memoryStore } from "@/lib/memoryStore";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-// Helper to auto-release reserved tables that are older than 1 hour (60 minutes)
+// Helper to auto-release reserved/occupied tables 1 hour after their reservation start time
 async function autoReleaseExpiredTables() {
   try {
-    const ONE_HOUR_MS = 60 * 60 * 1000;
-    const nowMs = Date.now();
+    const now = new Date();
+    const tzOffset = now.getTimezoneOffset() * 60000;
+    const localDateStr = new Date(now.getTime() - tzOffset).toISOString().split("T")[0];
 
-    // 1. Auto-release in MongoDB
-    const reservedTables = await Table.find({ status: "Reserved" }).catch(() => []);
+    const currentHours = now.getHours();
+    const currentMinutes = now.getMinutes();
+    const currentTotalMins = currentHours * 60 + currentMinutes;
+    const nowMs = now.getTime();
+    const ONE_HOUR_MS = 60 * 60 * 1000;
+
+    // 1. Fetch tables that are currently Reserved or Occupied
+    const reservedTables = await Table.find({ status: { $in: ["Reserved", "Occupied"] } }).catch(() => []);
+
+    // 2. Fetch all reservations with active status
+    const activeReservations = await Reservation.find({
+      status: { $in: ["Pending", "Accepted"] }
+    }).catch(() => []);
+
     for (const tbl of reservedTables) {
       const tableIdStr = tbl._id.toString();
 
-      // Find active reservation for this table
-      const activeRes = await Reservation.findOne({
-        tableId: tbl._id,
-        status: { $in: ["Pending", "Accepted"] },
-      }).sort({ createdAt: -1 }).catch(() => null);
+      // Find reservations for this table
+      const tblReservations = activeReservations.filter(
+        (res) => ((res.tableId as any)?._id || res.tableId || "").toString() === tableIdStr
+      );
 
-      let shouldRelease = false;
+      // Check if there is an active reservation right now
+      const currentActiveRes = tblReservations.find((res) => {
+        if (res.date !== localDateStr) return false;
+        const [startH, startM] = res.startTime.split(":").map(Number);
+        const startMins = startH * 60 + startM;
+        const endMins = startMins + 60;
+        return currentTotalMins >= startMins && currentTotalMins < endMins;
+      });
 
-      if (activeRes) {
-        const resCreatedMs = new Date(activeRes.createdAt || activeRes.updatedAt).getTime();
-        if (nowMs - resCreatedMs > ONE_HOUR_MS) {
-          shouldRelease = true;
-        }
-      } else {
-        // If table is marked Reserved but has no active reservation, or updatedAt > 1 hr
-        const tableUpdatedMs = new Date(tbl.updatedAt || tbl.createdAt).getTime();
-        if (nowMs - tableUpdatedMs > ONE_HOUR_MS) {
-          shouldRelease = true;
+      // Handle expiration of reservations
+      for (const res of tblReservations) {
+        const [startH, startM] = res.startTime.split(":").map(Number);
+        const startMins = startH * 60 + startM;
+        const endMins = startMins + 60;
+
+        const isExpired =
+          res.date < localDateStr ||
+          (res.date === localDateStr && currentTotalMins >= endMins);
+
+        if (isExpired) {
+          await Reservation.findByIdAndUpdate(res._id, { status: "Completed" }).catch(() => null);
+          res.status = "Completed";
         }
       }
 
-      if (shouldRelease) {
-        await Table.findByIdAndUpdate(tbl._id, { status: "Available" }).catch(() => null);
-        tbl.status = "Available";
+      // Determine new status for the table
+      let targetStatus = tbl.status;
+
+      if (currentActiveRes && currentActiveRes.status !== "Completed") {
+        if (tbl.status !== "Reserved" && tbl.status !== "Occupied") {
+          targetStatus = "Reserved";
+        }
+      } else {
+        // No active reservation right now
+        if (tbl.status === "Reserved") {
+          targetStatus = "Available";
+        } else if (tbl.status === "Occupied") {
+          const tableUpdatedMs = new Date(tbl.updatedAt || tbl.createdAt).getTime();
+          if (nowMs - tableUpdatedMs > ONE_HOUR_MS) {
+            targetStatus = "Available";
+          }
+        }
+      }
+
+      if (tbl.status !== targetStatus) {
+        await Table.findByIdAndUpdate(tbl._id, { status: targetStatus, updatedAt: new Date() }).catch(() => null);
+        tbl.status = targetStatus;
       }
     }
 
-    // 2. Auto-release in memoryStore fallback
+    // 3. Sync memoryStore fallback
     if (memoryStore.tables) {
       memoryStore.tables.forEach((memT: any) => {
-        if (memT.status === "Reserved") {
-          const reservedAt = memT.reservedAt || memT.updatedAt || 0;
-          if (nowMs - reservedAt > ONE_HOUR_MS) {
-            memT.status = "Available";
-          }
+        const tbl = reservedTables.find((t) => t._id.toString() === (memT._id || memT.id || "").toString());
+        if (tbl) {
+          memT.status = tbl.status;
         }
       });
     }
