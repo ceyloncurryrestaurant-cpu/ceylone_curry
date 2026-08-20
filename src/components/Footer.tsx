@@ -124,16 +124,29 @@ export const Footer: React.FC = () => {
 
         <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-ceylon-copper/30 to-transparent my-6" />
 
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-3 text-[10px] text-ceylon-sandstone">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] text-ceylon-sandstone">
           <p>© {new Date().getFullYear()} Ceylon Curry. Authentic Sri Lankan Cuisine in Plymouth. All Rights Reserved.</p>
 
-          <button
-            onClick={scrollToTop}
-            className="p-2.5 rounded-full bg-ceylon-copper text-ceylon-volcanic hover:bg-ceylon-saffron transition-all shadow-copper"
-            aria-label="Scroll to top"
-          >
-            <ArrowUp className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex items-center gap-4">
+            <span>
+              Developed by{" "}
+              <a
+                href="https://apptronsolutions.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-ceylon-copper hover:text-ceylon-saffron transition-colors font-bold"
+              >
+                Apptron Solutions
+              </a>
+            </span>
+            <button
+              onClick={scrollToTop}
+              className="p-2.5 rounded-full bg-ceylon-copper text-ceylon-volcanic hover:bg-ceylon-saffron transition-all shadow-copper"
+              aria-label="Scroll to top"
+            >
+              <ArrowUp className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </div>
     </footer>

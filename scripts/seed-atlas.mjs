@@ -81,16 +81,14 @@ async function seed() {
   } else { console.log("ℹ️  Settings already exist."); }
 
   // 2. Admin
-  const existingAdmin = await Admin.findOne({ email: "admin@ceyloncurry.co.uk" });
-  if (!existingAdmin) {
-    await Admin.create({
-      email: "admin@ceyloncurry.co.uk",
-      passwordHash: hashPassword("admin123"),
-      name: "Ceylon Curry Admin",
-      role: "admin",
-    });
-    console.log("✅ Admin user created: admin@ceyloncurry.co.uk / admin123");
-  } else { console.log("ℹ️  Admin already exists."); }
+  await Admin.deleteMany({ email: { $in: ["admin@ceyloncurry.co.uk", "admin@ceyloncurry"] } });
+  await Admin.create({
+    email: "admin@ceyloncurry",
+    passwordHash: hashPassword("ceyloncurry@3443"),
+    name: "Ceylon Curry Admin",
+    role: "admin",
+  });
+  console.log("✅ Admin user created: admin@ceyloncurry / ceyloncurry@3443");
 
   // 3. Tables
   const tableCount = await Table.countDocuments();

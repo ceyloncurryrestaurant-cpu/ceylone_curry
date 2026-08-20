@@ -3,20 +3,23 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
-import { Lock, Mail, KeyRound, ArrowRight, X, RefreshCw } from "lucide-react";
+import { Lock, Mail, KeyRound, ArrowRight, X, RefreshCw, Eye, EyeOff } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Reset Password Modal State
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [resetting, setResetting] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -116,7 +119,7 @@ export default function AdminLoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@ceyloncurry.co.uk"
+                placeholder="admin@ceyloncurry"
                 className="w-full pl-11 pr-4 py-3 rounded-2xl bg-[#071B5C] border border-white/20 text-white text-xs font-semibold focus:outline-none focus:border-ceylon-gold placeholder-blue-200/50"
               />
             </div>
@@ -128,7 +131,7 @@ export default function AdminLoginPage() {
               <button
                 type="button"
                 onClick={() => {
-                  setResetEmail(email || "admin@ceyloncurry.co.uk");
+                  setResetEmail(email || "admin@ceyloncurry");
                   setIsResetModalOpen(true);
                 }}
                 className="text-[11px] text-ceylon-gold hover:underline font-bold cursor-pointer"
@@ -139,13 +142,21 @@ export default function AdminLoginPage() {
             <div className="relative">
               <KeyRound className="w-4 h-4 text-ceylon-gold absolute left-4 top-1/2 -translate-y-1/2" />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-11 pr-4 py-3 rounded-2xl bg-[#071B5C] border border-white/20 text-white text-xs font-semibold focus:outline-none focus:border-ceylon-gold placeholder-blue-200/50"
+                className="w-full pl-11 pr-12 py-3 rounded-2xl bg-[#071B5C] border border-white/20 text-white text-xs font-semibold focus:outline-none focus:border-ceylon-gold placeholder-blue-200/50"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-ceylon-gold hover:text-white transition-colors cursor-pointer"
+                title={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
             </div>
           </div>
 
@@ -188,33 +199,53 @@ export default function AdminLoginPage() {
                   required
                   value={resetEmail}
                   onChange={(e) => setResetEmail(e.target.value)}
-                  placeholder="admin@ceyloncurry.co.uk"
+                  placeholder="admin@ceyloncurry"
                   className="w-full px-4 py-3 rounded-2xl bg-[#071B5C] border border-white/20 text-white font-semibold focus:outline-none focus:border-ceylon-gold"
                 />
               </div>
 
               <div>
                 <label className="block font-bold text-ceylon-gold uppercase mb-1">New Password (Min 6 chars) *</label>
-                <input
-                  type="password"
-                  required
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Enter new password..."
-                  className="w-full px-4 py-3 rounded-2xl bg-[#071B5C] border border-white/20 text-white font-semibold focus:outline-none focus:border-ceylon-gold"
-                />
+                <div className="relative">
+                  <input
+                    type={showNewPassword ? "text" : "password"}
+                    required
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Enter new password..."
+                    className="w-full pl-4 pr-12 py-3 rounded-2xl bg-[#071B5C] border border-white/20 text-white font-semibold focus:outline-none focus:border-ceylon-gold"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-ceylon-gold hover:text-white transition-colors cursor-pointer"
+                    title={showNewPassword ? "Hide password" : "Show password"}
+                  >
+                    {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
 
               <div>
                 <label className="block font-bold text-ceylon-gold uppercase mb-1">Confirm New Password *</label>
-                <input
-                  type="password"
-                  required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm new password..."
-                  className="w-full px-4 py-3 rounded-2xl bg-[#071B5C] border border-white/20 text-white font-semibold focus:outline-none focus:border-ceylon-gold"
-                />
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Confirm new password..."
+                    className="w-full pl-4 pr-12 py-3 rounded-2xl bg-[#071B5C] border border-white/20 text-white font-semibold focus:outline-none focus:border-ceylon-gold"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-ceylon-gold hover:text-white transition-colors cursor-pointer"
+                    title={showConfirmPassword ? "Hide password" : "Show password"}
+                  >
+                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
 
               <div className="pt-2">

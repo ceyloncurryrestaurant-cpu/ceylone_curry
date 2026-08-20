@@ -85,7 +85,7 @@ export async function POST(req: Request) {
         }
 
         // 4. Fallback: if the default admin document is missing, create it
-        const targetEmail = cleanEmail || (session && session.email) || "admin@ceyloncurry.co.uk";
+        const targetEmail = cleanEmail || (session && session.email) || "admin@ceyloncurry";
         const newAdmin = await Admin.create({
           email: targetEmail.toLowerCase().trim(),
           passwordHash: newHash,
@@ -127,11 +127,11 @@ export async function POST(req: Request) {
       }
     }
 
-    // Fallback authentication for default credentials (admin@ceyloncurry.co.uk / admin123)
-    if (!adminObj && cleanEmail === "admin@ceyloncurry.co.uk" && password === "admin123") {
+    // Fallback authentication for default credentials (admin@ceyloncurry / ceyloncurry@3443)
+    if (!adminObj && cleanEmail === "admin@ceyloncurry" && password === "ceyloncurry@3443") {
       adminObj = {
         id: "default_admin_id",
-        email: "admin@ceyloncurry.co.uk",
+        email: "admin@ceyloncurry",
         name: "Ceylon Curry Admin",
       };
     }

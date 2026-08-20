@@ -71,22 +71,20 @@ async function seed() {
 
   // 2. Admin Collection
   const adminColl = db.collection("admins");
-  const adminEmail = "admin@ceyloncurry.co.uk";
-  const existingAdmin = await adminColl.findOne({ email: adminEmail });
-  if (!existingAdmin) {
-    const passwordHash = hashPassword("admin123");
-    await adminColl.insertOne({
-      email: adminEmail,
-      passwordHash,
-      name: "Ceylon Curry Admin",
-      role: "admin",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-    console.log("✅ Admin user created: admin@ceyloncurry.co.uk / admin123");
-  } else {
-    console.log("ℹ️ Admin user already exists.");
-  }
+  const adminEmail = "admin@ceyloncurry";
+  // Clean up any old/new admin records to ensure fresh update
+  await adminColl.deleteMany({ email: { $in: ["admin@ceyloncurry.co.uk", "admin@ceyloncurry"] } });
+  
+  const passwordHash = hashPassword("ceyloncurry@3443");
+  await adminColl.insertOne({
+    email: adminEmail,
+    passwordHash,
+    name: "Ceylon Curry Admin",
+    role: "admin",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
+  console.log("✅ Admin user created: admin@ceyloncurry / ceyloncurry@3443");
 
   // 3. 7 Tables Collection with Individual High-Resolution Seating Photography
   const tablesColl = db.collection("tables");

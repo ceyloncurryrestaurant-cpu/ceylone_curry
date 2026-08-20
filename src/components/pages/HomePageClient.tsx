@@ -130,11 +130,16 @@ export function HomePageClient() {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   const defaultHeroUrls = [
-    "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=2000&q=85",
-    "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=2000&q=85",
-    "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=2000&q=85",
-    "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=2000&q=85",
+    // 1. Biryani
+    "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=2000&q=85",
+    // 2. Kerala Parotta / Roti
+    "https://images.unsplash.com/photo-1627387115315-1166b3e70d44?auto=format&fit=crop&w=2000&q=85",
+    // 3. Cozy Restaurant Interior
+    "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=2000&q=85",
+    // 4. Traditional Claypot Non-Veg Curry Set
     "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=2000&q=85",
+    // 5. Dosa Breakfast Meals Set
+    "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=2000&q=85",
   ];
   const heroImageUrls = (settings?.heroImages && settings.heroImages.length > 0)
     ? settings.heroImages

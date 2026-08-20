@@ -47,20 +47,18 @@ export async function seedDatabase() {
   }
 
   // 2. Seed Admin User
-  const adminEmail = "admin@ceyloncurry.co.uk";
-  const existingAdmin = await Admin.findOne({ email: adminEmail });
-  if (!existingAdmin) {
-    const passwordHash = await hashPassword("admin123");
-    await Admin.create({
-      email: adminEmail,
-      passwordHash,
-      name: "Ceylon Curry Admin",
-      role: "admin",
-    });
-    console.log("✅ Admin user created: admin@ceyloncurry.co.uk / admin123");
-  } else {
-    console.log("ℹ️ Admin user already exists.");
-  }
+  const adminEmail = "admin@ceyloncurry";
+  // Clean up any old/new admin records to ensure fresh update
+  await Admin.deleteMany({ email: { $in: ["admin@ceyloncurry.co.uk", "admin@ceyloncurry"] } });
+  
+  const passwordHash = await hashPassword("ceyloncurry@3443");
+  await Admin.create({
+    email: adminEmail,
+    passwordHash,
+    name: "Ceylon Curry Admin",
+    role: "admin",
+  });
+  console.log("✅ Admin user created: admin@ceyloncurry / ceyloncurry@3443");
 
   // 3. Seed 7 Restaurant Tables (PRD Requirement #55-56 & #130)
   const tableCount = await Table.countDocuments();
