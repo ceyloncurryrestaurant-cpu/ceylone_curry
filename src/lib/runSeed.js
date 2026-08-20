@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const crypto = require("crypto");
+require("dotenv").config({ path: ".env.local" });
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/ceylon_curry";
 
@@ -96,7 +97,7 @@ async function seed() {
       type: "Couple",
       status: "Available",
       image: {
-        url: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=800&q=80",
+        url: "/images/couple_table.jpg",
         publicId: "table_1_cozy_window_booth",
       },
       isActive: true,
@@ -109,7 +110,7 @@ async function seed() {
       type: "Couple",
       status: "Available",
       image: {
-        url: "https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=800&q=80",
+        url: "/images/couple_table.jpg",
         publicId: "table_2_candlelight_corner",
       },
       isActive: true,
@@ -122,7 +123,7 @@ async function seed() {
       type: "Couple",
       status: "Available",
       image: {
-        url: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80",
+        url: "/images/couple_table.jpg",
         publicId: "table_3_garden_view",
       },
       isActive: true,
@@ -135,7 +136,7 @@ async function seed() {
       type: "Couple",
       status: "Available",
       image: {
-        url: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
+        url: "/images/couple_table.jpg",
         publicId: "table_4_heritage_ceylon_nook",
       },
       isActive: true,
@@ -148,7 +149,7 @@ async function seed() {
       type: "Family",
       status: "Available",
       image: {
-        url: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
+        url: "/images/family_table.jpg",
         publicId: "table_5_royal_family_table",
       },
       isActive: true,
@@ -161,7 +162,7 @@ async function seed() {
       type: "Family",
       status: "Available",
       image: {
-        url: "https://images.unsplash.com/photo-1537047902294-62a40c20a6ae?auto=format&fit=crop&w=800&q=80",
+        url: "/images/family_table.jpg",
         publicId: "table_6_center_dining_banquet",
       },
       isActive: true,
@@ -174,7 +175,7 @@ async function seed() {
       type: "Family",
       status: "Available",
       image: {
-        url: "https://images.unsplash.com/photo-1578474846511-04ba529f0b88?auto=format&fit=crop&w=800&q=80",
+        url: "/images/family_table.jpg",
         publicId: "table_7_executive_family_alcove",
       },
       isActive: true,

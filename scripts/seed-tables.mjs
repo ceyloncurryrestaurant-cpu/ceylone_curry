@@ -27,8 +27,8 @@ async function setTableImages() {
   await mongoose.connect(MONGODB_URI);
   console.log("✅ Connected.");
 
-  const defaultImgCouple = "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=800&q=80";
-  const defaultImgFamily = "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80";
+  const defaultImgCouple = "/images/couple_table.jpg";
+  const defaultImgFamily = "/images/family_table.jpg";
 
   for (let i = 1; i <= 7; i++) {
     const defaultUrl = i <= 4 ? defaultImgCouple : defaultImgFamily;

@@ -20,13 +20,13 @@ export const TableStructureSection: React.FC = () => {
 
   // Table Seating High-Res Photographs for Tables 1 to 7
   const tablePhotos: { [key: number]: string } = {
-    1: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
-    2: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=800&q=80",
-    3: "https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=800&q=80",
-    4: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80",
-    5: "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=800&q=80",
-    6: "https://images.unsplash.com/photo-1537047902294-62a40c20a6ae?auto=format&fit=crop&w=800&q=80",
-    7: "https://images.unsplash.com/photo-1578474846511-04ba529f0b88?auto=format&fit=crop&w=800&q=80",
+    1: "/images/couple_table.jpg",
+    2: "/images/couple_table.jpg",
+    3: "/images/couple_table.jpg",
+    4: "/images/couple_table.jpg",
+    5: "/images/family_table.jpg",
+    6: "/images/family_table.jpg",
+    7: "/images/family_table.jpg",
   };
 
   useEffect(() => {

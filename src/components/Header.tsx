@@ -18,7 +18,7 @@ export const Header: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 20) {
+      if (window.scrollY > 40) {
         setScrolled(true);
       } else {
         setScrolled(false);
@@ -46,13 +46,9 @@ export const Header: React.FC = () => {
   const whatsappUrl = getWhatsAppLink(whatsappNum);
 
   return (
-    <header className="sticky top-0 z-50 transition-all duration-300 shadow-lg">
-      {/* Top Notification Bar — Royal Navy Blue with White Text */}
-      <div
-        className={`bg-[#071B5C] text-white text-xs transition-all duration-300 border-b border-white/10 ${
-          scrolled ? "max-h-0 py-0 opacity-0 overflow-hidden" : "py-2 px-4 hidden md:block opacity-100"
-        }`}
-      >
+    <>
+      {/* Top Notification Bar — Royal Navy Blue with White Text (Not sticky, scrolls out of view naturally) */}
+      <div className="bg-[#071B5C] text-white text-xs border-b border-white/10 py-2 px-4 hidden md:block">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-1.5 text-blue-200 font-semibold">
@@ -82,10 +78,10 @@ export const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Navigation Bar — Pure White with Royal Navy Text */}
-      <div className={`bg-white border-b border-blue-900/15 shadow-md transition-all duration-300 ${scrolled ? "py-1.5" : "py-2"}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <Logo variant="dark" size={scrolled ? "sm" : "md"} />
+      {/* Main Navigation Bar — Sticky Header */}
+      <header className={`sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-blue-900/15 transition-shadow duration-300 ${scrolled ? "shadow-xl" : "shadow-md"}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center justify-between">
+          <Logo variant="dark" size="md" />
 
           <nav className="hidden lg:flex items-center space-x-1">
             {navLinks.map((link) => {
@@ -94,10 +90,10 @@ export const Header: React.FC = () => {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`relative px-4 py-2 text-xs uppercase font-extrabold tracking-widest transition-all duration-300 ${
+                  className={`relative px-4 py-2 text-xs uppercase font-extrabold tracking-widest transition-all duration-300 border-b-2 ${
                     isActive
-                      ? "text-[#071B5C] border-b-2 border-[#071B5C]"
-                      : "text-[#071B5C]/80 hover:text-[#071B5C] hover:border-b-2 hover:border-[#071B5C]/40"
+                      ? "text-[#071B5C] border-[#071B5C]"
+                      : "text-[#071B5C]/80 hover:text-[#071B5C] border-transparent hover:border-[#071B5C]/40"
                   }`}
                 >
                   {link.name}
@@ -143,7 +139,7 @@ export const Header: React.FC = () => {
             </button>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Mobile Drawer — True Transparent Glass Backdrop Blur with High Contrast Drop-Shadow Text */}
       {mobileMenuOpen && (
@@ -200,6 +196,6 @@ export const Header: React.FC = () => {
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 };

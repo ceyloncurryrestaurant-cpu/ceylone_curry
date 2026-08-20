@@ -81,11 +81,11 @@ const defaultSettings: ISettingsData = {
     maxAdvanceDays: 30,
   },
   heroImages: [
-    "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=2000&q=85",
-    "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=2000&q=85",
-    "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=2000&q=85",
-    "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=2000&q=85",
-    "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=2000&q=85",
+    "/images/hero/interior.jpg",
+    "/images/hero/biryani.jpg",
+    "/images/hero/parotta.jpg",
+    "/images/hero/curry.jpg",
+    "/images/hero/dosa.jpg",
   ],
   signatureDishes: [
     {
