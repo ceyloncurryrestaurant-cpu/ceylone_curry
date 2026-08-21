@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Plus, Edit, Trash2, Layers, X, Upload, ImageIcon } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -15,6 +16,7 @@ export default function AdminCategoriesPage() {
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchCategories();
@@ -22,7 +24,7 @@ export default function AdminCategoriesPage() {
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch("/api/categories");
+      const res = await fetch(`/api/categories?t=${Date.now()}`, { cache: "no-store" });
       const data = await res.json();
       if (data.success) setCategories(data.categories);
     } catch (err) {
@@ -84,16 +86,22 @@ export default function AdminCategoriesPage() {
         setImageUrl("");
         setEditingId(null);
         fetchCategories();
+      } else {
+        toast.error(data.error || "Failed to save category.");
       }
     } catch (err) {
       toast.error("Error saving category.");
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this category?")) return;
+  const handleDelete = (id: string) => {
+    setDeleteId(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteId) return;
     try {
-      const res = await fetch(`/api/categories/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/categories/${deleteId}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
         toast.success("Category deleted");
@@ -101,6 +109,8 @@ export default function AdminCategoriesPage() {
       }
     } catch (err) {
       toast.error("Error deleting category");
+    } finally {
+      setDeleteId(null);
     }
   };
 
@@ -260,6 +270,16 @@ export default function AdminCategoriesPage() {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={confirmDelete}
+        title="Delete Category?"
+        message="Are you sure you want to delete this category? This will permanently remove the category and cannot be undone."
+        confirmText="Delete"
+        variant="danger"
+      />
     </div>
   );
 }

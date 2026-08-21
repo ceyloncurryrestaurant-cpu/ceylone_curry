@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Calendar, Filter, CheckCircle2, XCircle, Clock, Eye, AlertOctagon, UserX, Trash2 } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 export default function AdminReservationsPage() {
   const [reservations, setReservations] = useState<any[]>([]);
@@ -14,6 +15,7 @@ export default function AdminReservationsPage() {
 
   // Modal detail state
   const [detailRes, setDetailRes] = useState<any>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchReservations();
@@ -26,7 +28,8 @@ export default function AdminReservationsPage() {
       if (statusFilter !== "all") params.append("status", statusFilter);
       if (selectedDate) params.append("date", selectedDate);
 
-      const res = await fetch(`/api/reservations?${params.toString()}`);
+      params.append("t", Date.now().toString());
+      const res = await fetch(`/api/reservations?${params.toString()}`, { cache: "no-store" });
       const data = await res.json();
       if (data.success) setReservations(data.reservations);
     } catch (err) {
@@ -57,10 +60,14 @@ export default function AdminReservationsPage() {
     }
   };
 
-  const handleDeleteReservation = async (id: string) => {
-    if (!confirm("Are you sure you want to permanently delete this reservation?")) return;
+  const handleDeleteReservation = (id: string) => {
+    setDeleteId(id);
+  };
+
+  const confirmDeleteReservation = async () => {
+    if (!deleteId) return;
     try {
-      const res = await fetch(`/api/reservations/${id}`, {
+      const res = await fetch(`/api/reservations/${deleteId}`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -73,6 +80,8 @@ export default function AdminReservationsPage() {
       }
     } catch (err) {
       toast.error("Error deleting reservation");
+    } finally {
+      setDeleteId(null);
     }
   };
 
@@ -287,6 +296,16 @@ export default function AdminReservationsPage() {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={confirmDeleteReservation}
+        title="Delete Reservation?"
+        message="Are you sure you want to permanently delete this reservation? This action cannot be undone."
+        confirmText="Delete"
+        variant="danger"
+      />
     </div>
   );
 }

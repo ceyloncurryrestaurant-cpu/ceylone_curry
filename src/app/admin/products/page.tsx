@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Plus, Edit, Trash2, Tag, Upload, X, Check, Flame } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 function getImageUrl(item: any): string | null {
   if (!item) return null;
@@ -55,7 +56,7 @@ export default function AdminProductsPage() {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch("/api/products");
+      const res = await fetch(`/api/products?t=${Date.now()}`, { cache: "no-store" });
       const data = await res.json();
       if (data.success) setProducts(data.products);
     } catch (err) {
@@ -510,30 +511,15 @@ export default function AdminProductsPage() {
       )}
 
       {/* Delete Confirmation Modal */}
-      {deleteId && (
-        <div className="fixed inset-0 z-50 bg-[#071B5C]/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white border-2 border-gray-200 rounded-[2rem] p-6 max-w-sm w-full space-y-4 text-center text-[#071B5C] shadow-2xl">
-            <h3 className="font-serif-display font-extrabold text-2xl text-[#071B5C]">Delete Product?</h3>
-            <p className="text-xs text-gray-500">
-              This will permanently remove the product and associated Cloudinary images.
-            </p>
-            <div className="flex gap-3 pt-2">
-              <button
-                onClick={() => setDeleteId(null)}
-                className="flex-1 py-2.5 rounded-xl border border-gray-300 font-bold text-xs text-[#071B5C] hover:bg-gray-100 cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDeleteProduct}
-                className="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-md cursor-pointer"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmModal
+        isOpen={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={handleDeleteProduct}
+        title="Delete Product?"
+        message="Are you sure you want to delete this product? This will permanently remove the product and associated Cloudinary images."
+        confirmText="Delete"
+        variant="danger"
+      />
     </div>
   );
 }

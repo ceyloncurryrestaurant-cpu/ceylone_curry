@@ -15,6 +15,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState({
@@ -29,6 +30,7 @@ export default function AdminDashboardPage() {
   const [recentReservations, setRecentReservations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [detailRes, setDetailRes] = useState<any | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   async function fetchDashboardStats() {
     try {
@@ -91,10 +93,14 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleDeleteReservation = async (id: string) => {
-    if (!confirm("Are you sure you want to permanently delete this reservation?")) return;
+  const handleDeleteReservation = (id: string) => {
+    setDeleteId(id);
+  };
+
+  const confirmDeleteReservation = async () => {
+    if (!deleteId) return;
     try {
-      const res = await fetch(`/api/reservations/${id}`, {
+      const res = await fetch(`/api/reservations/${deleteId}`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -107,6 +113,8 @@ export default function AdminDashboardPage() {
       }
     } catch (err) {
       toast.error("Error deleting reservation");
+    } finally {
+      setDeleteId(null);
     }
   };
 
@@ -378,6 +386,16 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={confirmDeleteReservation}
+        title="Delete Reservation?"
+        message="Are you sure you want to permanently delete this reservation? This action cannot be undone."
+        confirmText="Delete"
+        variant="danger"
+      />
     </div>
   );
 }
