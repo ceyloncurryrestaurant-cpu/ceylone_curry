@@ -49,6 +49,10 @@ export default function AdminProductsPage() {
   // Delete modal state
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
+  // Filter and Search states
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+
   useEffect(() => {
     fetchProducts();
     fetchCategories();
@@ -216,6 +220,14 @@ export default function AdminProductsPage() {
     }
   };
 
+  const filteredProducts = products.filter((p) => {
+    const matchesCategory = selectedCategoryFilter === "all" || 
+      (p.categoryId?._id || p.categoryId) === selectedCategoryFilter;
+    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.shortDescription && p.shortDescription.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesCategory && matchesSearch;
+  });
+
   return (
     <div className="space-y-8 bg-[#FAF7F2] text-[#071B5C] min-h-[85vh]">
       {/* Header */}
@@ -236,6 +248,35 @@ export default function AdminProductsPage() {
           <Plus className="w-4 h-4" />
           <span>Add New Product</span>
         </button>
+      </div>
+
+      {/* Search and Filter Controls */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white p-6 rounded-3xl border border-gray-200 shadow-sm text-[#071B5C]">
+        <div>
+          <label className="block text-xs font-bold text-[#071B5C] uppercase mb-1">Search Dishes</label>
+          <input
+            type="text"
+            placeholder="Search by name or description..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm font-semibold bg-gray-50 text-[#071B5C] focus:outline-none focus:border-[#071B5C]"
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-bold text-[#071B5C] uppercase mb-1">Filter by Category</label>
+          <select
+            value={selectedCategoryFilter}
+            onChange={(e) => setSelectedCategoryFilter(e.target.value)}
+            className="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm font-semibold bg-gray-50 text-[#071B5C] focus:outline-none focus:border-[#071B5C]"
+          >
+            <option value="all">All Categories</option>
+            {categories.map((c) => (
+              <option key={c._id} value={c._id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Product List Table */}
@@ -259,72 +300,80 @@ export default function AdminProductsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 text-sm font-medium text-[#071B5C]">
-                {products.map((p) => {
-                  const firstImg = getImageUrl(p);
-                  return (
-                    <tr key={p._id} className="hover:bg-gray-50 transition-colors">
-                      <td className="p-4">
-                        <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center">
-                          {firstImg ? (
-                            <img src={firstImg} alt={p.name} className="w-full h-full object-cover" />
-                          ) : (
-                            <span className="text-[10px] text-gray-400 p-1 block text-center">No Img</span>
+                {filteredProducts.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="p-8 text-center text-gray-500 font-light">
+                      No products found matching search query or category filter.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredProducts.map((p) => {
+                    const firstImg = getImageUrl(p);
+                    return (
+                      <tr key={p._id} className="hover:bg-gray-50 transition-colors">
+                        <td className="p-4">
+                          <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center">
+                            {firstImg ? (
+                              <img src={firstImg} alt={p.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <span className="text-[10px] text-gray-400 p-1 block text-center">No Img</span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <span className="font-bold text-[#071B5C] block">{p.name}</span>
+                          {p.isFeatured && (
+                            <span className="text-[10px] text-ceylon-gold font-bold uppercase inline-flex items-center gap-0.5">
+                              <Flame className="w-3 h-3 fill-current text-ceylon-gold" /> Favourite
+                            </span>
                           )}
-                        </div>
-                      </td>
-                      <td className="p-4">
-                        <span className="font-bold text-[#071B5C] block">{p.name}</span>
-                        {p.isFeatured && (
-                          <span className="text-[10px] text-ceylon-gold font-bold uppercase inline-flex items-center gap-0.5">
-                            <Flame className="w-3 h-3 fill-current text-ceylon-gold" /> Favourite
+                        </td>
+                        <td className="p-4 text-xs font-medium text-gray-600">
+                          {p.categoryId?.name || "Uncategorized"}
+                        </td>
+                        <td className="p-4 font-bold text-[#071B5C]">
+                          £{p.price.toFixed(2)}
+                        </td>
+                        <td className="p-4">
+                          {p.isOffer && p.offerPrice ? (
+                            <span className="px-2.5 py-1 rounded-full bg-ceylon-red text-white text-xs font-extrabold shadow-sm">
+                              £{p.offerPrice.toFixed(2)} ({p.discountPercentage}% OFF)
+                            </span>
+                          ) : (
+                            <span className="text-xs text-gray-400">Regular</span>
+                          )}
+                        </td>
+                        <td className="p-4">
+                          <span
+                            className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                              p.isAvailable !== false
+                                ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
+                                : "bg-gray-100 text-gray-500 border border-gray-300"
+                            }`}
+                          >
+                            {p.isAvailable !== false ? "Yes" : "No"}
                           </span>
-                        )}
-                      </td>
-                      <td className="p-4 text-xs font-medium text-gray-600">
-                        {p.categoryId?.name || "Uncategorized"}
-                      </td>
-                      <td className="p-4 font-bold text-[#071B5C]">
-                        £{p.price.toFixed(2)}
-                      </td>
-                      <td className="p-4">
-                        {p.isOffer && p.offerPrice ? (
-                          <span className="px-2.5 py-1 rounded-full bg-ceylon-red text-white text-xs font-extrabold shadow-sm">
-                            £{p.offerPrice.toFixed(2)} ({p.discountPercentage}% OFF)
-                          </span>
-                        ) : (
-                          <span className="text-xs text-gray-400">Regular</span>
-                        )}
-                      </td>
-                      <td className="p-4">
-                        <span
-                          className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-                            p.isAvailable !== false
-                              ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
-                              : "bg-gray-100 text-gray-500 border border-gray-300"
-                          }`}
-                        >
-                          {p.isAvailable !== false ? "Yes" : "No"}
-                        </span>
-                      </td>
-                      <td className="p-4 text-right space-x-2">
-                        <button
-                          onClick={() => handleOpenEditModal(p)}
-                          className="p-2 text-[#071B5C] hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
-                          title="Edit Product"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => setDeleteId(p._id)}
-                          className="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
-                          title="Delete Product"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
+                        </td>
+                        <td className="p-4 text-right space-x-2">
+                          <button
+                            onClick={() => handleOpenEditModal(p)}
+                            className="p-2 text-[#071B5C] hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                            title="Edit Product"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => setDeleteId(p._id)}
+                            className="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                            title="Delete Product"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>

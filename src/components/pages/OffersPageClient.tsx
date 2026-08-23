@@ -41,8 +41,8 @@ export function OffersPageClient() {
       </div>
 
       {loading ? (
-        <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-8">
-          {[1, 2, 3].map((i) => (
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-6">
+          {[1, 2, 3, 4].map((i) => (
             <div key={i} className="h-64 sm:h-80 bg-gray-100 rounded-3xl animate-pulse" />
           ))}
         </div>
@@ -52,7 +52,7 @@ export function OffersPageClient() {
           <p className="text-xs text-gray-600">Check back soon for new daily specials and discounts, or explore our full menu catalog.</p>
         </div>
       ) : (
-        <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-6">
           {offerProducts.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}

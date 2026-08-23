@@ -261,8 +261,8 @@ export function HomePageClient() {
   };
 
   const filteredMiniMenuProducts = selectedCategory === "all"
-    ? (allProducts.length > 0 ? allProducts.slice(0, 6) : featuredProducts.slice(0, 6))
-    : allProducts.filter(p => (p.categoryId?._id === selectedCategory || p.categoryId === selectedCategory)).slice(0, 6);
+    ? (allProducts.length > 0 ? allProducts.slice(0, 16) : featuredProducts.slice(0, 16))
+    : allProducts.filter(p => (p.categoryId?._id === selectedCategory || p.categoryId === selectedCategory)).slice(0, 16);
 
   return (
     <div className="space-y-0 relative overflow-hidden bg-white">
@@ -378,13 +378,13 @@ export function HomePageClient() {
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-8">
-              {[1, 2, 3].map((n) => (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-6">
+              {[1, 2, 3, 4].map((n) => (
                 <div key={n} className="h-64 sm:h-80 rounded-3xl bg-gray-200 animate-pulse" />
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-6">
               {offerProducts.slice(0, 4).map((product) => (
                 <ProductCard key={product._id} product={product} />
               ))}
@@ -539,13 +539,13 @@ export function HomePageClient() {
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-              {[1, 2, 3, 4, 5, 6].map((n) => (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {Array.from({ length: 16 }).map((_, n) => (
                 <div key={n} className="h-80 rounded-3xl bg-gray-100 animate-pulse" />
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {filteredMiniMenuProducts.map((product) => (
                 <ProductCard key={product._id} product={product} />
               ))}
