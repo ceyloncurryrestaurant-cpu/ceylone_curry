@@ -41,11 +41,11 @@ export default function AdminSettingsPage() {
 
   // Section Images
   const [heroImages, setHeroImages] = useState<string[]>([
-    "/images/hero/interior.jpg",
-    "/images/hero/biryani.jpg",
-    "/images/hero/parotta.jpg",
-    "/images/hero/curry.jpg",
-    "/images/hero/dosa.jpg",
+    "/images/hero/interior.webp",
+    "/images/hero/biryani.webp",
+    "/images/hero/parotta.webp",
+    "/images/hero/curry.webp",
+    "/images/hero/dosa.webp",
   ]);
   const [uploadingHero, setUploadingHero] = useState<number | null>(null);
   const heroFileRefs = useRef<(HTMLInputElement | null)[]>([]);

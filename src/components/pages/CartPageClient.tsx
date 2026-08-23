@@ -69,14 +69,14 @@ export function CartPageClient() {
               <div className="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end">
                 <div className="flex items-center border border-gray-300 rounded-full bg-gray-50 px-3 py-1.5">
                   <button
-                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    onClick={() => updateQuantity(item.id, -1)}
                     className="p-1 text-gray-600 hover:text-[#071B5C] cursor-pointer"
                   >
                     <Minus className="w-3.5 h-3.5" />
                   </button>
                   <span className="px-3 font-black text-xs text-[#071B5C]">{item.quantity}</span>
                   <button
-                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    onClick={() => updateQuantity(item.id, 1)}
                     className="p-1 text-gray-600 hover:text-[#071B5C] cursor-pointer"
                   >
                     <Plus className="w-3.5 h-3.5" />

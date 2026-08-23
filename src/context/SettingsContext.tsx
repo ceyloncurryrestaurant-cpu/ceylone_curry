@@ -81,11 +81,11 @@ const defaultSettings: ISettingsData = {
     maxAdvanceDays: 30,
   },
   heroImages: [
-    "/images/hero/interior.jpg",
-    "/images/hero/biryani.jpg",
-    "/images/hero/parotta.jpg",
-    "/images/hero/curry.jpg",
-    "/images/hero/dosa.jpg",
+    "/images/hero/interior.webp",
+    "/images/hero/biryani.webp",
+    "/images/hero/parotta.webp",
+    "/images/hero/curry.webp",
+    "/images/hero/dosa.webp",
   ],
   signatureDishes: [
     {

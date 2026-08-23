@@ -130,11 +130,11 @@ export function HomePageClient() {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   const defaultHeroUrls = [
-    "/images/hero/interior.jpg",
-    "/images/hero/biryani.jpg",
-    "/images/hero/parotta.jpg",
-    "/images/hero/curry.jpg",
-    "/images/hero/dosa.jpg",
+    "/images/hero/interior.webp",
+    "/images/hero/biryani.webp",
+    "/images/hero/parotta.webp",
+    "/images/hero/curry.webp",
+    "/images/hero/dosa.webp",
   ];
   const heroImageUrls = (settings?.heroImages && settings.heroImages.length > 0)
     ? settings.heroImages
@@ -273,7 +273,7 @@ export function HomePageClient() {
         {heroSlides.map((slide: any, idx: number) => (
           <div
             key={slide.title}
-            className={`absolute inset-0 z-0 transition-opacity duration-1000 ease-in-out ${
+            className={`absolute inset-0 z-0 transition-opacity duration-1000 ease-in-out bg-[#071B5C] ${
               heroIndex === idx ? "opacity-90 scale-105" : "opacity-0 scale-100"
             }`}
             style={{ transition: "opacity 1000ms ease-in-out, transform 8000ms linear" }}
@@ -283,6 +283,9 @@ export function HomePageClient() {
               alt={slide.title}
               fill
               priority={idx === 0}
+              placeholder="blur"
+              blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjgiIGZpbGw9IiMwNzFCNUMiLz48L3N2Zz4="
+              sizes="100vw"
               className="object-cover brightness-105 contrast-105"
             />
           </div>
