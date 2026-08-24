@@ -176,6 +176,18 @@ export function CheckoutPageClient() {
                 <span className="font-serif-display text-3xl font-black text-ceylon-saffron">£{totalPrice.toFixed(2)}</span>
               </div>
 
+              {totalPrice >= 50 && (
+                <div className="p-4 rounded-2xl bg-[#0E3094]/30 border border-[#F5B91A]/30 text-[#FFF8E8] space-y-1.5 animate-fade-in">
+                  <div className="flex items-center gap-2 text-xs font-black text-ceylon-copper">
+                    <span>🅿️</span>
+                    <span>FREE PARKING TICKET CLAIM UNLOCKED!</span>
+                  </div>
+                  <p className="text-[10px] leading-relaxed text-ceylon-sandstone">
+                    Your order total is over £50! You qualify for a Mayflower Street East Car Park ticket reimbursement. We have automatically flagged this on your WhatsApp order details.
+                  </p>
+                </div>
+              )}
+
               <button
                 type="submit"
                 disabled={submitting}

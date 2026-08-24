@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSettings } from "@/context/SettingsContext";
 import { ProductCard } from "@/components/products/ProductCard";
-import { LogoIntroOverlay } from "@/components/LogoIntroOverlay";
 import { ReviewModal } from "@/components/ReviewModal";
 import {
   Sparkles,
@@ -15,8 +14,26 @@ import {
   Utensils,
   ChevronRight,
   ChevronLeft,
+  Car,
+  Gift,
 } from "lucide-react";
 import { getWhatsAppLink } from "@/lib/whatsapp";
+
+const parkImages = [
+  "https://res.cloudinary.com/emsmspoh/image/upload/v1787601165/ceylon_curry/park/qarpo5dnphiiiwhnhpjh.jpg",
+  "https://res.cloudinary.com/emsmspoh/image/upload/v1787601171/ceylon_curry/park/wvvch6xerk1zchhqig2x.jpg",
+  "https://res.cloudinary.com/emsmspoh/image/upload/v1787601179/ceylon_curry/park/trhrh6cdi63qnuhf4aod.jpg",
+  "https://res.cloudinary.com/emsmspoh/image/upload/v1787601181/ceylon_curry/park/m3jhgc1rt7mkyxmhwbmg.jpg",
+  "https://res.cloudinary.com/emsmspoh/image/upload/v1787601184/ceylon_curry/park/l3y00ixxhxmg8krxwss1.jpg",
+  "https://res.cloudinary.com/emsmspoh/image/upload/v1787601187/ceylon_curry/park/eldfxgtvsyxhut72o8wm.jpg",
+  "https://res.cloudinary.com/emsmspoh/image/upload/v1787601190/ceylon_curry/park/ydskyymuqmuygmszfwqf.jpg",
+  "https://res.cloudinary.com/emsmspoh/image/upload/v1787601193/ceylon_curry/park/dtxf9yawrxn8sd7ef8fl.jpg",
+  "https://res.cloudinary.com/emsmspoh/image/upload/v1787601196/ceylon_curry/park/akwsi9jjgyv7rhzn4gyi.jpg",
+  "https://res.cloudinary.com/emsmspoh/image/upload/v1787601198/ceylon_curry/park/egbwd3o3ytjucads2z14.jpg",
+  "https://res.cloudinary.com/emsmspoh/image/upload/v1787601199/ceylon_curry/park/qtpru55gldguodnhnfcn.jpg",
+  "https://res.cloudinary.com/emsmspoh/image/upload/v1787601201/ceylon_curry/park/yfgoklfhtd9kwrcntdzr.jpg",
+];
+const parkVideo = "https://res.cloudinary.com/emsmspoh/video/upload/v1787601270/ceylon_curry/park/j7eod3fswco2mnii2fry.mp4";
 
 export function HomePageClient() {
   const { settings } = useSettings();
@@ -29,6 +46,7 @@ export function HomePageClient() {
 
   const catScrollRef = useRef<HTMLDivElement>(null);
   const galleryScrollRef = useRef<HTMLDivElement>(null);
+  const parkGalleryScrollRef = useRef<HTMLDivElement>(null);
   const [activeCatIndex, setActiveCatIndex] = useState(0);
 
   const defaultCatList = [
@@ -105,6 +123,37 @@ export function HomePageClient() {
         }
       }
     }, 3000);
+
+    const handleMouseEnter = () => { isPaused = true; };
+    const handleMouseLeave = () => { isPaused = false; };
+
+    container.addEventListener("mouseenter", handleMouseEnter);
+    container.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+      clearInterval(interval);
+      container.removeEventListener("mouseenter", handleMouseEnter);
+      container.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, []);
+
+  useEffect(() => {
+    const container = parkGalleryScrollRef.current;
+    if (!container) return;
+
+    let isPaused = false;
+
+    const interval = setInterval(() => {
+      if (container && !isPaused) {
+        const maxScrollLeft = container.scrollWidth - container.clientWidth;
+        if (container.scrollLeft >= maxScrollLeft - 20) {
+          container.scrollTo({ left: 0, behavior: "smooth" });
+        } else {
+          const step = Math.min(400, container.clientWidth * 0.85);
+          container.scrollBy({ left: step, behavior: "smooth" });
+        }
+      }
+    }, 3200);
 
     const handleMouseEnter = () => { isPaused = true; };
     const handleMouseLeave = () => { isPaused = false; };
@@ -266,7 +315,6 @@ export function HomePageClient() {
 
   return (
     <div className="space-y-0 relative overflow-hidden bg-white">
-      <LogoIntroOverlay />
 
       {/* HERO SECTION */}
       <section className="relative min-h-[92vh] sm:min-h-screen flex items-center justify-center bg-[#071B5C] overflow-hidden pt-20 pb-24">
@@ -564,6 +612,146 @@ export function HomePageClient() {
               <ChevronRight className="w-4 h-4 text-ceylon-gold" />
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* PARK & DINE SECTION */}
+      <section className="py-24 bg-[#071B5C] text-white relative z-10 border-t border-white/10 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+          
+          {/* HEADER */}
+          <div className="text-center max-w-3xl mx-auto space-y-4">
+            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-ceylon-gold/10 border border-ceylon-gold/30 shadow-md">
+              <Car className="w-4 h-4 text-ceylon-gold" />
+              <span className="text-[11px] uppercase font-black tracking-[0.3em] text-ceylon-gold">
+                PARK & DINE WITH US
+              </span>
+            </div>
+            <h2 className="font-serif-display text-4xl sm:text-6xl font-extrabold text-white mt-1 leading-tight">
+              Mayflower Street East Car Park Promotion
+            </h2>
+            <div className="w-16 h-0.5 bg-ceylon-gold/80 mx-auto rounded-full shadow-gold" />
+            <p className="text-sm sm:text-base text-blue-100 font-light max-w-2xl mx-auto leading-relaxed">
+              Parking near Mayflower Street? Stop by Ceylon Curry for a delicious meal, and your parking is on us! 
+            </p>
+          </div>
+
+          {/* SPLIT LAYOUT: VIDEO & DESCRIPTION */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            {/* LEFT COLUMN: VIDEO PLAYER (TIKTOK / REEL ASPECT RATIO) */}
+            <div className="lg:col-span-5 flex justify-center">
+              <div className="relative w-full max-w-[320px] aspect-[9/16] rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-white/10 bg-[#0A2472] group">
+                <video
+                  src={parkVideo}
+                  controls
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102"
+                />
+                <div className="absolute top-4 left-4 bg-[#071B5C]/85 text-ceylon-gold text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border border-ceylon-gold/30 shadow-md flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-ceylon-gold animate-ping" />
+                  <span>VISITING THE PARK</span>
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN: PROMO DETAILS */}
+            <div className="lg:col-span-7 space-y-6">
+              <div className="space-y-3">
+                <span className="text-xs font-black uppercase tracking-widest text-ceylon-gold block">
+                  EXCLUSIVE PARKING OFFER
+                </span>
+                <h3 className="font-serif-display text-3xl sm:text-4xl font-extrabold text-white">
+                  Spend Over £50, Get Free Parking!
+                </h3>
+                <p className="text-sm text-blue-100 leading-relaxed font-light">
+                  Our restaurant is conveniently located at 44 Mayflower Street, just a <span className="text-ceylon-gold font-bold">1-minute walk</span> from the Mayflower Street East Car Park (PL1 1QJ). If you spend <span className="text-ceylon-gold font-bold">£50.00 or more</span> on your meal, we will pay for your car park ticket.
+                </p>
+              </div>
+
+              <div className="bg-[#0E3094]/40 border border-white/15 p-6 rounded-3xl space-y-4 shadow-inner">
+                <div className="flex gap-4 items-start">
+                  <div className="w-10 h-10 rounded-full bg-ceylon-gold/10 text-ceylon-gold flex items-center justify-center shrink-0 font-bold">
+                    1
+                  </div>
+                  <div>
+                    <h4 className="font-serif-display text-base font-bold text-white">Park Conveniently</h4>
+                    <p className="text-xs text-blue-200/80 font-light mt-0.5">Park your vehicle at the multi-storey Mayflower Street East Car Park.</p>
+                  </div>
+                </div>
+                <div className="flex gap-4 items-start">
+                  <div className="w-10 h-10 rounded-full bg-ceylon-gold/10 text-ceylon-gold flex items-center justify-center shrink-0 font-bold">
+                    2
+                  </div>
+                  <div>
+                    <h4 className="font-serif-display text-base font-bold text-white">Dine & Enjoy</h4>
+                    <p className="text-xs text-blue-200/80 font-light mt-0.5">Indulge in authentic, aromatic Sri Lankan curries, devilled dishes, or kottu roti.</p>
+                  </div>
+                </div>
+                <div className="flex gap-4 items-start">
+                  <div className="w-10 h-10 rounded-full bg-ceylon-gold/10 text-ceylon-gold flex items-center justify-center shrink-0 font-bold">
+                    3
+                  </div>
+                  <div>
+                    <h4 className="font-serif-display text-base font-bold text-white">Get Reimbursed</h4>
+                    <p className="text-xs text-blue-200/80 font-light mt-0.5">Spend £50+, show your parking ticket to our staff, and we will take care of the parking cost!</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 pt-2">
+                <Link
+                  href="/menu"
+                  className="inline-flex items-center gap-3 px-8 py-4 rounded-full text-xs font-black uppercase tracking-widest text-[#071B5C] bg-ceylon-gold hover:bg-white transition-all shadow-gold"
+                >
+                  <Utensils className="w-4 h-4" />
+                  <span>Order Now & Claim</span>
+                </Link>
+                
+                <div className="flex items-center gap-2 text-xs text-blue-200 font-light">
+                  <Gift className="w-4 h-4 text-ceylon-gold" />
+                  <span>Valid for all customers</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* DYNAMIC SCROLLING PARK IMAGE GALLERY */}
+          <div className="space-y-6 pt-8 border-t border-white/10">
+            <div className="text-center">
+              <span className="text-xs uppercase font-extrabold tracking-[0.2em] text-ceylon-gold block">
+                PARK & AREA SCENERY
+              </span>
+              <h3 className="font-serif-display text-2xl sm:text-3xl font-extrabold text-white mt-1">
+                Explore the Neighborhood
+              </h3>
+            </div>
+
+            <div
+              ref={parkGalleryScrollRef}
+              className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 pt-2 px-2 scrollbar-none scroll-smooth snap-x snap-mandatory [&::-webkit-scrollbar]:hidden"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
+              {parkImages.map((imgUrl: string, idx: number) => (
+                <div
+                  key={idx}
+                  className="shrink-0 relative rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 shadow-lg bg-[#0E3094] snap-center w-[75vw] max-w-[280px] sm:max-w-none sm:w-[350px] aspect-[4/3] group"
+                >
+                  <Image
+                    src={imgUrl}
+                    alt={`Mayflower Park Area Photo ${idx + 1}`}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
       </section>
 

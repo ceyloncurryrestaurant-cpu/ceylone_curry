@@ -51,7 +51,7 @@ ${itemLines}
 
 Subtotal: £${data.subtotal.toFixed(2)}
 Discount: £${data.discount.toFixed(2)}
-TOTAL: £${data.total.toFixed(2)}
+TOTAL: £${data.total.toFixed(2)}${data.total >= 50 ? "\n\n🎁 FREE MAYFLOWER EAST CAR PARK TICKET ELIGIBLE (Spent £50+)" : ""}
 
 Notes:
 ${data.notes && data.notes.trim() ? data.notes : "None"}

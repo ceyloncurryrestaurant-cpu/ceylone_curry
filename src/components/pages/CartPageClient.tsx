@@ -98,6 +98,33 @@ export function CartPageClient() {
           ))}
         </div>
 
+        {/* PARKING PROMOTION BANNER */}
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-md flex flex-col sm:flex-row items-center justify-between gap-4 text-[#071B5C]">
+          <div className="flex items-center gap-4 w-full">
+            <div className="w-12 h-12 rounded-full bg-[#0E3094]/10 text-[#071B5C] flex items-center justify-center shrink-0 text-xl font-bold">
+              🅿️
+            </div>
+            <div className="space-y-1 w-full">
+              <h4 className="font-serif-display text-lg font-bold text-[#071B5C]">
+                {totalPrice >= 50 ? "Free Parking Unlocked! 🎉" : "Park & Dine Offer"}
+              </h4>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                {totalPrice >= 50
+                  ? "Congratulations! You've spent over £50 and qualify for a Mayflower Street East Car Park ticket reimbursement. We will pay for your parking ticket!"
+                  : `Spend £50.00 or more to get your Mayflower Street East Car Park ticket fully reimbursed. Add just £${(50 - totalPrice).toFixed(2)} more to qualify!`}
+              </p>
+              {totalPrice < 50 && (
+                <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden mt-2">
+                  <div
+                    className="bg-ceylon-gold h-full rounded-full transition-all duration-500"
+                    style={{ width: `${(totalPrice / 50) * 100}%` }}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
         <div className="bg-[#071B5C] p-8 rounded-[3rem] text-white shadow-2xl flex flex-col sm:flex-row justify-between items-center gap-6 border-2 border-white/20">
           <div>
             <span className="text-xs uppercase font-bold text-ceylon-gold tracking-widest block">Total Payable</span>

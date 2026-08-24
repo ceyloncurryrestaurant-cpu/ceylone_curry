@@ -8,8 +8,13 @@ export const LogoIntroOverlay: React.FC = () => {
   const [animatingOut, setAnimatingOut] = useState(false);
 
   useEffect(() => {
-    // Check if intro has already played in this session
-    const hasSeenIntro = sessionStorage.getItem("ceylon_intro_seen");
+    let hasSeenIntro = false;
+    try {
+      hasSeenIntro = sessionStorage.getItem("ceylon_intro_seen") === "true";
+    } catch (e) {
+      console.warn("sessionStorage access blocked:", e);
+    }
+
     if (hasSeenIntro) {
       setVisible(false);
       return;
@@ -19,7 +24,11 @@ export const LogoIntroOverlay: React.FC = () => {
       setAnimatingOut(true);
       setTimeout(() => {
         setVisible(false);
-        sessionStorage.setItem("ceylon_intro_seen", "true");
+        try {
+          sessionStorage.setItem("ceylon_intro_seen", "true");
+        } catch (e) {
+          // Ignore write failure
+        }
       }, 500);
     }, 1200);
 
