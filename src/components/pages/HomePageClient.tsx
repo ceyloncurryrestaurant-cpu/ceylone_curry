@@ -210,36 +210,7 @@ export function HomePageClient({
   }));
   const [heroIndex, setHeroIndex] = useState(0);
 
-  const defaultSignatureDishes = [
-    {
-      name: "CHEESE KOTTU ROTI",
-      subtitle: "Street-Food Comfort with a Rich Ceylon Twist",
-      description: "Shredded godamba flatbread flash-fried on a flat iron griddle with roasted chicken, farm eggs, crunchy vegetables, and melted cheddar sauce.",
-      price: "£13.50",
-      image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=1000&q=80",
-      badge: "HOUSE FAVORITE",
-    },
-    {
-      name: "JAFFNA BLACK LAMB CURRY",
-      subtitle: "Slow-Braised Tender Lamb in Dark Roasted Spice",
-      description: "Tender lamb leg slow-cooked for 6 hours in dark-roasted cumin, coriander, black pepper, and toasted coconut paste.",
-      price: "£15.90",
-      image: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1000&q=80",
-      badge: "CHEF'S CROWN",
-    },
-    {
-      name: "DEVILLED KING PRAWNS",
-      subtitle: "Fiery Wok-Tossed Prawns with Capsicum & Tomato",
-      description: "Jumbo king prawns tossed with banana peppers, red onions, crushed chilli flakes, and sweet-spicy Ceylon glaze.",
-      price: "£14.80",
-      image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=1000&q=80",
-      badge: "HOT & SPICY",
-    },
-  ];
-  const signatureDishes = (settings?.signatureDishes && settings.signatureDishes.length > 0)
-    ? settings.signatureDishes
-    : defaultSignatureDishes;
-  const [currentSignatureIndex, setCurrentSignatureIndex] = useState(0);
+
 
   const storyMainImg = settings?.storyMainImage || "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1000&q=80";
   const storySecImg = settings?.storySecondaryImage || "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80";
@@ -834,75 +805,7 @@ export function HomePageClient({
             </div>
           </div>
 
-          <div className="bg-[#071B5C] text-white rounded-[3rem] p-8 sm:p-14 border-2 border-white/20 shadow-2xl grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            <div className="lg:col-span-7 relative aspect-[4/3] rounded-3xl overflow-hidden border border-white/20 bg-[#071B5C]">
-              {signatureDishes.map((dish: any, idx: number) => (
-                <div
-                  key={idx}
-                  className={`absolute inset-0 transition-opacity duration-700 ${
-                    currentSignatureIndex === idx ? "opacity-100" : "opacity-0 pointer-events-none"
-                  }`}
-                >
-                  <Image
-                    src={dish.image || storyMainImg}
-                    alt={dish.name || "Signature Dish"}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                    loading="eager"
-                    className="object-cover"
-                  />
-                  <div className="absolute top-4 left-4 bg-ceylon-red text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full shadow-md z-10">
-                    {dish.badge || "HOUSE FAVORITE"}
-                  </div>
-                </div>
-              ))}
-            </div>
 
-            <div className="lg:col-span-5 space-y-6">
-              <div className="space-y-2">
-                <span className="text-xs font-black uppercase tracking-widest text-ceylon-gold block">
-                  HOUSE SIGNATURE #{currentSignatureIndex + 1}
-                </span>
-                <h3 className="font-serif-display text-4xl font-extrabold text-white">
-                  {signatureDishes[currentSignatureIndex]?.name}
-                </h3>
-                <p className="text-xs text-ceylon-gold uppercase font-bold tracking-wider">
-                  {signatureDishes[currentSignatureIndex]?.subtitle}
-                </p>
-                <p className="text-sm text-blue-100 leading-relaxed font-light">
-                  {signatureDishes[currentSignatureIndex]?.description}
-                </p>
-              </div>
-
-              <div className="flex items-baseline gap-4 pt-2">
-                <span className="font-serif-display text-4xl font-black text-ceylon-gold">
-                  {signatureDishes[currentSignatureIndex]?.price}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-4 pt-4">
-                <Link
-                  href="/menu"
-                  className="inline-flex items-center gap-3 px-8 py-4 rounded-full text-xs font-black uppercase tracking-widest text-[#071B5C] bg-ceylon-gold hover:bg-white transition-all shadow-gold"
-                >
-                  <span>ADD TO ORDER</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-
-                <div className="flex gap-2">
-                  {signatureDishes.map((_: any, i: number) => (
-                    <button
-                      key={i}
-                      onClick={() => setCurrentSignatureIndex(i)}
-                      className={`w-3 h-3 rounded-full transition-all cursor-pointer ${
-                        currentSignatureIndex === i ? "bg-ceylon-gold w-8" : "bg-white/30"
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
