@@ -3,6 +3,10 @@ import type { Metadata } from "next";
 import { HomePageClient } from "@/components/pages/HomePageClient";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { SITE_CONFIG } from "@/lib/seo";
+import { connectToDatabase } from "@/lib/mongodb";
+import Product from "@/models/Product";
+import Category from "@/models/Category";
+import Review from "@/models/Review";
 
 export const metadata: Metadata = {
   title: "Ceylon Curry Plymouth | Authentic Sri Lankan Restaurant & Kottu Roti",
@@ -24,11 +28,97 @@ export const metadata: Metadata = {
   },
 };
 
-export default function HomePage() {
+async function getInitialData() {
+  try {
+    const conn = await connectToDatabase();
+    if (!conn) {
+      const { memoryStore } = await import("@/lib/memoryStore");
+      return {
+        featuredProducts: memoryStore.products.filter((p: any) => p.isFeatured).slice(0, 6),
+        offerProducts: memoryStore.products.filter((p: any) => p.isOffer),
+        categories: memoryStore.categories,
+        allProducts: memoryStore.products.filter((p: any) => p.isAvailable),
+        reviews: [],
+      };
+    }
+
+    const categories = await Category.find({ isActive: true }).sort({ displayOrder: 1, name: 1 }).lean();
+    
+    const featuredProducts = await Product.find({ isFeatured: true, isAvailable: true })
+      .populate("categoryId", "name slug")
+      .sort({ createdAt: -1 })
+      .limit(6)
+      .lean();
+
+    const offerProducts = await Product.find({ isOffer: true, isAvailable: true })
+      .populate("categoryId", "name slug")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const allProducts = await Product.find({ isAvailable: true })
+      .populate("categoryId", "name slug")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    let reviews: any[] = await Review.find({ isApproved: true }).sort({ createdAt: -1 }).lean();
+    if (reviews.length === 0) {
+      const SEED_REVIEWS = [
+        {
+          name: "Sarah & Mark Jenkins",
+          rating: 5,
+          comment: "The Cheese Kottu Roti is unbelievable — exactly like what we had in Colombo! The atmosphere on Mayflower Street feels so warm and upscale.",
+          favoriteDish: "Cheese Kottu Roti",
+          isApproved: true,
+        },
+        {
+          name: "David C.",
+          rating: 5,
+          comment: "Hands down the best Sri Lankan black lamb curry in the South West. Deep, dark roasted spices, tender lamb, and impeccable hospitality.",
+          favoriteDish: "Jaffna Black Lamb Curry",
+          isApproved: true,
+        },
+        {
+          name: "Priyantha Wickramasinghe",
+          rating: 5,
+          comment: "Authentic Karapincha and true Ceylon cinnamon notes in every dish. Exceptional table service and visual table reservation workflow!",
+          favoriteDish: "Devilled King Prawns",
+          isApproved: true,
+        },
+      ];
+      reviews = SEED_REVIEWS;
+    }
+
+    return JSON.parse(JSON.stringify({
+      featuredProducts,
+      offerProducts,
+      categories,
+      allProducts,
+      reviews,
+    }));
+  } catch (error) {
+    console.error("Failed to fetch initial home data:", error);
+    return {
+      featuredProducts: [],
+      offerProducts: [],
+      categories: [],
+      allProducts: [],
+      reviews: [],
+    };
+  }
+}
+
+export default async function HomePage() {
+  const data = await getInitialData();
   return (
     <>
       <BreadcrumbJsonLd items={[{ name: "Home", item: "/" }]} />
-      <HomePageClient />
+      <HomePageClient
+        initialFeaturedProducts={data.featuredProducts}
+        initialOfferProducts={data.offerProducts}
+        initialCategories={data.categories}
+        initialAllProducts={data.allProducts}
+        initialReviews={data.reviews}
+      />
     </>
   );
 }

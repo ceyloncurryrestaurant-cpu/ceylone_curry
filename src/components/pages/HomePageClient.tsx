@@ -35,14 +35,28 @@ const parkImages = [
 ];
 const parkVideo = "https://res.cloudinary.com/emsmspoh/video/upload/v1787601270/ceylon_curry/park/j7eod3fswco2mnii2fry.mp4";
 
-export function HomePageClient() {
+interface HomePageClientProps {
+  initialFeaturedProducts?: any[];
+  initialOfferProducts?: any[];
+  initialCategories?: any[];
+  initialAllProducts?: any[];
+  initialReviews?: any[];
+}
+
+export function HomePageClient({
+  initialFeaturedProducts = [],
+  initialOfferProducts = [],
+  initialCategories = [],
+  initialAllProducts = [],
+  initialReviews = [],
+}: HomePageClientProps) {
   const { settings } = useSettings();
-  const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
-  const [offerProducts, setOfferProducts] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
-  const [allProducts, setAllProducts] = useState<any[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<any[]>(initialFeaturedProducts);
+  const [offerProducts, setOfferProducts] = useState<any[]>(initialOfferProducts);
+  const [categories, setCategories] = useState<any[]>(initialCategories);
+  const [allProducts, setAllProducts] = useState<any[]>(initialAllProducts);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(initialFeaturedProducts.length === 0);
 
   const catScrollRef = useRef<HTMLDivElement>(null);
   const galleryScrollRef = useRef<HTMLDivElement>(null);
@@ -175,7 +189,7 @@ export function HomePageClient() {
     }
   };
 
-  const [realReviews, setRealReviews] = useState<any[]>([]);
+  const [realReviews, setRealReviews] = useState<any[]>(initialReviews);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   const defaultHeroUrls = [
@@ -331,6 +345,7 @@ export function HomePageClient() {
               alt={slide.title}
               fill
               priority={idx === 0}
+              loading={idx === 0 ? undefined : "eager"}
               placeholder="blur"
               blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjgiIGZpbGw9IiMwNzFCNUMiLz48L3N2Zz4="
               sizes="100vw"
@@ -495,6 +510,7 @@ export function HomePageClient() {
                           src={foodImg}
                           alt={cat.name}
                           fill
+                          sizes="(max-width: 640px) 128px, 176px"
                           className="object-cover transition-transform duration-700 group-hover:scale-115"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-50 group-hover:opacity-20 transition-opacity" />
@@ -820,15 +836,26 @@ export function HomePageClient() {
 
           <div className="bg-[#071B5C] text-white rounded-[3rem] p-8 sm:p-14 border-2 border-white/20 shadow-2xl grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-7 relative aspect-[4/3] rounded-3xl overflow-hidden border border-white/20 bg-[#071B5C]">
-              <Image
-                src={signatureDishes[currentSignatureIndex]?.image || storyMainImg}
-                alt={signatureDishes[currentSignatureIndex]?.name || "Signature Dish"}
-                fill
-                className="object-cover transition-all duration-700"
-              />
-              <div className="absolute top-4 left-4 bg-ceylon-red text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full shadow-md">
-                {signatureDishes[currentSignatureIndex]?.badge || "HOUSE FAVORITE"}
-              </div>
+              {signatureDishes.map((dish: any, idx: number) => (
+                <div
+                  key={idx}
+                  className={`absolute inset-0 transition-opacity duration-700 ${
+                    currentSignatureIndex === idx ? "opacity-100" : "opacity-0 pointer-events-none"
+                  }`}
+                >
+                  <Image
+                    src={dish.image || storyMainImg}
+                    alt={dish.name || "Signature Dish"}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    loading="eager"
+                    className="object-cover"
+                  />
+                  <div className="absolute top-4 left-4 bg-ceylon-red text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full shadow-md z-10">
+                    {dish.badge || "HOUSE FAVORITE"}
+                  </div>
+                </div>
+              ))}
             </div>
 
             <div className="lg:col-span-5 space-y-6">

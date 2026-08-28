@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { Plus, Check, Eye } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
@@ -72,9 +73,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     <div className="group relative rounded-2xl sm:rounded-3xl overflow-hidden bg-white text-[#071B5C] border border-gray-200 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between">
       {/* Product Image Container */}
       <Link href={`/menu/${product._id}`} className="relative aspect-[4/3] w-full overflow-hidden block bg-[#071B5C]">
-        <img
+        <Image
           src={imageUrl}
           alt={product.name}
+          fill
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#071B5C]/60 via-transparent to-black/20 opacity-80 group-hover:opacity-90 transition-opacity" />
