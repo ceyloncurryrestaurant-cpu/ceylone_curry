@@ -66,7 +66,7 @@ export async function generateMetadata({
   const imageUrl =
     product.images && product.images.length > 0
       ? product.images[0].url
-      : getFullUrl("/logo.png");
+      : getFullUrl("/shop.jpeg");
   const canonicalUrl = getFullUrl(`/menu/${resolvedParams.id}`);
 
   return {
@@ -90,8 +90,8 @@ export async function generateMetadata({
       images: [
         {
           url: imageUrl,
-          width: 1200,
-          height: 630,
+          width: imageUrl.includes("shop.jpeg") ? 1254 : 1200,
+          height: imageUrl.includes("shop.jpeg") ? 1254 : 630,
           alt: `${product.name} - Ceylon Curry Plymouth`,
         },
       ],

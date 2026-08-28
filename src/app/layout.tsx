@@ -42,9 +42,9 @@ export const metadata: Metadata = {
     siteName: SITE_CONFIG.name,
     images: [
       {
-        url: "/logo.png",
-        width: 1200,
-        height: 630,
+        url: "/shop.jpeg",
+        width: 1254,
+        height: 1254,
         alt: `${SITE_CONFIG.name} — Authentic Sri Lankan Cuisine in Plymouth`,
       },
     ],
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: SITE_CONFIG.title,
     description: SITE_CONFIG.description,
-    images: ["/logo.png"],
+    images: ["/shop.jpeg"],
     creator: "@ceyloncurry",
   },
   robots: {

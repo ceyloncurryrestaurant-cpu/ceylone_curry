@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     description: "Take a visual journey through our authentic Ceylonese culinary creations and dining room.",
     url: `${SITE_CONFIG.url}/gallery`,
     siteName: SITE_CONFIG.name,
-    images: [{ url: "/logo.png", width: 1200, height: 630, alt: "Ceylon Curry Gallery Plymouth" }],
+    images: [{ url: "/shop.jpeg", width: 1254, height: 1254, alt: "Ceylon Curry Gallery Plymouth" }],
     locale: "en_GB",
     type: "website",
   },

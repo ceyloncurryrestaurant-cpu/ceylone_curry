@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     description: "Visit us at 44 Mayflower St, Plymouth. Reach us for table reservations, WhatsApp takeaway, or catering.",
     url: `${SITE_CONFIG.url}/contact`,
     siteName: SITE_CONFIG.name,
-    images: [{ url: "/logo.png", width: 1200, height: 630, alt: "Contact Ceylon Curry Plymouth" }],
+    images: [{ url: "/shop.jpeg", width: 1254, height: 1254, alt: "Contact Ceylon Curry Plymouth" }],
     locale: "en_GB",
     type: "website",
   },

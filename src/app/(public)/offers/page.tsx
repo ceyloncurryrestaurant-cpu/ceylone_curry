@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     description: "Save on signature Sri Lankan curries, Kottu Roti, and chef's daily specials in Plymouth.",
     url: `${SITE_CONFIG.url}/offers`,
     siteName: SITE_CONFIG.name,
-    images: [{ url: "/logo.png", width: 1200, height: 630, alt: "Special Offers at Ceylon Curry Plymouth" }],
+    images: [{ url: "/shop.jpeg", width: 1254, height: 1254, alt: "Special Offers at Ceylon Curry Plymouth" }],
     locale: "en_GB",
     type: "website",
   },

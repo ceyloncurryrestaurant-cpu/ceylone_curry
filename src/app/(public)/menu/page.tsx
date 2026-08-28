@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     description: "View our full catalog of authentic Sri Lankan curries, Kottu Roti, and traditional spices.",
     url: `${SITE_CONFIG.url}/menu`,
     siteName: SITE_CONFIG.name,
-    images: [{ url: "/logo.png", width: 1200, height: 630, alt: "Ceylon Curry Menu Plymouth" }],
+    images: [{ url: "/shop.jpeg", width: 1254, height: 1254, alt: "Ceylon Curry Menu Plymouth" }],
     locale: "en_GB",
     type: "website",
   },

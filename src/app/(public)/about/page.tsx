@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     description: "Discover our passion for slow-cooked roasted spice curries and traditional Sri Lankan street food.",
     url: `${SITE_CONFIG.url}/about`,
     siteName: SITE_CONFIG.name,
-    images: [{ url: "/logo.png", width: 1200, height: 630, alt: "About Ceylon Curry Plymouth" }],
+    images: [{ url: "/shop.jpeg", width: 1254, height: 1254, alt: "About Ceylon Curry Plymouth" }],
     locale: "en_GB",
     type: "website",
   },

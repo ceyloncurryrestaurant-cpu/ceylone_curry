@@ -18,7 +18,7 @@ export const metadata: Metadata = {
       "Taste slow-cooked roasted spice curries, hand-rolled godamba Kottu Roti, and Ceylon island hospitality on Mayflower Street, Plymouth.",
     url: SITE_CONFIG.url,
     siteName: SITE_CONFIG.name,
-    images: [{ url: "/logo.png", width: 1200, height: 630, alt: "Ceylon Curry Plymouth" }],
+    images: [{ url: "/shop.jpeg", width: 1254, height: 1254, alt: "Ceylon Curry Plymouth" }],
     locale: "en_GB",
     type: "website",
   },

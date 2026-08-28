@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     description: "Select date, time, and table seating options for an authentic Sri Lankan dining experience.",
     url: `${SITE_CONFIG.url}/reserve`,
     siteName: SITE_CONFIG.name,
-    images: [{ url: "/logo.png", width: 1200, height: 630, alt: "Reserve a Table at Ceylon Curry Plymouth" }],
+    images: [{ url: "/shop.jpeg", width: 1254, height: 1254, alt: "Reserve a Table at Ceylon Curry Plymouth" }],
     locale: "en_GB",
     type: "website",
   },
