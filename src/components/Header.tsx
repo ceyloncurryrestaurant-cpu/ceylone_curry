@@ -38,7 +38,7 @@ export const Header: React.FC = () => {
   ];
 
   const phoneNum = settings?.mobileNumber || "01752 941504";
-  const whatsappNum = settings?.whatsappNumber || "+441752941504";
+  const whatsappNum = settings?.whatsappNumber || "+447824110369";
   const addressStr = settings?.address || "44 Mayflower St, Plymouth PL1 1QX";
   const hoursStr = settings?.openingHours?.monday || "10:00 AM - 10:00 PM";
 

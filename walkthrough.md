@@ -8,8 +8,8 @@ The production-quality web application for **Ceylon Curry** is complete and conn
 
 The database seed script connected to `mongodb://127.0.0.1:27017/ceylon_curry` and populated all required collections:
 
-- **Settings Collection:** Initialized with dynamic restaurant credentials (`01752 941504`, `+441752941504`, `44 Mayflower St, Plymouth PL1 1QX`).
-- **Admin User:** Created `admin@ceyloncurry.co.uk` with hashed password `admin123`.
+- **Settings Collection:** Initialized with dynamic restaurant credentials (`01752 941504`, `+447824110369`, `44 Mayflower St, Plymouth PL1 1QX`).
+- **Admin User:** Created `admin@ceyloncurry` with hashed password `ceyloncurry@3443`.
 - **7 Restaurant Tables:**
   - Table 1 – 4: Couple Tables (Capacity: 2)
   - Table 5 – 7: Family Tables (Capacity: 4)
@@ -59,7 +59,7 @@ The database seed script connected to `mongodb://127.0.0.1:27017/ceylon_curry` a
 
 ### Admin Portal & Operational Management
 1. **Admin Login (`/admin/login`):**
-   - Dark royal blue interface with HTTP-only cookie JWT session authentication (`admin@ceyloncurry.co.uk` / `admin123`).
+   - Dark royal blue interface with HTTP-only cookie JWT session authentication (`admin@ceyloncurry` / `ceyloncurry@3443`).
 
 2. **Dashboard (`/admin/dashboard`):**
    - Metrics cards: Total Products, Active Offers, Today's Reservations, Pending Review, Available Tables, Reserved Tables, WhatsApp Orders Log.
@@ -92,5 +92,5 @@ The database seed script connected to `mongodb://127.0.0.1:27017/ceylon_curry` a
    ```
 2. **Access Links:**
    - Public Website: `http://localhost:3000`
-   - Admin Login: `http://localhost:3000/admin/login` (`admin@ceyloncurry.co.uk` / `admin123`)
+   - Admin Login: `http://localhost:3000/admin/login` (`admin@ceyloncurry` / `ceyloncurry@3443`)
    - Admin Settings: `http://localhost:3000/admin/settings`

@@ -56,9 +56,9 @@ const defaultSettings: ISettingsData = {
   restaurantName: "Ceylon Curry",
   address: "44 Mayflower St, Plymouth PL1 1QX",
   mobileNumber: "01752 941504",
-  whatsappNumber: "+441752941504",
+  whatsappNumber: "+447824110369",
   restaurantEmail: "info@ceyloncurry.co.uk",
-  adminEmail: "admin@ceyloncurry.co.uk",
+  adminEmail: "apptronorders@gmail.com",
   deliveryFee: 2.99,
   openingHours: {
     monday: "10:00 AM - 10:00 PM",
@@ -81,7 +81,6 @@ const defaultSettings: ISettingsData = {
     maxAdvanceDays: 30,
   },
   heroImages: [
-    "/images/hero/interior.webp",
     "/images/hero/biryani.webp",
     "/images/hero/parotta.webp",
     "/images/hero/curry.webp",

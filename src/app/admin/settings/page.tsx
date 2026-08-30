@@ -41,7 +41,6 @@ export default function AdminSettingsPage() {
 
   // Section Images
   const [heroImages, setHeroImages] = useState<string[]>([
-    "/images/hero/interior.webp",
     "/images/hero/biryani.webp",
     "/images/hero/parotta.webp",
     "/images/hero/curry.webp",
@@ -104,7 +103,7 @@ export default function AdminSettingsPage() {
       setMobileNumber(settings.mobileNumber || "01752 941504");
       setWhatsappNumber(settings.whatsappNumber || "447123456789");
       setRestaurantEmail(settings.restaurantEmail || "info@ceyloncurry.co.uk");
-      setAdminEmail(settings.adminEmail || "admin@ceyloncurry.co.uk");
+      setAdminEmail(settings.adminEmail || "apptronorders@gmail.com");
       setDeliveryFee(settings.deliveryFee ?? 2.99);
 
       if (settings.openingHours) {
@@ -205,7 +204,7 @@ export default function AdminSettingsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           action: "reset-password",
-          email: adminEmail || "admin@ceyloncurry.co.uk",
+          email: adminEmail || "apptronorders@gmail.com",
           newPassword,
         }),
       });

@@ -13,8 +13,9 @@ export default function manifest(): MetadataRoute.Manifest {
     icons: [
       {
         src: "/logo.png",
-        sizes: "any",
+        sizes: "512x512",
         type: "image/png",
+        purpose: "any",
       },
       {
         src: "/logo.png",
@@ -22,6 +23,29 @@ export default function manifest(): MetadataRoute.Manifest {
         type: "image/png",
         purpose: "maskable",
       },
+      {
+        src: "/logo-192.png",
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "any",
+      },
     ],
-  };
+    screenshots: [
+      {
+        src: "/screenshot-desktop.png",
+        sizes: "1280x800",
+        type: "image/png",
+        form_factor: "wide",
+        label: "Ceylon Curry Desktop View",
+      },
+      {
+        src: "/screenshot-mobile.png",
+        sizes: "390x800",
+        type: "image/png",
+        form_factor: "narrow",
+        label: "Ceylon Curry Mobile View",
+      },
+    ],
+  } as any;
 }
+

@@ -193,7 +193,6 @@ export function HomePageClient({
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   const defaultHeroUrls = [
-    "/images/hero/interior.webp",
     "/images/hero/biryani.webp",
     "/images/hero/parotta.webp",
     "/images/hero/curry.webp",

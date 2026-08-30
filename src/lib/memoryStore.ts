@@ -6,9 +6,9 @@ export const memoryStore = {
     restaurantName: "Ceylon Curry",
     address: "44 Mayflower St, Plymouth PL1 1QX",
     mobileNumber: "01752 941504",
-    whatsappNumber: "+441752941504",
+    whatsappNumber: "+447824110369",
     restaurantEmail: "info@ceyloncurry.co.uk",
-    adminEmail: "admin@ceyloncurry.co.uk",
+    adminEmail: "apptronorders@gmail.com",
     openingHours: {
       monday: "12:00 PM - 10:00 PM",
       tuesday: "12:00 PM - 10:00 PM",

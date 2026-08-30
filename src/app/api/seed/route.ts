@@ -9,8 +9,8 @@ export async function GET() {
         success: true,
         message: "🌱 Database seeded successfully!",
         adminCredentials: {
-          email: "admin@ceyloncurry.co.uk",
-          password: "admin123",
+          email: "admin@ceyloncurry",
+          password: "ceyloncurry@3443",
           role: "admin",
         },
         timestamp: new Date().toISOString(),

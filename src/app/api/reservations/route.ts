@@ -251,7 +251,7 @@ export async function POST(req: Request) {
       address: settingsDoc?.address || "44 Mayflower St, Plymouth PL1 1QX",
       mobileNumber: settingsDoc?.mobileNumber || "01752 941504",
       restaurantEmail: settingsDoc?.restaurantEmail || "info@ceyloncurry.co.uk",
-      adminEmail: settingsDoc?.adminEmail || "admin@ceyloncurry.co.uk",
+      adminEmail: settingsDoc?.adminEmail || "apptronorders@gmail.com",
     };
 
     // 8. Dispatch Confirmation Emails

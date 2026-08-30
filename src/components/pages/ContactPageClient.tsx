@@ -15,7 +15,7 @@ export function ContactPageClient() {
   const [submitted, setSubmitted] = useState(false);
 
   const formattedCallHref = `tel:${(settings?.mobileNumber || "01752 941504").replace(/\s+/g, "")}`;
-  const whatsappUrl = getWhatsAppLink(settings?.whatsappNumber || "+441752941504");
+  const whatsappUrl = getWhatsAppLink(settings?.whatsappNumber || "+447824110369");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,7 +88,7 @@ export function ContactPageClient() {
               <div>
                 <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider block">WhatsApp Orders</span>
                 <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-emerald-700 font-bold hover:underline mt-0.5 block">
-                  {settings?.whatsappNumber || "+441752941504"}
+                  {settings?.whatsappNumber || "+447824110369"}
                 </a>
               </div>
             </li>
