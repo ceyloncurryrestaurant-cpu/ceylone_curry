@@ -312,53 +312,45 @@ export function ReservePageClient() {
                     <div
                       key={table._id}
                       onClick={() => !occupied && handleTableSelect(table)}
-                      className={`group relative rounded-xl sm:rounded-3xl overflow-hidden border border-gray-300 sm:border-2 transition-all duration-300 cursor-pointer transform min-w-0 w-full ${
+                      className={`group relative rounded-2xl p-4 sm:p-5 overflow-hidden border border-gray-300 sm:border-2 transition-all duration-300 cursor-pointer transform min-w-0 w-full bg-gradient-to-br from-[#0e277d] to-[#071B5C] flex flex-col justify-between gap-4 ${
                         occupied
                           ? "opacity-40 border-gray-200 cursor-not-allowed"
                           : isSelected
-                          ? "border-[#071B5C] shadow-2xl scale-[1.02] sm:scale-105 ring-2 sm:ring-4 ring-[#071B5C]/30"
-                          : "border-gray-200 hover:border-[#071B5C] hover:-translate-y-1 shadow-md"
+                          ? "border-[#071B5C] shadow-xl scale-[1.02] sm:scale-105 ring-2 sm:ring-4 ring-[#071B5C]/25"
+                          : "border-gray-200 hover:border-[#071B5C] hover:-translate-y-0.5 shadow-md"
                       }`}
                     >
-                      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#071B5C]">
-                        <Image
-                          src={tableImg}
-                          alt={`Table ${table.tableNumber} Dining Experience`}
-                          fill
-                          unoptimized
-                          className="object-cover transition-transform duration-700 group-hover:scale-110"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#071B5C] via-[#071B5C]/20 to-transparent" />
+                      {/* Top Row: Table Number & Status */}
+                      <div className="flex justify-between items-center gap-2">
+                        <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-ceylon-gold">
+                          Table 0{table.tableNumber}
+                        </span>
+                        <span
+                          className={`px-2.5 py-0.5 rounded-full text-[8px] sm:text-[9px] font-black uppercase tracking-wider ${
+                            occupied
+                              ? "bg-ceylon-red text-white"
+                              : isSelected
+                              ? "bg-[#071B5C] text-white shadow-md border border-white/20"
+                              : "bg-emerald-600 text-white shadow-md"
+                          }`}
+                        >
+                          {occupied ? "Reserved" : isSelected ? "✓ Selected" : "Available"}
+                        </span>
+                      </div>
 
-                        <div className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 z-10 flex gap-1 sm:gap-2">
-                          <span
-                            className={`px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[7px] sm:text-[10px] font-black uppercase tracking-wider ${
-                              occupied
-                                ? "bg-ceylon-red text-white"
-                                : isSelected
-                                ? "bg-[#071B5C] text-white shadow-md"
-                                : "bg-emerald-600 text-white shadow-md"
-                            }`}
-                          >
-                            {occupied ? "Reserved" : isSelected ? "✓ Selected" : "Available"}
+                      {/* Bottom Row: Table Type & Seats */}
+                      <div className="flex justify-between items-end gap-1.5 pt-1">
+                        <div>
+                          <h4 className="font-serif-display text-sm sm:text-base font-extrabold text-white leading-none">
+                            {table.type} Table
+                          </h4>
+                          <span className="text-[9px] text-blue-200/80 font-medium tracking-wide mt-1 block">
+                            {table.capacity === 2 ? "Couple seating" : "Family banquet"}
                           </span>
                         </div>
-
-                        <div className="absolute bottom-1.5 left-1.5 right-1.5 sm:bottom-3 sm:left-3 sm:right-3 z-10 text-white">
-                          <div className="flex justify-between items-end gap-1">
-                            <div className="min-w-0">
-                              <span className="text-[7px] sm:text-[10px] font-extrabold uppercase tracking-widest text-ceylon-gold block truncate">
-                                Table 0{table.tableNumber}
-                              </span>
-                              <h4 className="font-serif-display text-[10px] sm:text-lg font-bold text-white leading-tight truncate">
-                                {table.type} Table
-                              </h4>
-                            </div>
-                            <span className="px-1 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-[#071B5C]/90 backdrop-blur-md text-[7px] sm:text-[10px] font-black text-ceylon-gold border border-white/20 shrink-0">
-                              {table.capacity} Seats
-                            </span>
-                          </div>
-                        </div>
+                        <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-[#071B5C]/90 backdrop-blur-md text-[8px] sm:text-[10px] font-black text-ceylon-gold border border-white/20 shrink-0">
+                          {table.capacity} Seats
+                        </span>
                       </div>
                     </div>
                   );
@@ -367,27 +359,16 @@ export function ReservePageClient() {
 
               {selectedTable && (
                 <div className="bg-[#071B5C] text-white p-6 sm:p-8 rounded-[3rem] border-2 border-white/20 shadow-2xl space-y-6 animate-fade-in">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                    <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border-2 border-white/20 shadow-xl">
-                      <Image
-                        src={selectedTable.image?.url || "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=800&q=80"}
-                        alt={`Table ${selectedTable.tableNumber}`}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-
-                    <div className="space-y-3">
-                      <span className="text-xs font-bold text-ceylon-gold uppercase tracking-widest block">
-                        Selected Table Experience
-                      </span>
-                      <h3 className="font-serif-display text-2xl sm:text-3xl font-extrabold text-white">
-                        Table 0{selectedTable.tableNumber} ({selectedTable.type})
-                      </h3>
-                      <p className="text-xs text-blue-100 leading-relaxed font-light">
-                        Enjoy your Ceylon dining experience at Table {selectedTable.tableNumber} for {guestCount} guests on {selectedDate} at {selectedTime}.
-                      </p>
-                    </div>
+                  <div className="text-center py-4 space-y-3 max-w-xl mx-auto">
+                    <span className="text-xs font-bold text-ceylon-gold uppercase tracking-widest block">
+                      Selected Table Experience
+                    </span>
+                    <h3 className="font-serif-display text-2xl sm:text-3xl font-extrabold text-white">
+                      Table 0{selectedTable.tableNumber} ({selectedTable.type} Table)
+                    </h3>
+                    <p className="text-xs sm:text-sm text-blue-100 leading-relaxed font-light">
+                      Enjoy your Ceylon dining experience at Table {selectedTable.tableNumber} for {guestCount} guests on {selectedDate} at {selectedTime}.
+                    </p>
                   </div>
 
                   <form onSubmit={handleSubmit} className="space-y-4 pt-4 border-t border-white/20">

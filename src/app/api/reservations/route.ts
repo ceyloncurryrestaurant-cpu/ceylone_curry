@@ -10,25 +10,42 @@ export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   try {
-    const conn = await connectToDatabase();
-    if (!conn) {
-      const { memoryStore } = await import("@/lib/memoryStore");
-      return NextResponse.json({ success: true, count: memoryStore.reservations.length, reservations: memoryStore.reservations });
-    }
-
     const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
     const date = searchParams.get("date");
     const status = searchParams.get("status");
     const tableId = searchParams.get("tableId");
 
-    const query: any = {
-      customerName: { $exists: true, $ne: "" },
-      email: { $exists: true, $ne: "" },
-      mobile: { $exists: true, $ne: "" },
-    };
-    if (date) query.date = date;
-    if (status && status !== "all") query.status = status;
-    if (tableId) query.tableId = tableId;
+    const conn = await connectToDatabase();
+    if (!conn) {
+      const { memoryStore } = await import("@/lib/memoryStore");
+      let list = memoryStore.reservations;
+      if (id) {
+        list = list.filter((r: any) =>
+          r._id === id ||
+          r.reservationNumber === id ||
+          r.reservationNumber === id.toUpperCase()
+        );
+      }
+      return NextResponse.json({ success: true, count: list.length, reservations: list });
+    }
+
+    const query: any = {};
+    if (id) {
+      const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(id);
+      query.$or = [
+        ...(isValidObjectId ? [{ _id: id }] : []),
+        { reservationNumber: id },
+        { reservationNumber: id.toUpperCase() },
+      ];
+    } else {
+      query.customerName = { $exists: true, $ne: "" };
+      query.email = { $exists: true, $ne: "" };
+      query.mobile = { $exists: true, $ne: "" };
+      if (date) query.date = date;
+      if (status && status !== "all") query.status = status;
+      if (tableId) query.tableId = tableId;
+    }
 
     const reservations = await Reservation.find(query)
       .populate("tableId", "tableNumber capacity type status")
@@ -38,7 +55,17 @@ export async function GET(req: Request) {
     return NextResponse.json({ success: true, count: reservations.length, reservations });
   } catch (error: any) {
     const { memoryStore } = await import("@/lib/memoryStore");
-    return NextResponse.json({ success: true, count: memoryStore.reservations.length, reservations: memoryStore.reservations });
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+    let list = memoryStore.reservations;
+    if (id) {
+      list = list.filter((r: any) =>
+        r._id === id ||
+        r.reservationNumber === id ||
+        r.reservationNumber === id.toUpperCase()
+      );
+    }
+    return NextResponse.json({ success: true, count: list.length, reservations: list });
   }
 }
 

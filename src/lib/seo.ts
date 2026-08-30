@@ -38,8 +38,9 @@ export const SITE_CONFIG = {
     "Takeaway Delivery Plymouth",
   ],
   socialLinks: [
-    "https://facebook.com",
-    "https://instagram.com",
+    "https://www.facebook.com/ceyloncurrysl/",
+    "https://www.instagram.com/ceyloncurrys/",
+    "https://www.tiktok.com/@ceylon.curry.plym",
   ],
 };
 

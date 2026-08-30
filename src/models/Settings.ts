@@ -65,9 +65,9 @@ const SettingsSchema = new Schema<ISettings>(
       sunday: { type: String, default: "10:00 AM - 10:00 PM" },
     },
     socialLinks: {
-      facebook: { type: String, default: "https://facebook.com/ceyloncurry" },
-      instagram: { type: String, default: "https://instagram.com/ceyloncurry" },
-      tiktok: { type: String, default: "https://tiktok.com/@ceyloncurry" },
+      facebook: { type: String, default: "https://www.facebook.com/ceyloncurrysl/" },
+      instagram: { type: String, default: "https://www.instagram.com/ceyloncurrys/" },
+      tiktok: { type: String, default: "https://www.tiktok.com/@ceylon.curry.plym" },
     },
     currency: { type: String, default: "£" },
     reservationSettings: {

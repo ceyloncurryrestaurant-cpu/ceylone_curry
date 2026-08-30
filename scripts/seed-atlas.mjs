@@ -73,7 +73,7 @@ async function seed() {
         friday: "12:00 PM - 11:00 PM", saturday: "12:00 PM - 11:00 PM",
         sunday: "12:00 PM - 09:30 PM",
       },
-      socialLinks: { facebook: "https://facebook.com/ceyloncurry", instagram: "https://instagram.com/ceyloncurry", tiktok: "https://tiktok.com/@ceyloncurry" },
+      socialLinks: { facebook: "https://www.facebook.com/ceyloncurrysl/", instagram: "https://www.instagram.com/ceyloncurrys/", tiktok: "https://www.tiktok.com/@ceylon.curry.plym" },
       currency: "£",
       reservationSettings: { reservationDurationMinutes: 60, minNoticeHours: 1, maxAdvanceDays: 30 },
     });

@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { useSettings } from "@/context/SettingsContext";
 import { Logo } from "./Logo";
-import { Phone, Mail, MapPin, Clock, MessageCircle, ArrowUp, Share2, Globe } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, MessageCircle, ArrowUp, Share2, Globe, Facebook, Instagram } from "lucide-react";
 import { getWhatsAppLink } from "@/lib/whatsapp";
 
 export const Footer: React.FC = () => {
@@ -15,8 +15,9 @@ export const Footer: React.FC = () => {
   const addressStr = settings?.address || "44 Mayflower St, Plymouth PL1 1QX";
   const hoursStr = settings?.openingHours?.monday || "10:00 AM - 10:00 PM";
   const emailStr = settings?.restaurantEmail || "info@ceyloncurry.co.uk";
-  const fbUrl = settings?.socialLinks?.facebook || "https://facebook.com/ceyloncurry";
-  const igUrl = settings?.socialLinks?.instagram || "https://instagram.com/ceyloncurry";
+  const fbUrl = settings?.socialLinks?.facebook || "https://www.facebook.com/ceyloncurrysl/";
+  const igUrl = settings?.socialLinks?.instagram || "https://www.instagram.com/ceyloncurrys/";
+  const ttUrl = settings?.socialLinks?.tiktok || "https://www.tiktok.com/@ceylon.curry.plym";
 
   const formattedCallHref = `tel:${phoneNum.replace(/\s+/g, "")}`;
   const whatsappUrl = getWhatsAppLink(whatsappNum);
@@ -44,6 +45,42 @@ export const Footer: React.FC = () => {
             <p className="text-[11px] text-ceylon-sandstone leading-relaxed font-light">
               Authentic Sri Lankan curries, kottu roti, and traditional island delicacies cooked with hand-roasted Ceylon spices in Plymouth.
             </p>
+            {/* Social Icons */}
+            <div className="flex items-center gap-3 pt-2">
+              <a
+                href={fbUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 rounded-full bg-ceylon-cocoa/90 hover:bg-ceylon-copper hover:text-ceylon-volcanic flex items-center justify-center border border-ceylon-copper/20 text-ceylon-sandstone transition-all shadow-md"
+                aria-label="Facebook Page"
+              >
+                <Facebook className="w-4.5 h-4.5" />
+              </a>
+              <a
+                href={igUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 rounded-full bg-ceylon-cocoa/90 hover:bg-ceylon-copper hover:text-ceylon-volcanic flex items-center justify-center border border-ceylon-copper/20 text-ceylon-sandstone transition-all shadow-md"
+                aria-label="Instagram Page"
+              >
+                <Instagram className="w-4.5 h-4.5" />
+              </a>
+              <a
+                href={ttUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 rounded-full bg-ceylon-cocoa/90 hover:bg-ceylon-copper hover:text-ceylon-volcanic flex items-center justify-center border border-ceylon-copper/20 text-ceylon-sandstone transition-all shadow-md"
+                aria-label="TikTok Profile"
+              >
+                <svg
+                  className="w-4 h-4 fill-current"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.27 6.27 0 0 0-3.19-.13A6.29 6.29 0 0 0 2 15.57a6.3 6.3 0 0 0 10.74 4.5 6.21 6.21 0 0 0 1.83-4.49V8.46a9.58 9.58 0 0 0 5.02 1.54V6.69z" />
+                </svg>
+              </a>
+            </div>
           </div>
 
           <div className="space-y-3">

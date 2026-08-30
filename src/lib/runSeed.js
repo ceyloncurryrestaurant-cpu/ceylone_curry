@@ -38,9 +38,9 @@ async function seed() {
         sunday: "10:00 AM - 10:00 PM",
       },
       socialLinks: {
-        facebook: "https://facebook.com/ceyloncurry",
-        instagram: "https://instagram.com/ceyloncurry",
-        tiktok: "https://tiktok.com/@ceyloncurry",
+        facebook: "https://www.facebook.com/ceyloncurrysl/",
+        instagram: "https://www.instagram.com/ceyloncurrys/",
+        tiktok: "https://www.tiktok.com/@ceylon.curry.plym",
       },
       currency: "£",
       reservationSettings: {
