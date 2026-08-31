@@ -17,9 +17,13 @@ export interface IOrder extends Document {
   items: IOrderItem[];
   subtotal: number;
   discount: number;
+  deliveryFee: number;
+  deliveryDistance: string;
   total: number;
   notes?: string;
   whatsappStatus: string;
+  paymentMethod: string;
+  paymentStatus: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -45,9 +49,13 @@ const OrderSchema = new Schema<IOrder>(
     items: { type: [OrderItemSchema], required: true },
     subtotal: { type: Number, required: true, min: 0 },
     discount: { type: Number, default: 0, min: 0 },
+    deliveryFee: { type: Number, default: 0, min: 0 },
+    deliveryDistance: { type: String, default: "under_5km" },
     total: { type: Number, required: true, min: 0 },
     notes: { type: String },
     whatsappStatus: { type: String, default: "Prepared" },
+    paymentMethod: { type: String, default: "WhatsApp Order / Cash" },
+    paymentStatus: { type: String, default: "Pending" },
   },
   { timestamps: true }
 );

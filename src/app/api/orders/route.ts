@@ -37,6 +37,9 @@ export async function POST(req: Request) {
     const address = body.deliveryAddress || body.address || "";
     const notes = body.orderNotes || body.notes || "";
     const items: any[] = body.items || [];
+    
+    const paymentMethod = body.paymentMethod || "WhatsApp Order / Cash";
+    const paymentStatus = body.paymentStatus || "Pending";
 
     // 1. Mandatory Checkout Validation
     if (!customerName || !mobile || !address || !Array.isArray(items) || items.length === 0) {
@@ -99,7 +102,9 @@ export async function POST(req: Request) {
       subtotal = validatedItems.reduce((sum, i) => sum + i.subtotal, 0);
     }
 
-    const total = subtotal - discount;
+    const foodTotal = subtotal - discount;
+    const deliveryFee = 0;
+    const total = foodTotal;
 
     // 3. Generate Order Reference Number
     const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
@@ -120,9 +125,13 @@ export async function POST(req: Request) {
           items: validatedItems,
           subtotal,
           discount,
+          deliveryFee,
+          deliveryDistance: "under_5km",
           total,
           notes,
           whatsappStatus: "Prepared",
+          paymentMethod,
+          paymentStatus,
         });
 
         // 5. Fetch WhatsApp Number from Settings
@@ -141,6 +150,7 @@ export async function POST(req: Request) {
           discount,
           total,
           notes,
+          paymentMethod,
         });
 
         const whatsappUrl = getWhatsAppLink(targetWhatsAppNumber, messageText);
@@ -170,10 +180,14 @@ export async function POST(req: Request) {
       items: validatedItems,
       subtotal,
       discount,
+      deliveryFee,
+      deliveryDistance: "under_5km",
       total,
       notes,
       status: "Pending",
       whatsappStatus: "Prepared",
+      paymentMethod,
+      paymentStatus,
       createdAt: new Date().toISOString(),
     };
     memoryStore.orders.push(fallbackOrder);
@@ -191,6 +205,7 @@ export async function POST(req: Request) {
       discount,
       total,
       notes,
+      paymentMethod,
     });
 
     const whatsappUrl = getWhatsAppLink(targetWhatsAppNumber, messageText);

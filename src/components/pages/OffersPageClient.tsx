@@ -40,6 +40,35 @@ export function OffersPageClient() {
         </p>
       </div>
 
+      {/* FREE DELIVERY BANNER */}
+      <div className="max-w-4xl mx-auto bg-gradient-to-r from-emerald-800 to-teal-950 rounded-[2.5rem] p-8 sm:p-12 text-white border-2 border-white/20 shadow-2xl flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#10B981_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
+        
+        <div className="md:w-2/3 space-y-4 relative z-10 text-left">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs uppercase font-extrabold tracking-widest">
+            <span>🚚</span>
+            <span>DELIVERY OFFER</span>
+          </div>
+          <h2 className="font-serif-display text-3xl sm:text-4xl font-extrabold text-white leading-tight">
+            Free Delivery on Orders Over £40 (within 5 km)!
+          </h2>
+          <p className="text-sm text-emerald-100 font-light leading-relaxed">
+            Prefer ordering takeaway to your home? We offer direct delivery across Plymouth. Spend <span className="text-ceylon-gold font-bold">£40.00 or more</span> and enjoy completely free delivery within a <span className="text-ceylon-gold font-bold">5 km radius</span>. For deliveries outside 5 km or orders below £40, a delivery charge will be added.
+          </p>
+        </div>
+        
+        <div className="md:w-1/3 w-full flex flex-col items-center justify-center gap-3 relative z-10 shrink-0 bg-white/5 border border-white/10 p-6 rounded-3xl backdrop-blur-sm">
+          <div className="w-16 h-16 rounded-full bg-emerald-400/10 text-emerald-400 flex items-center justify-center text-4xl">
+            🚚
+          </div>
+          <div className="text-center">
+            <p className="text-xs uppercase tracking-widest text-ceylon-gold font-bold">SPEND £40+</p>
+            <p className="text-sm font-black font-serif-display text-white">FREE LOCAL DELIVERY</p>
+            <p className="text-[10px] text-emerald-300 font-semibold mt-0.5">(Within 5 km)</p>
+          </div>
+        </div>
+      </div>
+
       {/* PARK & DINE BANNER */}
       <div className="max-w-4xl mx-auto bg-[#071B5C] rounded-[2.5rem] p-8 sm:p-12 text-white border-2 border-white/20 shadow-2xl flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#F5B91A_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />

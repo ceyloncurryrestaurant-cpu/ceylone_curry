@@ -58,7 +58,7 @@ const defaultSettings: ISettingsData = {
   mobileNumber: "01752 941504",
   whatsappNumber: "+447824110369",
   restaurantEmail: "info@ceyloncurry.co.uk",
-  adminEmail: "apptronorders@gmail.com",
+  adminEmail: "ceyloncurry2025@gmail.com",
   deliveryFee: 2.99,
   openingHours: {
     monday: "10:00 AM - 10:00 PM",
@@ -112,7 +112,7 @@ const defaultSettings: ISettingsData = {
       badge: "HOT & SPICY",
     },
   ],
-  storyMainImage: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1000&q=80",
+  storyMainImage: "/shop.jpeg",
   storySecondaryImage: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80",
   galleryImages: [
     "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=700&q=80",

@@ -27,7 +27,7 @@ async function seed() {
       mobileNumber: "01752 941504",
       whatsappNumber: "+447824110369",
       restaurantEmail: "info@ceyloncurry.co.uk",
-      adminEmail: "apptronorders@gmail.com",
+      adminEmail: "ceyloncurry2025@gmail.com",
       openingHours: {
         monday: "10:00 AM - 10:00 PM",
         tuesday: "10:00 AM - 10:00 PM",

@@ -9,7 +9,7 @@ import { toast } from "@/components/ui/Toast";
 
 export function CheckoutPageClient() {
   const router = useRouter();
-  const { cart, totalPrice, clearCart } = useCart();
+  const { cart, totalPrice, clearCart, grandTotal } = useCart();
   const { settings } = useSettings();
 
   const [customerName, setCustomerName] = useState("");
@@ -140,6 +140,13 @@ export function CheckoutPageClient() {
                 />
               </div>
 
+              <div className="p-4 rounded-2xl bg-ceylon-gold/10 border border-ceylon-gold/30 text-ceylon-ivory space-y-1">
+                <span className="text-xs font-bold text-ceylon-saffron block">🚚 DELIVERY POLICY</span>
+                <p className="text-[11px] leading-relaxed text-ceylon-sandstone">
+                  If within a 5 km radius and purchased above £40: **FREE delivery**. Otherwise, a delivery charge will be added to your order.
+                </p>
+              </div>
+
               <div>
                 <label className="text-xs font-bold text-ceylon-copper uppercase block mb-1">Order Notes (Optional)</label>
                 <textarea
@@ -159,7 +166,7 @@ export function CheckoutPageClient() {
                 Your Order Summary
               </h3>
 
-              <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
+              <div className="space-y-3 max-h-60 overflow-y-auto pr-1 border-b border-ceylon-bronze/20 pb-4">
                 {cart.map((item) => (
                   <div key={item.id} className="flex justify-between items-center text-xs">
                     <div>
@@ -171,12 +178,30 @@ export function CheckoutPageClient() {
                 ))}
               </div>
 
+              <div className="space-y-2 pt-2 text-xs font-semibold">
+                <div className="flex justify-between text-ceylon-sandstone">
+                  <span>Food Subtotal</span>
+                  <span>£{grandTotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-ceylon-sandstone">
+                  <span>Delivery</span>
+                  <span>
+                    {grandTotal >= 40 
+                      ? "FREE (within 5 km)" 
+                      : "Delivery charge will be added"}
+                  </span>
+                </div>
+              </div>
+
               <div className="border-t border-ceylon-bronze/30 pt-4 flex justify-between items-center text-sm">
                 <span className="font-bold uppercase tracking-wider text-ceylon-copper">Total Amount:</span>
                 <span className="font-serif-display text-3xl font-black text-ceylon-saffron">£{totalPrice.toFixed(2)}</span>
               </div>
+              <p className="text-[9px] text-ceylon-sandstone italic text-right -mt-2">
+                * Note: Delivery charge (if applicable) will be added upon confirmation.
+              </p>
 
-              {totalPrice >= 50 && (
+              {grandTotal >= 50 && (
                 <div className="p-4 rounded-2xl bg-[#0E3094]/30 border border-[#F5B91A]/30 text-[#FFF8E8] space-y-1.5 animate-fade-in">
                   <div className="flex items-center gap-2 text-xs font-black text-ceylon-copper">
                     <span>🅿️</span>

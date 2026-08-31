@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { useSettings } from "@/context/SettingsContext";
 
 export interface CartItem {
   id: string; // Product ID
@@ -42,6 +43,7 @@ const CartContext = createContext<CartContextType>({
 const CART_STORAGE_KEY = "ceylon_curry_cart_v1";
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { settings } = useSettings();
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -120,6 +122,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const grandTotal = subtotal - discountTotal;
 
+  const totalPrice = grandTotal;
+
   return (
     <CartContext.Provider
       value={{
@@ -132,7 +136,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         subtotal,
         discountTotal,
         grandTotal,
-        totalPrice: grandTotal,
+        totalPrice,
       }}
     >
       {children}

@@ -271,14 +271,18 @@ export async function POST(req: Request) {
       }
     } catch (memErr) {}
 
-    // 7. Retrieve Live Restaurant Settings for Emails
     const settingsDoc = await Settings.findOne();
+    const rawAdminEmail = settingsDoc?.adminEmail;
+    const adminEmail = (!rawAdminEmail || rawAdminEmail === "apptronorders@gmail.com")
+      ? "ceyloncurry2025@gmail.com"
+      : rawAdminEmail;
+
     const settingsObj = {
       restaurantName: settingsDoc?.restaurantName || "Ceylon Curry",
       address: settingsDoc?.address || "44 Mayflower St, Plymouth PL1 1QX",
       mobileNumber: settingsDoc?.mobileNumber || "01752 941504",
       restaurantEmail: settingsDoc?.restaurantEmail || "info@ceyloncurry.co.uk",
-      adminEmail: settingsDoc?.adminEmail || "apptronorders@gmail.com",
+      adminEmail,
     };
 
     // 8. Dispatch Confirmation Emails

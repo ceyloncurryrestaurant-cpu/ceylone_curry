@@ -53,7 +53,8 @@ export default function AdminOrdersPage() {
                 <tr className="bg-ceylon-cream text-ceylon-blue text-xs uppercase font-extrabold border-b border-gray-200">
                   <th className="p-4">Order Ref</th>
                   <th className="p-4">Customer</th>
-                  <th className="p-4">Delivery Address</th>
+                  <th className="p-4">Delivery Details</th>
+                  <th className="p-4">Payment</th>
                   <th className="p-4">Total</th>
                   <th className="p-4">Date</th>
                   <th className="p-4">Status</th>
@@ -67,7 +68,22 @@ export default function AdminOrdersPage() {
                       <span className="font-bold text-gray-900 block">{o.customerName}</span>
                       <span className="text-xs text-gray-500 block">{o.mobile}</span>
                     </td>
-                    <td className="p-4 text-xs text-gray-700 max-w-xs truncate">{o.address}</td>
+                    <td className="p-4 text-xs text-gray-700 max-w-xs">
+                      <span className="truncate block font-medium">{o.address}</span>
+                      <span className="text-[10px] text-gray-500 font-semibold block mt-0.5">
+                        Distance: {o.deliveryDistance === "over_5km" ? "Outside 5 km" : "Within 5 km"} • Fee: {o.deliveryFee !== undefined && o.deliveryFee !== null ? (o.deliveryFee > 0 ? `£${o.deliveryFee.toFixed(2)}` : "FREE") : "FREE"}
+                      </span>
+                    </td>
+                    <td className="p-4 text-xs">
+                      <span className="font-bold text-gray-800 block">{o.paymentMethod || "WhatsApp Order"}</span>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold mt-1 inline-block ${
+                        o.paymentStatus === "Paid" 
+                          ? "bg-emerald-100 text-emerald-800" 
+                          : "bg-amber-100 text-amber-800"
+                      }`}>
+                        {o.paymentStatus || "Pending"}
+                      </span>
+                    </td>
                     <td className="p-4 font-bold text-ceylon-blue">£{o.total.toFixed(2)}</td>
                     <td className="p-4 text-xs text-gray-500">
                       {new Date(o.createdAt).toLocaleDateString()}

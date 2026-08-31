@@ -7,7 +7,7 @@ import { useCart } from "@/context/CartContext";
 import { Plus, Minus, Trash2, ArrowRight, ShoppingBag } from "lucide-react";
 
 export function CartPageClient() {
-  const { cart, removeFromCart, updateQuantity, totalPrice, totalCount, clearCart } = useCart();
+  const { cart, removeFromCart, updateQuantity, totalPrice, totalCount, clearCart, grandTotal, deliveryFee } = useCart();
 
   if (cart.length === 0) {
     return (
@@ -98,6 +98,37 @@ export function CartPageClient() {
           ))}
         </div>
 
+        {/* FREE DELIVERY PROMOTION BANNER */}
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-md flex flex-col sm:flex-row items-center justify-between gap-4 text-[#071B5C]">
+          <div className="flex items-center gap-4 w-full">
+            <div className="w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 text-xl font-bold">
+              🚚
+            </div>
+            <div className="space-y-1 w-full">
+              <h4 className="font-serif-display text-lg font-bold text-[#071B5C]">
+                {grandTotal >= 40 ? "Free Local Delivery Unlocked! 🎉" : "Free Local Delivery Offer"}
+              </h4>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                {grandTotal >= 40
+                  ? "Congratulations! You qualify for FREE local delivery (within a 5 km radius)!"
+                  : `Spend £40.00 or more to get FREE local delivery (within 5 km). Add just £${(40 - grandTotal).toFixed(2)} more to qualify!`}
+              </p>
+              {grandTotal < 40 ? (
+                <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden mt-2">
+                  <div
+                    className="bg-emerald-500 h-full rounded-full transition-all duration-500"
+                    style={{ width: `${(grandTotal / 40) * 100}%` }}
+                  />
+                </div>
+              ) : (
+                <p className="text-[10px] text-gray-500 font-semibold mt-1">
+                  * Note: For deliveries outside a 5 km radius, a delivery charge will be added.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
         {/* PARKING PROMOTION BANNER */}
         <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-md flex flex-col sm:flex-row items-center justify-between gap-4 text-[#071B5C]">
           <div className="flex items-center gap-4 w-full">
@@ -106,18 +137,18 @@ export function CartPageClient() {
             </div>
             <div className="space-y-1 w-full">
               <h4 className="font-serif-display text-lg font-bold text-[#071B5C]">
-                {totalPrice >= 50 ? "Free Parking Unlocked! 🎉" : "Park & Dine Offer"}
+                {grandTotal >= 50 ? "Free Parking Unlocked! 🎉" : "Park & Dine Offer"}
               </h4>
               <p className="text-xs text-gray-600 leading-relaxed">
-                {totalPrice >= 50
+                {grandTotal >= 50
                   ? "Congratulations! You've spent over £50 and qualify for a Mayflower Street East Car Park ticket reimbursement. We will pay for your parking ticket!"
-                  : `Spend £50.00 or more to get your Mayflower Street East Car Park ticket fully reimbursed. Add just £${(50 - totalPrice).toFixed(2)} more to qualify!`}
+                  : `Spend £50.00 or more to get your Mayflower Street East Car Park ticket fully reimbursed. Add just £${(50 - grandTotal).toFixed(2)} more to qualify!`}
               </p>
-              {totalPrice < 50 && (
+              {grandTotal < 50 && (
                 <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden mt-2">
                   <div
                     className="bg-ceylon-gold h-full rounded-full transition-all duration-500"
-                    style={{ width: `${(totalPrice / 50) * 100}%` }}
+                    style={{ width: `${(grandTotal / 50) * 100}%` }}
                   />
                 </div>
               )}

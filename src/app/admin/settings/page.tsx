@@ -79,7 +79,7 @@ export default function AdminSettingsPage() {
   const sigFileRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   // Story Images
-  const [storyMainImage, setStoryMainImage] = useState("https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1000&q=80");
+  const [storyMainImage, setStoryMainImage] = useState("/shop.jpeg");
   const [storySecondaryImage, setStorySecondaryImage] = useState("https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80");
   const [uploadingStoryMain, setUploadingStoryMain] = useState(false);
   const [uploadingStorySec, setUploadingStorySec] = useState(false);
@@ -103,7 +103,7 @@ export default function AdminSettingsPage() {
       setMobileNumber(settings.mobileNumber || "01752 941504");
       setWhatsappNumber(settings.whatsappNumber || "447123456789");
       setRestaurantEmail(settings.restaurantEmail || "info@ceyloncurry.co.uk");
-      setAdminEmail(settings.adminEmail || "apptronorders@gmail.com");
+      setAdminEmail((!settings.adminEmail || settings.adminEmail === "apptronorders@gmail.com") ? "ceyloncurry2025@gmail.com" : settings.adminEmail);
       setDeliveryFee(settings.deliveryFee ?? 2.99);
 
       if (settings.openingHours) {
@@ -122,7 +122,9 @@ export default function AdminSettingsPage() {
       if (settings.signatureDishes && settings.signatureDishes.length > 0) {
         setSignatureDishes(settings.signatureDishes);
       }
-      if (settings.storyMainImage) setStoryMainImage(settings.storyMainImage);
+      if (settings.storyMainImage) {
+        setStoryMainImage(settings.storyMainImage.includes("unsplash.com") ? "/shop.jpeg" : settings.storyMainImage);
+      }
       if (settings.storySecondaryImage) setStorySecondaryImage(settings.storySecondaryImage);
       if (settings.galleryImages && settings.galleryImages.length > 0) {
         setGalleryImages(settings.galleryImages);
@@ -204,7 +206,7 @@ export default function AdminSettingsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           action: "reset-password",
-          email: adminEmail || "apptronorders@gmail.com",
+          email: (!adminEmail || adminEmail === "apptronorders@gmail.com") ? "ceyloncurry2025@gmail.com" : adminEmail,
           newPassword,
         }),
       });

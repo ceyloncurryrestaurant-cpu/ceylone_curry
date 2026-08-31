@@ -211,7 +211,8 @@ export function HomePageClient({
 
 
 
-  const storyMainImg = settings?.storyMainImage || "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1000&q=80";
+  const storyMainImgRaw = settings?.storyMainImage;
+  const storyMainImg = (!storyMainImgRaw || storyMainImgRaw.includes("unsplash.com")) ? "/shop.jpeg" : storyMainImgRaw;
   const storySecImg = settings?.storySecondaryImage || "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80";
 
   const defaultGalleryImages = [
@@ -808,7 +809,7 @@ export function HomePageClient({
         </div>
       </section>
 
-      {/* VISUAL GALLERY */}
+      {/* VISUAL GALLERY
       <section className="py-24 bg-[#071B5C] text-white relative z-10 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 mb-10 text-center">
           <span className="text-xs uppercase font-extrabold tracking-[0.3em] text-ceylon-gold block">
@@ -839,6 +840,7 @@ export function HomePageClient({
           ))}
         </div>
       </section>
+      */}
 
       <ReviewModal
         isOpen={isReviewModalOpen}

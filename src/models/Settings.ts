@@ -53,7 +53,7 @@ const SettingsSchema = new Schema<ISettings>(
     mobileNumber: { type: String, required: true, default: "01752 941504" },
     whatsappNumber: { type: String, required: true, default: "+447824110369" },
     restaurantEmail: { type: String, required: true, default: "info@ceyloncurry.co.uk" },
-    adminEmail: { type: String, required: true, default: "apptronorders@gmail.com" },
+    adminEmail: { type: String, required: true, default: "ceyloncurry2025@gmail.com" },
     deliveryFee: { type: Number, default: 2.99 },
     openingHours: {
       monday: { type: String, default: "10:00 AM - 10:00 PM" },

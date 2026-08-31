@@ -57,6 +57,10 @@ export const Header: React.FC = () => {
             </span>
             <span className="text-white/80 font-medium">🕒 Mon - Sun: {hoursStr}</span>
           </div>
+          <div className="flex items-center gap-2">
+            <span className="bg-[#D92B20] text-white text-[9px] font-black px-1.5 py-0.5 rounded tracking-wider animate-pulse shrink-0">OFFER</span>
+            <span className="text-[#F4C430] font-bold">🚚 Free Delivery on orders over £40 (within 5 km)!</span>
+          </div>
           <div className="flex items-center gap-6">
             <a
               href={formattedCallHref}
