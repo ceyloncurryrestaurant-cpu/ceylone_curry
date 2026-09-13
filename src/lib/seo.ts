@@ -8,7 +8,7 @@ export const SITE_CONFIG = {
   domain: "www.ceyloncurry.co.uk",
   telephone: "+44 1752 941504",
   formattedPhone: "01752 941504",
-  whatsappNumber: "+447824110369",
+  whatsappNumber: "+447498903357",
   address: {
     streetAddress: "44 Mayflower St",
     addressLocality: "Plymouth",

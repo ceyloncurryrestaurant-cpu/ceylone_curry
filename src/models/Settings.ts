@@ -51,7 +51,7 @@ const SettingsSchema = new Schema<ISettings>(
     restaurantName: { type: String, required: true, default: "Ceylon Curry" },
     address: { type: String, required: true, default: "44 Mayflower St, Plymouth PL1 1QX" },
     mobileNumber: { type: String, required: true, default: "01752 941504" },
-    whatsappNumber: { type: String, required: true, default: "+447824110369" },
+    whatsappNumber: { type: String, required: true, default: "+447498903357" },
     restaurantEmail: { type: String, required: true, default: "info@ceyloncurry.co.uk" },
     adminEmail: { type: String, required: true, default: "ceyloncurry2025@gmail.com" },
     deliveryFee: { type: Number, default: 2.99 },

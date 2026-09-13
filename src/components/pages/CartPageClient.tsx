@@ -7,7 +7,7 @@ import { useCart } from "@/context/CartContext";
 import { Plus, Minus, Trash2, ArrowRight, ShoppingBag } from "lucide-react";
 
 export function CartPageClient() {
-  const { cart, removeFromCart, updateQuantity, totalPrice, totalCount, clearCart, grandTotal, deliveryFee } = useCart();
+  const { cart, removeFromCart, updateQuantity, totalPrice, totalCount, clearCart, grandTotal } = useCart();
 
   if (cart.length === 0) {
     return (

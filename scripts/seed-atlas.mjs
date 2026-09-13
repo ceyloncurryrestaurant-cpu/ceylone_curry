@@ -63,7 +63,7 @@ async function seed() {
       restaurantName: "Ceylon Curry",
       address: "44 Mayflower St, Plymouth PL1 1QX",
       mobileNumber: "01752 941504",
-      whatsappNumber: "+447824110369",
+      whatsappNumber: "+447498903357",
       restaurantEmail: "info@ceyloncurry.co.uk",
       adminEmail: "ceyloncurry2025@gmail.com",
       deliveryFee: 2.99,

@@ -136,7 +136,7 @@ export async function POST(req: Request) {
 
         // 5. Fetch WhatsApp Number from Settings
         let settingsDoc = await Settings.findOne().catch(() => null);
-        const targetWhatsAppNumber = settingsDoc?.whatsappNumber || memoryStore.settings.whatsappNumber || "+447824110369";
+        const targetWhatsAppNumber = settingsDoc?.whatsappNumber || memoryStore.settings.whatsappNumber || "+447498903357";
 
         // 6. Generate WhatsApp Message & Link
         const messageText = generateWhatsAppOrderMessage({
@@ -192,7 +192,7 @@ export async function POST(req: Request) {
     };
     memoryStore.orders.push(fallbackOrder);
 
-    const targetWhatsAppNumber = memoryStore.settings?.whatsappNumber || "+447824110369";
+    const targetWhatsAppNumber = memoryStore.settings?.whatsappNumber || "+447498903357";
 
     const messageText = generateWhatsAppOrderMessage({
       orderNumber,

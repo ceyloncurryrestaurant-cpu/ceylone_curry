@@ -8,7 +8,7 @@ The production-quality web application for **Ceylon Curry** is complete and conn
 
 The database seed script connected to `mongodb://127.0.0.1:27017/ceylon_curry` and populated all required collections:
 
-- **Settings Collection:** Initialized with dynamic restaurant credentials (`01752 941504`, `+447824110369`, `44 Mayflower St, Plymouth PL1 1QX`).
+- **Settings Collection:** Initialized with dynamic restaurant credentials (`01752 941504`, `+447498903357`, `44 Mayflower St, Plymouth PL1 1QX`).
 - **Admin User:** Created `admin@ceyloncurry` with hashed password `ceyloncurry@3443`.
 - **7 Restaurant Tables:**
   - Table 1 – 4: Couple Tables (Capacity: 2)

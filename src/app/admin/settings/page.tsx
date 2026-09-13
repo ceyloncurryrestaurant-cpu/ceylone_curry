@@ -101,7 +101,7 @@ export default function AdminSettingsPage() {
       setRestaurantName(settings.restaurantName || "Ceylon Curry");
       setAddress(settings.address || "44 Mayflower St, Plymouth PL1 1QX");
       setMobileNumber(settings.mobileNumber || "01752 941504");
-      setWhatsappNumber(settings.whatsappNumber || "447123456789");
+      setWhatsappNumber(settings.whatsappNumber || "+447498903357");
       setRestaurantEmail(settings.restaurantEmail || "info@ceyloncurry.co.uk");
       setAdminEmail((!settings.adminEmail || settings.adminEmail === "apptronorders@gmail.com") ? "ceyloncurry2025@gmail.com" : settings.adminEmail);
       setDeliveryFee(settings.deliveryFee ?? 2.99);
