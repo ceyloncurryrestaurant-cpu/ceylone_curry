@@ -25,9 +25,9 @@ export async function seedDatabase() {
         tuesday: "12:00 PM - 10:00 PM",
         wednesday: "12:00 PM - 10:00 PM",
         thursday: "12:00 PM - 10:00 PM",
-        friday: "12:00 PM - 11:00 PM",
-        saturday: "12:00 PM - 11:00 PM",
-        sunday: "12:00 PM - 09:30 PM",
+        friday: "12:00 PM - 10:00 PM",
+        saturday: "12:00 PM - 10:00 PM",
+        sunday: "12:00 PM - 10:00 PM",
       },
       socialLinks: {
         facebook: "https://www.facebook.com/ceyloncurrysl/",

@@ -19,13 +19,13 @@ export default function AdminSettingsPage() {
   const [deliveryFee, setDeliveryFee] = useState(2.99);
 
   const [openingHours, setOpeningHours] = useState({
-    monday: "10:00 AM - 10:00 PM",
-    tuesday: "10:00 AM - 10:00 PM",
-    wednesday: "10:00 AM - 10:00 PM",
-    thursday: "10:00 AM - 10:00 PM",
-    friday: "10:00 AM - 10:00 PM",
-    saturday: "10:00 AM - 10:00 PM",
-    sunday: "10:00 AM - 10:00 PM",
+    monday: "12:00 PM - 10:00 PM",
+    tuesday: "12:00 PM - 10:00 PM",
+    wednesday: "12:00 PM - 10:00 PM",
+    thursday: "12:00 PM - 10:00 PM",
+    friday: "12:00 PM - 10:00 PM",
+    saturday: "12:00 PM - 10:00 PM",
+    sunday: "12:00 PM - 10:00 PM",
   });
 
   const [socialLinks, setSocialLinks] = useState({

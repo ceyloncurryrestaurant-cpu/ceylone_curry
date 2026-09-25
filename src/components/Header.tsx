@@ -40,7 +40,7 @@ export const Header: React.FC = () => {
   const phoneNum = settings?.mobileNumber || "01752 941504";
   const whatsappNum = settings?.whatsappNumber || "+447498903357";
   const addressStr = settings?.address || "44 Mayflower St, Plymouth PL1 1QX";
-  const hoursStr = settings?.openingHours?.monday || "10:00 AM - 10:00 PM";
+  const hoursStr = settings?.openingHours?.monday || "12:00 PM - 10:00 PM";
 
   const formattedCallHref = `tel:${phoneNum.replace(/\s+/g, "")}`;
   const whatsappUrl = getWhatsAppLink(whatsappNum);

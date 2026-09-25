@@ -7,7 +7,7 @@ import { SITE_CONFIG } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "Contact Us & Location | Ceylon Curry Plymouth",
   description:
-    "Contact Ceylon Curry at 44 Mayflower St, Plymouth PL1 1QX. Call 01752 941504 or order via WhatsApp. Open 7 days a week from 10:00 AM to 10:00 PM.",
+    "Contact Ceylon Curry at 44 Mayflower St, Plymouth PL1 1QX. Call 01752 941504 or order via WhatsApp. Open 7 days a week from 12:00 PM to 10:00 PM.",
   keywords: [
     "Contact Ceylon Curry Plymouth",
     "Ceylon Curry Address Plymouth",

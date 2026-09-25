@@ -99,7 +99,7 @@ export function ContactPageClient() {
               </div>
               <div>
                 <span className="text-xs font-bold text-[#071B5C] uppercase tracking-wider block">Opening Hours</span>
-                <p className="text-gray-800 font-semibold mt-0.5">Monday - Sunday: {settings?.openingHours?.monday || "10:00 AM - 10:00 PM"}</p>
+                <p className="text-gray-800 font-semibold mt-0.5">Monday - Sunday: {settings?.openingHours?.monday || "12:00 PM - 10:00 PM"}</p>
               </div>
             </li>
           </ul>

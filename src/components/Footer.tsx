@@ -13,7 +13,7 @@ export const Footer: React.FC = () => {
   const phoneNum = settings?.mobileNumber || "01752 941504";
   const whatsappNum = settings?.whatsappNumber || "+447498903357";
   const addressStr = settings?.address || "44 Mayflower St, Plymouth PL1 1QX";
-  const hoursStr = settings?.openingHours?.monday || "10:00 AM - 10:00 PM";
+  const hoursStr = settings?.openingHours?.monday || "12:00 PM - 10:00 PM";
   const emailStr = settings?.restaurantEmail || "info@ceyloncurry.co.uk";
   const fbUrl = settings?.socialLinks?.facebook || "https://www.facebook.com/ceyloncurrysl/";
   const igUrl = settings?.socialLinks?.instagram || "https://www.instagram.com/ceyloncurrys/";

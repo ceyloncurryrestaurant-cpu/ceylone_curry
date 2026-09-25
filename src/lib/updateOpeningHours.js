@@ -8,20 +8,20 @@ async function updateHours() {
   const db = mongoose.connection.db;
 
   const newHours = {
-    monday: "10:00 AM - 10:00 PM",
-    tuesday: "10:00 AM - 10:00 PM",
-    wednesday: "10:00 AM - 10:00 PM",
-    thursday: "10:00 AM - 10:00 PM",
-    friday: "10:00 AM - 10:00 PM",
-    saturday: "10:00 AM - 10:00 PM",
-    sunday: "10:00 AM - 10:00 PM",
+    monday: "12:00 PM - 10:00 PM",
+    tuesday: "12:00 PM - 10:00 PM",
+    wednesday: "12:00 PM - 10:00 PM",
+    thursday: "12:00 PM - 10:00 PM",
+    friday: "12:00 PM - 10:00 PM",
+    saturday: "12:00 PM - 10:00 PM",
+    sunday: "12:00 PM - 10:00 PM",
   };
 
   await db.collection("settings").updateMany({}, {
     $set: { openingHours: newHours }
   });
 
-  console.log("✅ Updated local MongoDB opening hours to: 10:00 AM - 10:00 PM for all days!");
+  console.log("✅ Updated local MongoDB opening hours to: 12:00 PM - 10:00 PM for all days!");
   process.exit(0);
 }
 

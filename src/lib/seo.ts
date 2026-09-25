@@ -20,7 +20,7 @@ export const SITE_CONFIG = {
     latitude: 50.3736,
     longitude: -4.1425,
   },
-  openingHours: "Mon-Sun: 10:00 - 22:00",
+  openingHours: "Mon-Sun: 12:00 - 22:00",
   priceRange: "££",
   servesCuisine: ["Sri Lankan", "South Asian", "Curry", "Kottu Roti", "Lamprais", "Asian Fusion"],
   keywords: [
