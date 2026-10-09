@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { SITE_CONFIG } from "@/lib/seo";
 import { RestaurantJsonLd } from "@/components/seo/JsonLd";
@@ -86,6 +87,19 @@ export default function RootLayout({
         <RestaurantJsonLd />
       </head>
       <body className="antialiased bg-ceylon-volcanic text-ceylon-ivory">
+        {/* Google Analytics 4 (gtag.js) */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-S2BVY43G1D"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-S2BVY43G1D');
+          `}
+        </Script>
         <div className="grain-overlay" />
         {children}
       </body>
