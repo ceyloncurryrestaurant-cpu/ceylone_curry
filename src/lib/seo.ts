@@ -4,8 +4,8 @@ export const SITE_CONFIG = {
   title: "Ceylon Curry — Authentic Sri Lankan Cuisine in Plymouth",
   description:
     "Experience authentic Sri Lankan curries, hand-roasted island spices, sizzling Kottu Roti, and Lamprais at Ceylon Curry, 44 Mayflower St, Plymouth PL1 1QX. Online table reservations & takeaway ordering.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.ceyloncurry.co.uk",
-  domain: "www.ceyloncurry.co.uk",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.ceyloncurryplymouth.co.uk",
+  domain: "www.ceyloncurryplymouth.co.uk",
   telephone: "+44 1752 941504",
   formattedPhone: "01752 941504",
   whatsappNumber: "+447498903357",
