@@ -87,135 +87,56 @@ async function seed() {
   });
   console.log("✅ Admin user created: admin@ceyloncurry / ceyloncurry@3443");
 
-  // 3. 7 Tables Collection with Individual High-Resolution Seating Photography
+  // 3. 7 Tables Collection
   const tablesColl = db.collection("tables");
-  await tablesColl.deleteMany({}); // Re-seed tables with individual seating photography
-  const defaultTables = [
-    {
-      tableNumber: 1,
-      capacity: 2,
-      type: "Couple",
-      status: "Available",
-      image: {
-        url: "/images/couple_table.jpg",
-        publicId: "table_1_cozy_window_booth",
-      },
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      tableNumber: 2,
-      capacity: 2,
-      type: "Couple",
-      status: "Available",
-      image: {
-        url: "/images/couple_table.jpg",
-        publicId: "table_2_candlelight_corner",
-      },
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      tableNumber: 3,
-      capacity: 2,
-      type: "Couple",
-      status: "Available",
-      image: {
-        url: "/images/couple_table.jpg",
-        publicId: "table_3_garden_view",
-      },
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      tableNumber: 4,
-      capacity: 2,
-      type: "Couple",
-      status: "Available",
-      image: {
-        url: "/images/couple_table.jpg",
-        publicId: "table_4_heritage_ceylon_nook",
-      },
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      tableNumber: 5,
-      capacity: 4,
-      type: "Family",
-      status: "Available",
-      image: {
-        url: "/images/family_table.jpg",
-        publicId: "table_5_royal_family_table",
-      },
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      tableNumber: 6,
-      capacity: 4,
-      type: "Family",
-      status: "Available",
-      image: {
-        url: "/images/family_table.jpg",
-        publicId: "table_6_center_dining_banquet",
-      },
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      tableNumber: 7,
-      capacity: 4,
-      type: "Family",
-      status: "Available",
-      image: {
-        url: "/images/family_table.jpg",
-        publicId: "table_7_executive_family_alcove",
-      },
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ];
-  await tablesColl.insertMany(defaultTables);
-  console.log("✅ 7 Restaurant Tables seeded with individual seating photography.");
+  if ((await tablesColl.countDocuments()) === 0) {
+    const defaultTables = [
+      { tableNumber: 1, capacity: 2, type: "Couple", status: "Available", image: { url: "/images/couple_table.jpg", publicId: "table_1_cozy_window_booth" }, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { tableNumber: 2, capacity: 2, type: "Couple", status: "Available", image: { url: "/images/couple_table.jpg", publicId: "table_2_candlelight_corner" }, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { tableNumber: 3, capacity: 2, type: "Couple", status: "Available", image: { url: "/images/couple_table.jpg", publicId: "table_3_garden_view" }, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { tableNumber: 4, capacity: 2, type: "Couple", status: "Available", image: { url: "/images/couple_table.jpg", publicId: "table_4_heritage_ceylon_nook" }, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { tableNumber: 5, capacity: 4, type: "Family", status: "Available", image: { url: "/images/family_table.jpg", publicId: "table_5_royal_family_table" }, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { tableNumber: 6, capacity: 4, type: "Family", status: "Available", image: { url: "/images/family_table.jpg", publicId: "table_6_center_dining_banquet" }, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { tableNumber: 7, capacity: 4, type: "Family", status: "Available", image: { url: "/images/family_table.jpg", publicId: "table_7_executive_family_alcove" }, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+    ];
+    await tablesColl.insertMany(defaultTables);
+    console.log("✅ 7 Restaurant Tables seeded.");
+  } else {
+    console.log("ℹ️ Tables already exist, keeping existing tables.");
+  }
 
-  // 4. Categories Collection (Clean clear & recreate)
+  // 4. Categories Collection
   const catColl = db.collection("categories");
-  await catColl.deleteMany({});
-  
-  const categoriesData = [
-    { name: "Snacks", slug: "snacks", description: "Crispy Sri Lankan and Kerala short eats, rolls and vadais", displayOrder: 1, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-    { name: "Starters", slug: "starters", description: "Spicy appetizers, soups and crispy snacks", displayOrder: 2, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-    { name: "The Fry Station", slug: "fry-station", description: "Kerala-style fried meat, fish and sides", displayOrder: 3, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-    { name: "Kothu – Parotta", slug: "kothu-parotta", description: "Traditional Ceylon shredded parotta stir-fry with meat, egg or veg", displayOrder: 4, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-    { name: "Kothu – Puttu", slug: "kothu-puttu", description: "Steamed cylindrical ground rice and coconut layers stir-fried with curry", displayOrder: 5, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-    { name: "Biryani", slug: "biryani", description: "Aromatic biryanis served in Kerala or Ambur styles", displayOrder: 6, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-    { name: "Fried Rice & Noodles", slug: "fried-rice-noodles", description: "Wok-tossed rice and noodles with authentic flavors", displayOrder: 7, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-    { name: "Dosa", slug: "dosa", description: "Crispy South Indian thin rice crepes served with sambar and chutney", displayOrder: 8, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-    { name: "South Asian Eats", slug: "south-asian-eats", description: "Traditional Sri Lankan and South Indian staples like hoppers, poori, puttu and parotta", displayOrder: 9, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-    { name: "Curry", slug: "curry", description: "Rich, slow-cooked Ceylon and Kerala style meat, fish and vegetarian curries", displayOrder: 10, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-    { name: "Desserts", slug: "desserts", description: "Sweet treats including traditional Watalappam, Payasam and puddings", displayOrder: 11, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-    { name: "Ceylon Curry Treats / Special Meals", slug: "special-meals", description: "Plentiful thalis, special lunch/dinner boxes and traditional lamp rice", displayOrder: 12, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-  ];
-
-  const inserted = await catColl.insertMany(categoriesData);
-  console.log("✅ Categories seeded.");
-
   let catMap = {};
-  Object.values(inserted.insertedIds).forEach((id, idx) => {
-    catMap[categoriesData[idx].slug] = id;
-  });
+  if ((await catColl.countDocuments()) === 0) {
+    const categoriesData = [
+      { name: "Snacks", slug: "snacks", description: "Crispy Sri Lankan and Kerala short eats, rolls and vadais", displayOrder: 1, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: "Starters", slug: "starters", description: "Spicy appetizers, soups and crispy snacks", displayOrder: 2, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: "The Fry Station", slug: "fry-station", description: "Kerala-style fried meat, fish and sides", displayOrder: 3, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: "Kothu – Parotta", slug: "kothu-parotta", description: "Traditional Ceylon shredded parotta stir-fry with meat, egg or veg", displayOrder: 4, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: "Kothu – Puttu", slug: "kothu-puttu", description: "Steamed cylindrical ground rice and coconut layers stir-fried with curry", displayOrder: 5, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: "Biryani", slug: "biryani", description: "Aromatic biryanis served in Kerala or Ambur styles", displayOrder: 6, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: "Fried Rice & Noodles", slug: "fried-rice-noodles", description: "Wok-tossed rice and noodles with authentic flavors", displayOrder: 7, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: "Dosa", slug: "dosa", description: "Crispy South Indian thin rice crepes served with sambar and chutney", displayOrder: 8, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: "South Asian Eats", slug: "south-asian-eats", description: "Traditional Sri Lankan and South Indian staples like hoppers, poori, puttu and parotta", displayOrder: 9, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: "Curry", slug: "curry", description: "Rich, slow-cooked Ceylon and Kerala style meat, fish and vegetarian curries", displayOrder: 10, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: "Desserts", slug: "desserts", description: "Sweet treats including traditional Watalappam, Payasam and puddings", displayOrder: 11, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: "Ceylon Curry Treats / Special Meals", slug: "special-meals", description: "Plentiful thalis, special lunch/dinner boxes and traditional lamp rice", displayOrder: 12, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+    ];
+    const inserted = await catColl.insertMany(categoriesData);
+    Object.values(inserted.insertedIds).forEach((id, idx) => {
+      catMap[categoriesData[idx].slug] = id;
+    });
+    console.log("✅ Categories seeded.");
+  } else {
+    console.log("ℹ️ Categories already exist, preserving existing categories.");
+    const existingCats = await catColl.find({}).toArray();
+    existingCats.forEach(c => { catMap[c.slug] = c._id; });
+  }
 
   // 5. Products Collection
   const prodColl = db.collection("products");
-  await prodColl.deleteMany({}); // Clean seed for products
+  if ((await prodColl.countDocuments()) === 0) {
 
   const productsData = [
     // === SNACKS ===
@@ -1895,8 +1816,11 @@ async function seed() {
     },
   ];
 
-  await prodColl.insertMany(productsData);
-  console.log("✅ Dishes & Special Offers seeded.");
+    await prodColl.insertMany(productsData);
+    console.log("✅ Dishes & Special Offers seeded.");
+  } else {
+    console.log("ℹ️ Products already exist, preserving existing products.");
+  }
 
   console.log("✨ Seed completed successfully!");
   process.exit(0);

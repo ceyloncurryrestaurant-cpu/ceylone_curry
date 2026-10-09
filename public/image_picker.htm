@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ceylon Curry — Category & Dish Image Selector</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0b132b; color: #f8fafc; }
+    
+    header { background: #1c2541; padding: 18px 24px; position: sticky; top: 0; z-index: 100; border-bottom: 2px solid #3a506b; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+    header h1 { font-size: 20px; color: #f59e0b; display: flex; align-items: center; gap: 10px; }
+    .save-btn { background: #f59e0b; color: #0b132b; font-size: 15px; font-weight: bold; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(245,158,11,0.3); }
+    .save-btn:hover { background: #d97706; transform: translateY(-1px); }
+    .status-msg { font-size: 14px; font-weight: 600; color: #10b981; }
+
+    .container { display: flex; height: calc(100vh - 80px); overflow: hidden; }
+    
+    /* Left Panel: Food Menu List */
+    .left-panel { width: 55%; padding: 20px; overflow-y: auto; border-right: 1px solid #1e293b; }
+    
+    .section-header { font-size: 18px; font-weight: 800; color: #f59e0b; margin: 20px 0 12px 0; display: flex; align-items: center; gap: 8px; border-bottom: 2px solid #f59e0b; padding-bottom: 6px; }
+
+    .category-card-row { display: flex; align-items: center; gap: 12px; background: #111827; padding: 12px 16px; border-radius: 12px; margin-bottom: 10px; border: 1.5px solid #374151; }
+    .category-card-row:hover { border-color: #60a5fa; }
+    .cat-thumb { width: 64px; height: 64px; border-radius: 8px; object-fit: cover; background: #1f2937; border: 1px solid #4b5563; flex-shrink: 0; }
+    .cat-info { flex: 1; }
+    .cat-name { font-size: 15px; font-weight: 700; color: #60a5fa; }
+    .cat-desc { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+
+    .category-group { margin-bottom: 28px; }
+    .category-title { font-size: 16px; font-weight: 700; color: #60a5fa; text-transform: uppercase; letter-spacing: 0.05em; padding-bottom: 8px; border-bottom: 1px solid #334155; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+    
+    .dish-row { display: flex; align-items: center; gap: 12px; background: #1e293b; padding: 10px 14px; border-radius: 10px; margin-bottom: 8px; border: 1px solid #334155; transition: border-color 0.2s; }
+    .dish-row:hover { border-color: #f59e0b; }
+    .dish-thumb { width: 56px; height: 56px; border-radius: 6px; object-fit: cover; background: #0f172a; border: 1px solid #475569; flex-shrink: 0; }
+    .dish-info { flex: 1; }
+    .dish-name { font-size: 14px; font-weight: 600; color: #fff; }
+    .dish-price { font-size: 12px; color: #f59e0b; font-weight: bold; margin-top: 2px; }
+    
+    .img-select { padding: 8px; background: #0f172a; color: #fff; border: 1px solid #475569; border-radius: 6px; font-size: 12px; max-width: 250px; cursor: pointer; }
+    .img-select:focus { border-color: #f59e0b; outline: none; }
+
+    /* Right Panel: Cloudinary Image Gallery */
+    .right-panel { width: 45%; padding: 20px; overflow-y: auto; background: #0f172a; }
+    .right-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .right-panel h2 { font-size: 16px; color: #cbd5e1; }
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
+    .gallery-card { background: #1e293b; border-radius: 8px; padding: 8px; border: 2px solid transparent; cursor: pointer; text-align: center; transition: all 0.2s; position: relative; }
+    .gallery-card:hover { border-color: #60a5fa; transform: scale(1.02); }
+    .gallery-card.selected { border-color: #f59e0b; background: #334155; }
+    .gallery-card img { width: 100%; height: 95px; object-fit: cover; border-radius: 6px; }
+    .gallery-num { font-size: 11px; font-weight: bold; color: #f59e0b; margin-top: 6px; }
+    .gallery-id { font-size: 9px; color: #94a3b8; word-break: break-all; margin-top: 2px; }
+
+    .search-box { width: 100%; padding: 10px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #fff; margin-bottom: 14px; font-size: 14px; }
+    
+    .nav-tabs { display: flex; gap: 10px; margin-bottom: 16px; }
+    .tab-btn { padding: 8px 16px; border-radius: 6px; background: #1e293b; color: #94a3b8; border: 1px solid #334155; cursor: pointer; font-weight: 600; }
+    .tab-btn.active { background: #2563eb; color: #fff; border-color: #3b82f6; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🍲 Ceylon Curry — Category & Dish Image Selector</h1>
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <span id="status" class="status-msg"></span>
+      <button class="save-btn" onclick="saveAllMappings()">💾 Save & Apply All Images to Website</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Left Column: Categories & Dishes List -->
+    <div class="left-panel">
+      
+      <div class="nav-tabs">
+        <button class="tab-btn active" id="tabCategoriesBtn" onclick="showTab('categories')">📁 Category Cover Images</button>
+        <button class="tab-btn" id="tabDishesBtn" onclick="showTab('dishes')">🍛 Menu Food Dishes (97)</button>
+      </div>
+
+      <input type="text" id="searchMenu" class="search-box" placeholder="🔍 Search categories or dishes..." onkeyup="filterMenu()" />
+
+      <!-- Section 1: Categories Section -->
+      <div id="categoriesSection">
+        <div class="section-header">📁 Category Cover Images</div>
+        <div id="categoryContainer">Loading category list...</div>
+      </div>
+
+      <!-- Section 2: Dishes Section -->
+      <div id="dishesSection">
+        <div class="section-header">🍛 Menu Dishes List</div>
+        <div id="menuContainer">Loading menu list...</div>
+      </div>
+
+    </div>
+
+    <!-- Right Column: Cloudinary Food Images Gallery -->
+    <div class="right-panel">
+      <div class="right-header">
+        <h2>📷 Cloudinary Image Gallery (<span id="imgCount">0</span> loaded)</h2>
+      </div>
+      <input type="text" id="searchGallery" class="search-box" placeholder="🔍 Search Cloudinary images by ID or #..." onkeyup="filterGallery()" />
+      <div id="galleryContainer" class="gallery-grid">Fetching all Cloudinary images...</div>
+    </div>
+  </div>
+
+  <script>
+    let cloudinaryImages = [];
+    let allProducts = [];
+    let allCategories = [];
+
+    // Local static dish image fallbacks & generated items
+    const localHeroImages = [
+      { name: "Parotta (Hero Image)", url: "/images/hero/parotta.jpg" },
+      { name: "Biryani (Hero Image)", url: "/images/hero/biryani.jpg" },
+      { name: "Dosa (Hero Image)", url: "/images/hero/dosa.jpg" },
+      { name: "Curry (Hero Image)", url: "/images/hero/curry.jpg" },
+      { name: "Egg Dosa (Gallery)", url: "/gallery/Egg-Dosa.jpg" },
+      { name: "Hyderabadi Biryani (Gallery)", url: "/gallery/chicken-hyderabadi-biryani-01 (1).jpg" },
+    ];
+
+    async function init() {
+      // 1. Fetch ALL Cloudinary Images dynamically from API
+      try {
+        const cRes = await fetch("/api/admin/cloudinary-images");
+        const cData = await cRes.json();
+        if (cData.success) {
+          cloudinaryImages = cData.images || [];
+        }
+      } catch (err) {
+        console.error("Cloudinary fetch error:", err);
+      }
+
+      document.getElementById("imgCount").innerText = cloudinaryImages.length;
+      renderGallery(cloudinaryImages);
+
+      // 2. Fetch Categories
+      try {
+        const catRes = await fetch("/api/categories");
+        const catData = await catRes.json();
+        allCategories = catData.categories || [];
+        renderCategories(allCategories);
+      } catch (err) {
+        document.getElementById("categoryContainer").innerHTML = "<div style='color:red;'>Failed to load categories.</div>";
+      }
+
+      // 3. Fetch Menu Products
+      try {
+        const res = await fetch("/api/products");
+        const data = await res.json();
+        allProducts = data.products || [];
+        renderMenu(allProducts);
+      } catch (err) {
+        document.getElementById("menuContainer").innerHTML = "<div style='color:red;'>Failed to load menu products.</div>";
+      }
+    }
+
+    function renderGallery(images) {
+      if (!images || images.length === 0) {
+        document.getElementById("galleryContainer").innerHTML = "<div>No images found.</div>";
+        return;
+      }
+
+      const galleryHtml = images.map((item, i) => `
+        <div class="gallery-card" id="card-${i}" onclick="highlightImage('${item.url}', ${i})">
+          <img src="${item.url}" alt="Image #${i+1}" loading="lazy" />
+          <div class="gallery-num">Image #${i+1}</div>
+          <div class="gallery-id">${item.public_id.split('/').pop()}</div>
+        </div>
+      `).join('');
+      document.getElementById("galleryContainer").innerHTML = galleryHtml;
+    }
+
+    function renderCategories(categories) {
+      let html = "";
+      categories.forEach(cat => {
+        const currentUrl = cat.image || "";
+        let optionsHtml = `<option value="">-- Select Category Image --</option>`;
+        
+        localHeroImages.forEach(loc => {
+          const selected = currentUrl === loc.url ? "selected" : "";
+          optionsHtml += `<option value="${loc.url}" ${selected}>⭐ ${loc.name}</option>`;
+        });
+
+        cloudinaryImages.forEach((cItem, i) => {
+          const selected = currentUrl === cItem.url ? "selected" : "";
+          const shortId = cItem.public_id.split('/').pop();
+          optionsHtml += `<option value="${cItem.url}" ${selected}>Image #${i+1} (${shortId})</option>`;
+        });
+
+        html += `
+          <div class="category-card-row" id="cat-${cat._id}">
+            <img src="${currentUrl || '/images/hero/curry.jpg'}" class="cat-thumb" id="cat-thumb-${cat._id}" />
+            <div class="cat-info">
+              <div class="cat-name">${cat.name}</div>
+              <div class="cat-desc">${cat.description || ''}</div>
+            </div>
+            <select class="img-select" id="cat-select-${cat._id}" onchange="updateCatThumb('${cat._id}', this.value)">
+              ${optionsHtml}
+            </select>
+          </div>
+        `;
+      });
+      document.getElementById("categoryContainer").innerHTML = html;
+    }
+
+    function renderMenu(products) {
+      const groups = {};
+      products.forEach(p => {
+        const catName = p.categoryId?.name || "Uncategorized";
+        if (!groups[catName]) groups[catName] = [];
+        groups[catName].push(p);
+      });
+
+      let html = "";
+      for (const [cat, items] of Object.entries(groups)) {
+        html += `<div class="category-group">
+          <div class="category-title">
+            <span>${cat}</span>
+            <span style="font-size:12px; color:#94a3b8;">(${items.length} dishes)</span>
+          </div>`;
+        
+        items.forEach(prod => {
+          const currentUrl = prod.images && prod.images[0]?.url ? prod.images[0].url : "";
+          
+          let optionsHtml = `<option value="">-- Select Dish Image --</option>`;
+          
+          localHeroImages.forEach(loc => {
+            const selected = currentUrl === loc.url ? "selected" : "";
+            optionsHtml += `<option value="${loc.url}" ${selected}>⭐ ${loc.name}</option>`;
+          });
+          
+          cloudinaryImages.forEach((cItem, i) => {
+            const selected = currentUrl === cItem.url ? "selected" : "";
+            const shortId = cItem.public_id.split('/').pop();
+            optionsHtml += `<option value="${cItem.url}" ${selected}>Image #${i+1} (${shortId})</option>`;
+          });
+
+          html += `
+            <div class="dish-row" id="dish-${prod._id}">
+              <img src="${currentUrl || '/images/hero/curry.jpg'}" class="dish-thumb" id="thumb-${prod._id}" />
+              <div class="dish-info">
+                <div class="dish-name">${prod.name}</div>
+                <div class="dish-price">£${prod.price?.toFixed(2)}</div>
+              </div>
+              <select class="img-select" id="select-${prod._id}" onchange="updateThumb('${prod._id}', this.value)">
+                ${optionsHtml}
+              </select>
+            </div>
+          `;
+        });
+
+        html += `</div>`;
+      }
+
+      document.getElementById("menuContainer").innerHTML = html;
+    }
+
+    function updateThumb(prodId, url) {
+      const thumb = document.getElementById(`thumb-${prodId}`);
+      if (thumb && url) thumb.src = url;
+    }
+
+    function updateCatThumb(catId, url) {
+      const thumb = document.getElementById(`cat-thumb-${catId}`);
+      if (thumb && url) thumb.src = url;
+    }
+
+    function highlightImage(url, idx) {
+      document.querySelectorAll('.gallery-card').forEach(c => c.classList.remove('selected'));
+      const card = document.getElementById(`card-${idx}`);
+      if (card) card.classList.add('selected');
+    }
+
+    function showTab(tab) {
+      document.getElementById("tabCategoriesBtn").classList.remove("active");
+      document.getElementById("tabDishesBtn").classList.remove("active");
+      if (tab === 'categories') {
+        document.getElementById("tabCategoriesBtn").classList.add("active");
+        document.getElementById("categoriesSection").style.display = "block";
+        document.getElementById("dishesSection").style.display = "block";
+      } else {
+        document.getElementById("tabDishesBtn").classList.add("active");
+        document.getElementById("categoriesSection").style.display = "none";
+        document.getElementById("dishesSection").style.display = "block";
+      }
+    }
+
+    function filterMenu() {
+      const q = document.getElementById("searchMenu").value.toLowerCase();
+      const filteredProds = allProducts.filter(p => p.name.toLowerCase().includes(q) || (p.categoryId?.name && p.categoryId.name.toLowerCase().includes(q)));
+      renderMenu(filteredProds);
+
+      const filteredCats = allCategories.filter(c => c.name.toLowerCase().includes(q) || (c.description && c.description.toLowerCase().includes(q)));
+      renderCategories(filteredCats);
+    }
+
+    function filterGallery() {
+      const q = document.getElementById("searchGallery").value.toLowerCase();
+      const filtered = cloudinaryImages.filter((img, i) => 
+        `image #${i+1}`.includes(q) || 
+        img.public_id.toLowerCase().includes(q) || 
+        img.url.toLowerCase().includes(q)
+      );
+      renderGallery(filtered);
+    }
+
+    async function saveAllMappings() {
+      const statusEl = document.getElementById("status");
+      statusEl.style.color = "#f59e0b";
+      statusEl.innerText = "⏳ Saving category and dish image assignments to MongoDB Atlas...";
+
+      const mappings = [];
+      allProducts.forEach(prod => {
+        const select = document.getElementById(`select-${prod._id}`);
+        if (select && select.value) {
+          mappings.push({
+            productId: prod._id,
+            productName: prod.name,
+            imageUrl: select.value
+          });
+        }
+      });
+
+      const categoryMappings = [];
+      allCategories.forEach(cat => {
+        const select = document.getElementById(`cat-select-${cat._id}`);
+        if (select && select.value) {
+          categoryMappings.push({
+            categoryId: cat._id,
+            categorySlug: cat.slug,
+            imageUrl: select.value
+          });
+        }
+      });
+
+      try {
+        const res = await fetch("/api/admin/bulk-update-images", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ mappings, categoryMappings })
+        });
+        const data = await res.json();
+        if (data.success) {
+          statusEl.style.color = "#10b981";
+          statusEl.innerText = `✅ Saved! ${data.message}`;
+        } else {
+          statusEl.style.color = "#ef4444";
+          statusEl.innerText = `❌ Error: ${data.error}`;
+        }
+      } catch (err) {
+        statusEl.style.color = "#ef4444";
+        statusEl.innerText = `❌ Error saving images: ${err.message}`;
+      }
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>

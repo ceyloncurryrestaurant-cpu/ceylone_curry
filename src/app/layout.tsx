@@ -69,6 +69,9 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  verification: {
+    google: "CLprLedSKuTq5WNygZ-txpDVw49AWTmqAFrBd_SCMnk",
+  },
 };
 
 export default function RootLayout({
@@ -79,6 +82,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <head>
+        <meta name="google-site-verification" content="CLprLedSKuTq5WNygZ-txpDVw49AWTmqAFrBd_SCMnk" />
         <RestaurantJsonLd />
       </head>
       <body className="antialiased bg-ceylon-volcanic text-ceylon-ivory">
