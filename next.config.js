@@ -3,16 +3,16 @@ const isDev = process.env.NODE_ENV === 'development';
 
 const cspHeader = `
   default-src 'self';
-  script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''};
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.google.com https://*.googleapis.com https://*.gstatic.com https://*.googletagmanager.com;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  img-src 'self' blob: data: https://res.cloudinary.com https://images.unsplash.com https://via.placeholder.com;
-  font-src 'self' https://fonts.gstatic.com;
+  img-src 'self' blob: data: https:;
+  font-src 'self' https://fonts.gstatic.com data:;
   object-src 'none';
   base-uri 'self';
   form-action 'self';
   frame-ancestors 'none';
-  media-src 'self' https://res.cloudinary.com;
-  connect-src 'self';
+  media-src 'self' https:;
+  connect-src 'self' https: ws: wss:;
 `
   .replace(/\s{2,}/g, ' ')
   .trim();
